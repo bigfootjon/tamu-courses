@@ -1,5 +1,10 @@
 seeDoctor :: String -> String -> Bool
-seeDoctor draw praw = dhph && length pa >= length da && and [d == p && d == 'a' | (d,p) <- zip da pa]
-                    where da = reverse (drop 1 (reverse draw))
-                          pa = reverse (drop 1 (reverse praw))
-                          dhph = head (reverse draw) == head (reverse praw) && 'h' == head (reverse praw)
+seeDoctor []     []     = True
+seeDoctor _      []     = False
+seeDoctor []     (p:ps) | p == 'a' = seeDoctor [] ps
+                        | p == 'h' = length ps == 0
+                        | otherwise = False
+seeDoctor (d:ds) (p:ps) | d == 'h' = (p == 'h' || p == 'a') && seeDoctor ds ps
+                        | d == 'a' = p == 'a' && seeDoctor ds ps
+                        | otherwise = False
+

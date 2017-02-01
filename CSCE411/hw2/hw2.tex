@@ -122,14 +122,17 @@ b_n)$ with $a_1<a_2<\cdots <a_n$ and $b_1<b_2<\cdots <b_n$.
 comparisons?] 
 \end{problem}
 \begin{solution}
-
+In the worst case (an adversary), elements will be selected in an alternating fashion from the lists. For example, $a = [1,3,5,7,9], b = [2,4,6,8,10]$; it will compare 1 and 2, removing 1 from $a$ and adding it to the final list. This process will be repeated for the full list resulting in $2n$ comparisons (on average at most 2 comparisons involving each element). However, since one of the lists will eventually be empty there will be no more need to compare elements, so the remainder of the non-empty list can be appended to the final list. In the worst case this will mean that one list will be empty and the other list will have one element, so one comparison is saved, resulting in an overall comparison running time of $O(2n-1)$.
 \end{solution}
 
 \begin{problem}(15 points) 
-Solve Exercise 8.1-4 on page 194 of our textbook. 
-\end{problem}
+Solve Exercise 8.1-4 on page 194 of our textbook.
 \begin{solution}
+The most efficient sorting algorithm will sort $k$ elements in $k\log(k)$ comparisons. Since we have $\frac{n}{k}$ sets of $k$ elements to sort we can multiply and simplify:
+$$k\log(k) * \frac{n}{k} = n\log(k)$$
+$\therefore \Omega(n\log(k))$
 \end{solution}
+\end{problem}
 
 \begin{problem} (15 points) Consider the task of searching a sorted
   array \verb|a[1..n]| for a given element $w$. Show that any
@@ -138,6 +141,7 @@ Solve Exercise 8.1-4 on page 194 of our textbook.
   whether $a<b$, $a=b$, or $a>b$), must take $\Omega(\log n)$ steps.
 \end{problem}
 \begin{solution}
+The sorted array can be searched using a binary search by looking at midpoints and selecting sup-arrays to search based on the result of the midpoint. Since the 3-way search operator makes each binary search tree node into a single operation, it will take $log n$ of these operations to walk the "tree" $\therefore \Omega(\log n)$
 \end{solution}
 
 \begin{problem}(20 points)
@@ -160,8 +164,9 @@ $y=x_i$. You can only access the list using a search procedure
 Here it is assumed that \verb|i<j<k|. 
 Use a decision tree to prove a lower bound on the number of calls to
 $\verb|search|$ that are required to correctly solve the problem. 
-
-
+\begin{solution}
+The ideal scenario is to select $i, j, k$ such that $j$ is the midpoint of the list, and $i, k$ are the midpoints from 0 to $j$ and $j$ to the end of the list. I.e. $0 ... i ... j ... k ... z$ where z is the last index. If the result of \verb|search| is an equality (in the case of ii, iv, or vi) return, otherwise repeat the process with the range returned by \verb|search| (in the case of i and vii, use the bounds of the list). The lower bound of the algorithm can be shown by $\Omega(\log_4(n))$. This is because the described algorithm performs a search using a tree structure with each internal node having 4 children. The tree can be then be traversed with $\log_4(n)$ calls to search.
+\end{solution}
 \end{problem}
 
 

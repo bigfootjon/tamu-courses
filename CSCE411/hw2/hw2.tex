@@ -1,0 +1,182 @@
+\documentclass{article}
+\usepackage{amsmath,amssymb,amsthm,latexsym,paralist}
+
+\theoremstyle{definition}
+\newtheorem{problem}{Problem}
+\newtheorem*{solution}{Solution}
+\newtheorem*{resources}{Resources}
+
+\newcommand{\name}[1]{\noindent\textbf{Name: #1}}
+\newcommand{\honor}{\noindent On my honor, as an Aggie, I have neither
+  given nor received any unauthorized aid on any portion of the
+  academic work included in this assignment. Furthermore, I have
+  disclosed all resources (people, books, web sites, etc.) that have
+  been used to prepare this homework. \\[1ex]
+ \textbf{Signature:} \underline{\hspace*{5cm}} }
+
+ 
+\newcommand{\checklist}{\noindent\textbf{Checklist:}
+\begin{compactitem}[$\Box$] 
+\item Did you add your name? 
+\item Did you disclose all resources that you have used? \\
+(This includes all people, books, websites, etc. that you have consulted)
+\item Did you sign that you followed the Aggie honor code? 
+\item Did you solve all problems? 
+\item Did you submit the pdf file of your homework?
+\item Did you submit (b) a hardcopy of the pdf file in class? 
+\end{compactitem}
+}
+
+\newcommand{\problemset}[1]{\begin{center}\textbf{Problem Set #1}\end{center}}
+\newcommand{\duedate}[2]{\begin{quote}\textbf{Due dates:} Electronic submission of .pdf files of this homework is due on \textbf{#1} on ecampus, a signed paper copy
+    of the pdf file is due on \textbf{#2} at the beginning of
+    class. \end{quote} }
+
+\newcommand{\N}{\mathbf{N}}
+\newcommand{\R}{\mathbf{R}}
+\newcommand{\Z}{\mathbf{Z}}
+
+
+\begin{document}
+\problemset{2}
+\duedate{2/3/2017 before 10:00am}{2/3/2017}
+\name{Jonathan Janzen}
+\begin{resources} Textbook, lecture slides, talking to classmates
+\end{resources}
+\honor
+
+\newpage
+
+
+\begin{problem}[15 points]
+Consider the following code to find the second largest element: 
+\begin{verbatim}
+largest := numbers[0];
+secondLargest := null
+for i=1 to numbers.length-1 do
+    number := numbers[i];
+    if number > largest then
+        secondLargest := largest;
+        largest := number;
+    else
+        if number > secondLargest then
+            secondLargest := number;
+        end;
+    end;
+end;
+\end{verbatim}
+This code was provided by someone in response to a question on
+stackoverflow. (a) How many comparisons does this code make, assuming
+that \verb|numbers| contains $n$ elements. (b) Give a small example
+which shows that this is not optimal.
+\end{problem}
+\begin{solution}
+(a) In the worst case scenario, the first comparison will always be false and the second comparison is always executed. This results in $T(n) = 2(n-1)$ comparisons in the worst case and $T(n) = n-1$ comparisons in the best case. The $-1$ part deriving from the fact that the first element is skipped as its the initial max value. It could therefore be said that the running time $f(n)$ of the algorithm is bounded by $T(n) = n-1$ like so: $1*T(n) \leq f(n) \leq 2*T(n)$ which is the definition for Big Theta: $\therefore T(n) \in \Theta(n)$\\
+(b) An example worst-case data set is the following
+$$ [10,1,2,3,4,5,6,7,8,9] $$
+where the algorithm will use 2 comparisons for each iteration, resulting in $2*9 = 18$ comparisons. Solving backwards verifys the correct value for $n$:\\
+$$2*(n-1) = 18$$
+$$n-1 = 9$$
+$$n = 10$$
+\end{solution}
+
+\begin{problem}[15 points]
+Describe an algorithm in pseudocode that finds the 2nd largest element
+in the least possible number of steps. Explain why your algorithm is
+correct and why it finds the 2nd largest element in the least possible
+number of steps. 
+\end{problem}
+\begin{solution}
+Psuedo-code definition:\\
+\begin{verbatim}
+function buildTree(vals):
+    if length(vals) > 1:
+        left = buildTree(1st half of vals) // including the midpoint
+        right = buildTree(2nd half of vals) // excluding the midpoint
+        if left[0] > right[0]:
+            return (left, right) // return a tuple of the form (winner, loser[])
+        else:
+            return (right, left)
+    else:
+        // Unwrap the singleton list, there is no loser
+        return (vals[0], [])
+        
+function secondLargest(vals):
+    tupleTree = buildTree(vals)
+    largest = null
+    curentNode = tuppleTree
+    while currentNode[1] != null:
+        if currentNode[0] > largest:
+            largest = currentNode[0]
+        currentNode = currentNode[1]
+    return largest
+\end{verbatim}
+The function $buildTree$ builds a tournament tree in $n-1$ comparisons and then the function $secondLargest$ compares all the direct losers to the max in $\lceil log(n) \rceil - 1$ comparisons. Overall the psuedo-code matches the known lower bound of $n-1 + \lceil log(n) \rceil - 1$.
+\end{solution}
+
+\begin{problem} (20 points)
+Give a $(2n-1)$ lower bound on the number of comparisons needed to
+merge two sorted lists $(a_1,a_2,\ldots,a_n)$ and $(b_1,b_2,\ldots,
+b_n)$ with $a_1<a_2<\cdots <a_n$ and $b_1<b_2<\cdots <b_n$. 
+[Hint: Use an adversarial method. Why can't you have in general $2n-2$ or fewer 
+comparisons?] 
+\end{problem}
+\begin{solution}
+
+\end{solution}
+
+\begin{problem}(15 points) 
+Solve Exercise 8.1-4 on page 194 of our textbook. 
+\end{problem}
+\begin{solution}
+\end{solution}
+
+\begin{problem} (15 points) Consider the task of searching a sorted
+  array \verb|a[1..n]| for a given element $w$. Show that any
+  algorithm that accesses the array only via Perl-style three-way
+  comparisons using the $<=>$ operator (where $a <=> b$ determines
+  whether $a<b$, $a=b$, or $a>b$), must take $\Omega(\log n)$ steps.
+\end{problem}
+\begin{solution}
+\end{solution}
+
+\begin{problem}(20 points)
+ Suppose that you are given a sorted list $L$ of $n$ distinct
+elements
+$$ x_1 < x_2 < \cdots < x_n.$$ 
+You want to search the list for an element $y$ and return $\bot$ if
+$y$ is not an element of $L$, and otherwise return the index $i$ if
+$y=x_i$. You can only access the list using a search procedure 
+\verb|search(i,j,k,y)| that returns one of the following answers: 
+\begin{inparaenum}[(i)]
+\item $y<x_i$,
+\item $y=x_i$,
+\item $x_i<y<x_j$,
+\item $y=x_j$,
+\item $x_j<y<x_k$,
+\item $y=x_k$,
+\item $y>x_k$.
+\end{inparaenum}
+Here it is assumed that \verb|i<j<k|. 
+Use a decision tree to prove a lower bound on the number of calls to
+$\verb|search|$ that are required to correctly solve the problem. 
+
+
+\end{problem}
+
+
+
+
+
+
+
+
+
+
+\medskip
+
+
+
+\goodbreak
+\checklist
+\end{document}

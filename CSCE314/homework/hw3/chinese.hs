@@ -1,3 +1,4 @@
+crt :: [(Integer, Integer)] -> (Integer, Integer)
 crt ls = (collapse (expand ls max) !! 0, max)
        where max = maxval ls
 

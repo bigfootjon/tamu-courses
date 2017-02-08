@@ -1,17 +1,11 @@
 //CSCE 312: Lab-1 Problem-5 framework
 // This is version-2; bugfix for timediff
 /* ***   README   **** */
-/*This file is a framework: i.e. there is no actual code whose execution time will be
-measured. You need to populate the appropriate functions with the code that you wrote 
-for the previous problems in order to get useful data. 
+/*
 
-Turning in this file without your code will result in zero points being awarded for this problem.
-
-run this file as: gcc FileName.c -o ExecutableName -lrt 
+ run this file as: gcc FileName.c -o ExecutableName -lrt 
 
 */
-
-
 
 
 #include <stdio.h>
@@ -21,37 +15,80 @@ run this file as: gcc FileName.c -o ExecutableName -lrt
 
 #if defined(sun)
     #define CLOCKNAME CLOCK_HIGHRES
-        
 #else
     #define CLOCKNAME CLOCK_PROCESS_CPUTIME_ID
 #endif
 
+int sensor_inputs;
+
+enum input_offset {
+	DOS,DSBF,ER,DC,KIC,DLC,BP,CM
+};
+
+int actuator_outputs;
+
+enum output_offset {
+	BELL,DLA,BA
+};
+
+enum bitmask {
+	req123_filter =  14,
+	req123_check  =   4,
+	req4p1        =  33,
+	req4p2_filter =  49,
+	req4p2_check  =  32,
+	req5_filter   = 192,
+	req5_check    = 102,
+};
+
+void set_input_bit(enum input_offset shift) {
+	int temp;
+	scanf("%u", &temp);
+	sensor_inputs |= (temp & 1) << shift;
+}
+
+void set_output_bit(enum output_offset shift, unsigned int value) {
+	actuator_outputs |= (value & 1) << shift;
+}
+
+unsigned int get_output_bit(enum output_offset shift) {
+	return (actuator_outputs >> shift) & 1;
+}
 
 //The code segment which implements the decision logic
 inline void control_action(){
-
-// Put your control/decision logic code segments inside this function
-// This is the actual code whose execution time which is being measure
-	
-
-
+	actuator_outputs = 0;
+	// Else branches are implied because output is recet every cycle;
+	// combined requirements 1,2,3:
+	if ((sensor_inputs & req123_filter) == req123_check) set_output_bit(BELL, 1); // 14 means that bits representing 2,4,8 are set
+	// requirement 4
+	if ((sensor_inputs & req4p1) == req4p1) set_output_bit(DLA, 1); // 33 means bits representing 1,32 are set
+	if ((sensor_inputs & req4p2_filter) == req4p2_check) set_output_bit(DLA, 1); // 49 means bits representing 1,16,32 are set
+	// requirement 5
+	if ((sensor_inputs & req5_filter) == req5_check) set_output_bit(BA, 1); // 192 means bits representing 64,128 are set
 }
 
 
 inline void read_inputs_from_ip_if(){
-
-	//place your input code here
-	//to read the current state of the available sensors
-	
-
+	printf("-- INPUT --\n");
+	sensor_inputs = 0; // reset input;
+	printf("DOS  = "); set_input_bit(DOS);
+	printf("DSBF = "); set_input_bit(DSBF);
+	printf("ER   = "); set_input_bit(ER);
+	printf("DC   = "); set_input_bit(DC);
+	printf("KIC  = "); set_input_bit(KIC);
+	printf("DLC  = "); set_input_bit(DLC);
+	printf("BP   = "); set_input_bit(BP);
+	printf("CM   = "); set_input_bit(CM);
+	printf("ALL:%u\n", sensor_inputs);
 }
 
 inline void write_output_to_op_if(){
-
-	//place your output code here
-    //to display/print the state of the 3 actuators (DLA/BELL/BA)
-	
-
+	printf("-- OUTPUT --\n");
+	printf("ALL:%u\n", actuator_outputs);
+	printf("BELL = %u\n", get_output_bit(BELL));
+	printf("DLA  = %u\n", get_output_bit(DLA));
+	printf("BA   = %u\n", get_output_bit(BA));
 }
 
 

@@ -80,12 +80,10 @@ inline void read_inputs_from_ip_if(){
 	printf("DLC  = "); set_input_bit(DLC);
 	printf("BP   = "); set_input_bit(BP);
 	printf("CM   = "); set_input_bit(CM);
-	printf("ALL:%u\n", sensor_inputs);
 }
 
 inline void write_output_to_op_if(){
 	printf("-- OUTPUT --\n");
-	printf("ALL:%u\n", actuator_outputs);
 	printf("BELL = %u\n", get_output_bit(BELL));
 	printf("DLA  = %u\n", get_output_bit(DLA));
 	printf("BA   = %u\n", get_output_bit(BA));

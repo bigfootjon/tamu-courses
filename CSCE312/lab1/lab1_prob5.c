@@ -55,21 +55,7 @@ unsigned int get_output_bit(enum output_offset shift) {
 	return (actuator_outputs >> shift) & 1;
 }
 
-//The code segment which implements the decision logic
-inline void control_action(){
-	actuator_outputs = 0;
-	// Else branches are implied because output is recet every cycle;
-	// combined requirements 1,2,3:
-	if ((sensor_inputs & req123_filter) == req123_check) set_output_bit(BELL, 1); // 14 means that bits representing 2,4,8 are set
-	// requirement 4
-	if ((sensor_inputs & req4p1) == req4p1) set_output_bit(DLA, 1); // 33 means bits representing 1,32 are set
-	if ((sensor_inputs & req4p2_filter) == req4p2_check) set_output_bit(DLA, 1); // 49 means bits representing 1,16,32 are set
-	// requirement 5
-	if ((sensor_inputs & req5_filter) == req5_check) set_output_bit(BA, 1); // 192 means bits representing 64,128 are set
-}
-
-
-inline void read_inputs_from_ip_if(){
+void read_inputs_from_ip_if(){
 	printf("-- INPUT --\n");
 	sensor_inputs = 0; // reset input;
 	printf("DOS  = "); set_input_bit(DOS);
@@ -82,7 +68,7 @@ inline void read_inputs_from_ip_if(){
 	printf("CM   = "); set_input_bit(CM);
 }
 
-inline void write_output_to_op_if(){
+void write_output_to_op_if() {
 	printf("-- OUTPUT --\n");
 	printf("BELL = %u\n", get_output_bit(BELL));
 	printf("DLA  = %u\n", get_output_bit(DLA));
@@ -90,52 +76,63 @@ inline void write_output_to_op_if(){
 }
 
 
+//The code segment which implements the decision logic
+void control_action() {
+	actuator_outputs = 0;
+	// Else branches are implied because output is recet every cycle;
+	// combined requirements 1,2,3:
+	if ((sensor_inputs & req123_filter) == req123_check) set_output_bit(BELL, 1); // 14 means that bits representing 2,4,8 are set
+	// requirement 4
+	if ((sensor_inputs & req4p1) == req4p1) set_output_bit(DLA, 1); // 33 means bits representing 1,32 are set
+	if ((sensor_inputs & req4p2_filter) == req4p2_check) set_output_bit(DLA, 1); // 49 means bits representing 1,16,32 are set
+	// requirement 5
+	if ((sensor_inputs & req5_filter) == req5_check) set_output_bit(BA, 1); // 192 means bits representing 64,128 are set
+}
+
 /* ---     You should not have to modify anything below this line ---------*/
 
 /*timespec diff from
 http://www.guyrutenberg.com/2007/09/22/profiling-code-using-clock_gettime/
 */
-struct timespec diff(struct timespec start, struct timespec end)
- {
-    struct timespec temp;
-    //the if condition handles time stamp end being smaller than than 
-    //time stamp start which could lead to negative time.
+struct timespec diff(struct timespec start, struct timespec end) {
+	struct timespec temp;
+	//the if condition handles time stamp end being smaller than than 
+	//time stamp start which could lead to negative time.
+	
+	if ((end.tv_nsec-start.tv_nsec)<0) {
+		temp.tv_sec = end.tv_sec-start.tv_sec-1;
+		temp.tv_nsec = 1000000000+end.tv_nsec-start.tv_nsec;
+	} else {
+		temp.tv_sec = end.tv_sec-start.tv_sec;
+		temp.tv_nsec = end.tv_nsec-start.tv_nsec;
+	}
+	return temp;
+}
 
-     if ((end.tv_nsec-start.tv_nsec)<0) {
-          temp.tv_sec = end.tv_sec-start.tv_sec-1;
-          temp.tv_nsec = 1000000000+end.tv_nsec-start.tv_nsec;
-      } else {
-          temp.tv_sec = end.tv_sec-start.tv_sec;
-          temp.tv_nsec = end.tv_nsec-start.tv_nsec;
-      }
-  return temp;
- }
-
-int main(int argc, char *argv[])
-{
+int main(int argc, char *argv[]) {
 	unsigned int cpu_mhz;
 	unsigned long long int begin_time, end_time;
 	struct timespec timeDiff,timeres;
-    struct timespec time1, time2, calibrationTime;
+	struct timespec time1, time2, calibrationTime;
 	
-    clock_gettime(CLOCKNAME, &time1);
+	clock_gettime(CLOCKNAME, &time1);
 	clock_gettime(CLOCKNAME, &time2);
 	calibrationTime = diff(time1,time2); //calibration for overhead of the function calls
-    clock_getres(CLOCKNAME, &timeres);  // get the clock resolution data
+	clock_getres(CLOCKNAME, &timeres);  // get the clock resolution data
 	
-    read_inputs_from_ip_if(); // get the sensor inputs
+	read_inputs_from_ip_if(); // get the sensor inputs
 	
 	clock_gettime(CLOCKNAME, &time1); // get current time
 	control_action();                 // process the sensors
 	clock_gettime(CLOCKNAME, &time2);   // get current time
-
+	
 	write_output_to_op_if();    // output the values of the actuators
 	
 	timeDiff = diff(time1,time2); // compute the time difference
-
+	
 	printf("Timer Resolution = %u nanoseconds \n ",timeres.tv_nsec);
 	printf("Calibrartion time = %u seconds and %u nanoseconds \n ", calibrationTime.tv_sec, calibrationTime.tv_nsec);
-    printf("The measured code took %u seconds and ", timeDiff.tv_sec - calibrationTime.tv_sec);
+	printf("The measured code took %u seconds and ", timeDiff.tv_sec - calibrationTime.tv_sec);
 	printf(" %u nano seconds to run \n", timeDiff.tv_nsec - calibrationTime.tv_nsec);
 	
 	return 0;

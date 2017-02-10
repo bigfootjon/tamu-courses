@@ -27,8 +27,6 @@
 \end{compactitem}
 }
 
-
-
 \newcommand{\problemset}[1]{\begin{center}\textbf{Problem Set
       #1}\end{center}}
 \newcommand{\duedate}[2]{\begin{quote}\textbf{Due dates:} Electronic
@@ -44,9 +42,9 @@
 \begin{document}
 \problemset{3}
 \duedate{2/10/2017 before 10:00am}{2/10/2017}
-\name{ (put your name here)}
-\begin{resources} (All people, books, articles, web pages, etc. that
-  have been consulted when producing your answers to this homework)
+\name{Jonathan Janzen}
+\begin{resources}
+Textbook, Lectures/slides, talking to classmates.
 \end{resources}
 \honor
 
@@ -63,7 +61,16 @@ Read chapters 4 and 30 in our textbook.
 \item (10 points) Exercise 30.2-1 on page 914 in our textbook. 
 \end{compactenum}
 \end{problem}
+
 \begin{solution}
+\begin{compactenum}[(a)]
+\item With $n-1$ point-value pairs, we can construct a unique polynomial with a degree of $n-1$. By some arbitrary point into it, it will then contain $n$ point-value pairs and the degree will increment to be $n$. There is no way to have $n-1$ points define a a polynomial with degree $n$ because $n-1$ points would define a polynomial with degree $n-1$.
+\item The formula defined by (30.5) can be rewritten as:
+$$A(x)=\Sigma_{k=0}^{n-1} y_k \Pi_{j \neq k} \frac{x-x_j}{x_k-x_j}$$
+This formula will execute the inner loop for each $x$ and execute the outer loop for each $x$ therefore the total execution time will be $O(n^2)$
+\item The Corollary $\omega_n^{n/2} = w_2 = -1$ can be proved by:
+$$ \omega_n^{n/2} = (e^{2\pi i / n})^{n/2} = e^{\pi i } = -1$$
+\end{compactenum}
 \end{solution}
 
 \begin{problem} 
@@ -97,6 +104,20 @@ $1/n$.
 \end{compactenum}
 \end{problem}
 \begin{solution}
+\begin{compactenum}[(a)]
+\item The output will be a series of y-values matching the inputs for the positive and negative roots of unity:
+$$(A(\omega^0),A(\omega^1),...,A(\omega^{n/2}),A(-\omega^0),A(-\omega^1),...,A(-\omega^{n/2}))$$
+\item Since we know that the Fast Fourier Transform performs the same operation as $F$ and we know that the IFFT operation is the same as FFT except that we provide negative $\omega$ values and divide the equation by $n$ it is safe to assume that $F^{-1}$ will need the same modifications as IFFT which leads to the definition: $F^{-1} = \frac{1}{n}(w^{-jk})_{j,k \in [0..n-1]}$
+\item Apply FFT on $A(x)$ and $B(x)$ separately to get $\alpha(x)$ and $\beta(x)$ (respectively) which operates in $O(n\log n)$ for each function. Now that they're in point-value form we can multiply them in $O(n)$ time as $\alpha(x)\beta(x) = \gamma(x)$. We can now use IFFT to convert $\gamma(x)$ into the coefficient form $C(x)$ in $O(n\log n)$ time. Overall the problem takes $O(n \log n)$ time based on the following summation of all sub-steps:
+$$O(n \log n) + O(n \log n) + O(n) + O(n \log n) + O(n \log n) = O(n \log n)$$
+\item Let $n,m$ be long integers written in base 10. Each integer can be written as a sum of coefficients multiplied by 10 to a power matching its decimal place:
+$$n = n_0 * 10^0 + n_1 * 10^1 + ...$$
+We can then pretend that this is a polynomial by substituting $x$ in for $10$: 
+$$A(x) = n_0 * x^0 + n_1 * x^1 + ...$$
+Then we can let $n = A(10)$. The same process can be completed for $m$ resulting in: $m = B(10)$.
+We can apply the Fast-Fourier Transform method to $A(x),B(x)$ and then multiply them together to get a new polynomial $C(x)$. Then we can apply the inverse Fast-Fourier Transform to get the coefficient form of $C(x)$ and we can evaluate $C$ at $x=10$ to get the value of the multiplication of $n$ and $m$.
+\item The problem with this method is that it doesn't handle carrying correctly. Using the naming conventions from the previous example, $C(x)$ may have coefficients that are greater than 9, which means that when evaluating the polynomial at 10 to get an answer it will result in an invalid answer.
+\end{compactenum}
 \end{solution}
 
 \begin{problem} (20 points) You overhear a conversation where someone
@@ -108,9 +129,9 @@ $1/n$.
   and under what circumstances the MIT algorithm can improve on the
   FFT.
 \end{problem}
-
-
-
+\begin{solution}
+The MIT makes improvements on Sparse Fast Fourier Transform (i.e. when coefficients are small or near to zero). The Morgenstern proof refers to the lower bound using linear algorithms. The problems are separate.
+\end{solution}
 
 Discussions on ecampus are always encouraged, especially to clarify
 concepts that were introduced in the lecture. However, discussions of

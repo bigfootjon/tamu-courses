@@ -24,5 +24,22 @@ setProd (x:xs) ls = helper x ls ++ setProd xs ls
                   where helper _ [] = []
                         helper x (l:ls) = (x, l) : helper x ls
 
+bits 0 = []
+bits i = i `mod` 2 : bits (i `quot` 2)
+
+bitIndexes bs = helper $ reverse bs
+              where helper [] = []
+                    helper (b:bs) = if b == 1 then length bs : helper bs else helper bs
+
+punch i xs = helper xs
+           where helper [] = []
+                 helper (x:xs) = if isElement (length xs) bis then x : helper xs else helper xs
+                 bis = bitIndexes $ bits i 
+
+punch' i xs = punch (2^(length xs) - 1 - i) xs
+
 partitionSet :: Eq t => Set t -> Set (Set (Set t))
-partitionSet ls = [[ls]]
+partitionSet xs = [xs] : [punch i xs : punch' i xs : [] | i <- [1..(2^(length xs)-2)]]
+
+bellNum :: Int -> Int
+bellNum x = length $ partitionSet [1..x]

@@ -37,3 +37,7 @@ instance (Show a) => Show (OwnList a) where -- restricts showing this to when a 
 ol1 = Cons 56 (Cons 4 (Cons 9 Nil))
 
 -- See Dr. Shell notes for a more complex example of a List thingy
+
+instance Flippable Bool where
+    flp True = False
+    flp False = True

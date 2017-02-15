@@ -14,9 +14,6 @@ waterGate n = sum [value g | g <- dailyGrind n n]
 
 dailyGrind :: Int -> Int -> [Gate]
 dailyGrind n d | d == 0    = initialState n
-               | d == 1    = [Open | g <- dailyGrind n (d-1)]
-               | d == 2    = [if i `mod` 2 == 0 then Closed else g   | (g,i) <- zip (dailyGrind n (d - 1)) [1..]]
-               | d == n    = [if i == n         then switch g else g | (g,i) <- zip (dailyGrind n (d - 1)) [1..]] 
                | otherwise = [if i `mod` d == 0 then switch g else g | (g,i) <- zip (dailyGrind n (d - 1)) [1..]]
 
 initialState :: Int -> [Gate]

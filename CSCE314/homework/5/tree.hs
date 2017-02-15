@@ -1,3 +1,5 @@
+import Debug.Trace
+
 data Tree a b = Branch b (Tree a b) (Tree a b)
               | Leaf a
 
@@ -20,10 +22,16 @@ postorder fa fb (Branch b tl tr) = postorder fa fb tl ++ postorder fa fb tr ++ [
 postorder fa fb (Leaf a) = [fa a]
 
 measureWater :: Int -> Int -> Int -> Bool
-measureWater jug1 jug2 target = helper jug1 jug2 target || helper jug2 jug1 target
-    where helper j1 j2 t = or [fst jt == t || snd jt == t | ]
-                         where fill ja1 _ (_, j2) = (ja1, j2)
-                               empty _ _ (_, j2) = (0, j2)
-                               transfer _ ja2 (j1, j2) = (j1 - diff, j2 + diff)
+measureWater jug1 jug2 target = helper jug1 jug2 target (0, 0) || helper jug2 jug1 target (0, 0)
+    where helper j1 j2 t (cl, cr) = c jt_fill || c jt_tran || c jt_emty || c jt_trn2 || if cl == fst jt_trn2 && cr == snd jt_trn2 then False else helper j1 j2 t jt_trn2
+                         where c jt = fst jt == t || snd jt == t
+                               jt_trn2 = transfer j1 j2 jt_emty
+                               jt_emty = emptyr j1 j2 jt_tran
+                               jt_tran = transfer j1 j2 jt_fill
+                               jt_fill = fill j1 j2 (cl, cr)
+                               fill ja1 ja2 (j1, j2) = (ja1, j2)
+                               emptyl ja1 ja2 (j1, j2) = (0, j2)
+                               emptyr ja1 ja2 (j1, j2) = (j1, 0)
+                               transfer ja1 ja2 (j1, j2) = (j1 - diff, j2 + diff)
                                                        where canAdd = (ja2 - j2)
-                                                             diff = if j1 - canAdd > 0 then canAdd else 0
+                                                             diff = if (j1 - canAdd) > 0 then canAdd else j1

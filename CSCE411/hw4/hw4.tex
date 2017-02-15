@@ -2,7 +2,7 @@
 \usepackage{amsmath,amssymb,amsthm,latexsym,paralist}
 
 \theoremstyle{definition}
-\newtheorem{problem}{P}
+\newtheorem{problem}{Problem}
 \newtheorem*{solution}{Solution}
 \newtheorem*{resources}{Resources}
 
@@ -42,9 +42,8 @@
 \begin{document}
 \problemset{4}
 \duedate{2/17/2017 before 10:00am}{2/17/2017}
-\name{ (put your name here)}
-\begin{resources} (All people, books, articles, web pages, etc. that
-  have been consulted when producing your answers to this homework)
+\name{Jonathan Janzen}
+\begin{resources} Textbook, Lectures/Lecture slides, talking to classmates
 \end{resources}
 \honor
 
@@ -52,13 +51,13 @@
 \noindent Make sure that you describe all solutions in your own words. Read Chapter 16.4 and skim rest of the chapter. \medskip
 
 
-\noindent\textbf{Problem 1. }
 \begin{problem} (15 points)
 Suppose that a country adopts coins of values 1, 10, and 21. Does the
 greedy algorithm to give change always give the fewest number of
 coins?  Prove it or give the smallest counter example. 
 \end{problem}
 \begin{solution}
+Smallest counter example is $30$, which is because a greedy algorithm will select (in order) a 21 coin then nine 1 coins while the optimal solution is three 10 coins.
 \end{solution}
 
 \begin{problem} (15 points)
@@ -88,6 +87,7 @@ $$ w(\{1,2\})=1, w(\{2,3\})=5, w(\{3,4\})=6, w(\{4,1\})=2, w(\{2,4\})=4.$$
 In which order will Kruskal's algorithm pick the edges? 
 \end{problem}
 \begin{solution}
+Kruskal's algorithm will select edges from least weight to most weight, skipping any edges that create loops and stopping when the graph is connected: $\{1,2\},\{4,1\},\{2,3\}$ (skipping $\{2,4\}$, and stopping before $\{3,4\}$)
 \end{solution}
 
 \begin{problem}(20 points) The specification of a matroid $M=(S,F)$ as
@@ -111,6 +111,13 @@ In which order will Kruskal's algorithm pick the edges?
 \end{compactenum}
 \end{problem}
 \begin{solution}
+\begin{compactenum}[(a)]
+\item $\mathcal{B}$ cannot be empty because it must have at least one base because the definition of a matroid states that $F$ cannot be empty.
+\item If the sets in $\mathcal{B}$ are \textit{maximal} sets in $F$, meaning that they all have the largest cardinality yet are still subsets of $S$. If they all have the largest cardinality that still qualifies, then they must all have the same cardinality.
+\item This condition can be expressed as removing an element from $B_1$ that is not in $B_2$ and adding an element that is in $B_2$ but not in $B_1$. This method takes a basis in $\mathcal{B}$ and removes its status as a basis (effectively adding it to $F$) and then adds a different element to restore its status as a basis (removing it from $F$).
+\item Since the bases are maximal, the removal of elements will reproduce sets in $F$. Iterating over all the bases will provide a full family of sets that form $F$.
+\item By using (d), we can transform $(S, \mathcal{B})$ into a matroid $(S, F)$
+\end{compactenum}
 \end{solution}
 
 

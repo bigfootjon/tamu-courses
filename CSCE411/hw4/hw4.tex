@@ -74,9 +74,10 @@ satisfy $0< r < c_2 - q$. \\{}
 smallest counterexample $x$ is in the range $c_3+1 < x < c_2+c_3$.
 Show that the smallest counterexample $x$ uses just coins of value
 $c_2$ in the optimal solution, and only coins of value $1$ and $c_3$
-in the greedy solution. ]
+in the greedy solution.]
 \end{problem}
 \begin{solution}
+In this notation, $q$ and $r$ represent the number of $c_2$ and $1$ coins (respectively) needed to replace a $c_3$ coin. In order for a system to be non-canonical $c_3$ and $c_2$ must not be co-prime (i.e. $r$ must not be 0). If $c_2,c_3$ are co-prime, that would mean that some amount $q$ of $c_2$ could replace $c_3$, but that any inclusion of a $c_3$ coin in the solution would restrict the possibility of including a $c_2$ coin later on. Therefore, in order for the set of coins to be non-canonical, there must be a restriction that $r \neq 0$, since we know that $r$ is always greater than zero, this can be rewritten as $0 < r$. In addition, by the definition of quotient and remainder we know that $r < c_2$ due to the fact that if the remainder is greater than the quotient we can increment $q$ by one and subtract $r$ by $c_2$ repeatedly until $r < c_2$ holds. These two inequalities can be merged into $0 < r < c_2$. However, we need to add the further constraint $q+r < c_2$ to verify that the number of replacement coins does not exceed the value of $c_2$, this restraint can be rewritten as $r < c_2 - q$, which can be grafted onto our main inequality to form the final constraint to verify non-canonical form: $0 < r < c_2 - q$.
 \end{solution}
 
 \begin{problem} (10 points)
@@ -125,6 +126,8 @@ Kruskal's algorithm will select edges from least weight to most weight, skipping
 Exercise 16.4-4 on page 443 in our textbook. 
 \end{problem}
 \begin{solution}
+M1) The family $I$ can be considered to be hereditary because it is has a maximum cardinality of $k$, but the condition states that \textit{at most} 1 element can be selected from each partition. In other words, some subset A can have less than $k$ elements. Therefore, given some $B \in I$, we can take some subset $C \subseteq B$ where we remove some elements (but make sure the cardinality is greater than 0). This set $C$ is in $I$ because it just means that we are still below the bound of $| C | < k$ (we only removed values so it is not possible to go above $k$.)\\
+M2) Using the definitions for $B,C$ in the previous part of this problem, we let $x \in B \setminus C$ and append this $x$ to $C$. $x$ in this case can only be an element from a set partition that has no sibling element in $C$ (in other words, we must maintain the condition $| A \cap S_i | \leq 1$ for all $i = 1..k$). The augmented set $C \cup {x}$ will still be in $I$ given the condition laid out in the previous sentence.
 \end{solution}
 
 \begin{problem}(20 points)
@@ -132,15 +135,18 @@ Exercise 16.4-4 on page 443 in our textbook.
   satisfies the hereditary axiom. Show that if $(S,F)$ is \textbf{not}
   a matroid, that is, does not satisfy the exchange axiom, then there
   exists a weight function $w\colon S \rightarrow \mathbf{R_{\ge 0}}$
-  such that Greedy($(S,F)$, $s$) does not return a maximum weight
+  such that Greedy($(S,F)$, $w$) does not return a maximum weight
   basis of $F$, (a basis is a set in $F$ that is not contained in any
   larger set in $F$). [Hint: Consider two subsets $A$ and $B$ such
   that $|A|<|B|$ but such that there does not exist any $x\in
   B\setminus A$ satisfying $A\cup \{x\}$ in $F$. Assume that $A$ has
   $m$ elements and construct a weight $w$ such that the algorithm will
-  return a set that has weight $w(A)$ even though $w(A)<w(B)$. ]
+  return a set that has weight $w(A)$ even though $w(A)<w(B)$.]
 \end{problem}
 \begin{solution}
+Using the definition of the Greedy algorithm on page 440 of the textbook, we can see that it depends on the exchange property on line 4: 
+$$\textbf{if} A \cup {x} \in M.I$$
+Since this example is not a matroid, and does not satisfy the exchange property, then it will not correctly select values of $x$ to use in the correct solution given a weight function that exploits the fact that elements that should be selected for inclusion in the solution.
 \end{solution}
 
 

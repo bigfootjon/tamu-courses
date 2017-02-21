@@ -59,7 +59,7 @@ void write_output_to_op_if() {
 }
 
 //The code segment which implements the decision logic
-inline void control_action(){
+void control_action(){
 
 	//Requirement 1, 2, 3, 4, 5
 	switch (input & 0xff)

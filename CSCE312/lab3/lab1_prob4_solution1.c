@@ -60,7 +60,7 @@ void write_output_to_op_if() {
 
 
 //The code segment which implements the decision logic
-inline void control_action(){
+void control_action(){
 
 	//Reset output
 	output = 0;

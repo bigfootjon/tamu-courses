@@ -53,6 +53,21 @@ Textbook, lectures, lecture slides, talking to classmates
 Solve Exercise 15.2-1 on page 378, but replace 12 by 4 in the input. 
 \end{problem}
 \begin{solution}
+Here is my table for $s$:\\
+\begin{tabular}{| c | c c c c c c |}
+\hline
+ & 0 & 1 & 2 & 3 & 4 & 5\\
+ \hline
+0 & 0 & 150 & 210 & 310 & 1560 & 2172\\
+1 &  & 0 & 120 & 210 & 2310 & 1872\\
+2 &  &  & 0 & 60 & 810 & 1692\\
+3 &  &  &  & 0 & 1000 & 1620\\
+4 &  &  &  &  & 0 & 1500\\
+5 &  &  &  &  &  & 0\\
+\hline
+\end{tabular}\\
+Using this and the $m$ table we calculate that the optimal parenthesization is:
+$$(A_1(A_2(A_3(A_4A_5))))$$
 \end{solution}
 
 \begin{problem}[15 points]
@@ -60,6 +75,20 @@ Solve Exercise 15.2-5 on page 378. Use algorithm from the textbook as
 a reference. 
 \end{problem}
 \begin{solution}
+Using the diagonal matrix strategy, we need to utilize the cells left-down and right-down diagonally from the current cell. For the cell $m[i, j]$ we need to check cells in the following ranges: (let $k,p$ be the indices of cells that make the inequality hold)\\
+$$\text{if } k=i \text{ then } j < p \leq n$$
+$$\text{if } p=j \text{ then } 1 \leq k < i$$
+This results in the following ranges $n-j$ and $k-1$, which can be combined into the final function: $R(i,j) = (n-j) + (k-1)$. We can then use this information to compute the result of the summation:
+$$ \Sigma_{i=0}^n \Sigma_{j=i}^n (n - j + k - 1) $$
+$$ \Sigma_{i=0}^n ((n-i+1)n - \frac{(n-i+1)(n-i+2)}{2}) $$
+$$ \Sigma_{i=0}^n (\frac{2n^2-2in+2n}{2} - \frac{i^2-2in-3i+n^2+3n+2}{2}) $$
+$$ \Sigma_{i=0}^n \frac{-i^2+3i+n^2-n-2}{2} $$
+$$ \frac{1}{2} \Sigma_{i=0}^n -i^2+3i+n^2-n-2 $$
+$$ \frac{1}{2} (-\frac{2n^3+3n^2+n}{6}+3\frac{n^2 + n}{2}+n^3-n^2-2n) $$
+$$ \frac{1}{2} (-\frac{2n^3+3n^2+n}{6}+\frac{9n^2 + 9n}{6}+\frac{6n^3-6n^2-12n}{6}) $$
+$$ \frac{1}{2} (\frac{4n^3-4n}{6}) $$
+$$ \frac{n^3-n}{3} $$
+Thus, we have matched the original right-hand side of the equation.
 \end{solution}
 
 \begin{problem}[15 points]

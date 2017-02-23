@@ -1,5 +1,6 @@
 \documentclass{article}
 \usepackage{amsmath,amssymb,amsthm,latexsym,paralist}
+\usepackage[table]{xcolor}
 
 \theoremstyle{definition}
 \newtheorem{problem}{P}
@@ -78,12 +79,12 @@ a reference.
 Using the diagonal matrix strategy, we need to utilize the cells left-down and right-down diagonally from the current cell. For the cell $m[i, j]$ we need to check cells in the following ranges: (let $k,p$ be the indices of cells that make the inequality hold)\\
 $$\text{if } k=i \text{ then } j < p \leq n$$
 $$\text{if } p=j \text{ then } 1 \leq k < i$$
-This results in the following ranges $n-j$ and $k-1$, which can be combined into the final function: $R(i,j) = (n-j) + (k-1)$. We can then use this information to compute the result of the summation:
-$$ \Sigma_{i=0}^n \Sigma_{j=i}^n (n - j + k - 1) $$
-$$ \Sigma_{i=0}^n ((n-i+1)n - \frac{(n-i+1)(n-i+2)}{2}) $$
-$$ \Sigma_{i=0}^n (\frac{2n^2-2in+2n}{2} - \frac{i^2-2in-3i+n^2+3n+2}{2}) $$
-$$ \Sigma_{i=0}^n \frac{-i^2+3i+n^2-n-2}{2} $$
-$$ \frac{1}{2} \Sigma_{i=0}^n -i^2+3i+n^2-n-2 $$
+This results in the following ranges $n-j$ and $k-1$, which can be combined into the final function: $R(i,j) = (n-j) + (i-1)$. We can then use this information to compute the result of the summation:
+$$ \Sigma_{i=1}^n \Sigma_{j=i}^n (n - j + i - 1) $$
+$$ \Sigma_{i=1}^n ((n-i+1)n - \frac{(n-i+1)(n-i+2)}{2}) $$
+$$ \Sigma_{i=1}^n (\frac{2n^2-2in+2n}{2} - \frac{i^2-2in-3i+n^2+3n+2}{2}) $$
+$$ \Sigma_{i=1}^n \frac{-i^2+3i+n^2-n-2}{2} $$
+$$ \frac{1}{2} \Sigma_{i=1}^n -i^2+3i+n^2-n-2 $$
 $$ \frac{1}{2} (-\frac{2n^3+3n^2+n}{6}+3\frac{n^2 + n}{2}+n^3-n^2-2n) $$
 $$ \frac{1}{2} (-\frac{2n^3+3n^2+n}{6}+\frac{9n^2 + 9n}{6}+\frac{6n^3-6n^2-12n}{6}) $$
 $$ \frac{1}{2} (\frac{4n^3-4n}{6}) $$
@@ -94,20 +95,78 @@ Thus, we have matched the original right-hand side of the equation.
 \begin{problem}[15 points]
 Solve Exercise 15.4-1 on page 396. Show your work!
 \end{problem}
-\begin{solution}
+\begin{solution}Using the table method:\\
+\begin{tabular}{| c | c c c c c c c c |}
+\hline
+ & 1 & 0 & 0 & 1 & 0 & 1 & 0 & 1\\
+\hline
+0 & \cellcolor{yellow}$\leftarrow_0$ & $\nwarrow_1$ & $\nwarrow_1$ & $\leftarrow_1$ & $\nwarrow_1$ & $\leftarrow_1$ & $\nwarrow_1$ & $\leftarrow_1$ \\
+1 & \cellcolor{yellow}$\nwarrow_1$ & $\leftarrow_1$ & $\leftarrow_1$ & $\nwarrow_2$ & $\leftarrow_2$ & $\nwarrow_2$ & $\leftarrow_2$ & $\nwarrow_2$\\
+0 & $\uparrow_1$ & \cellcolor{yellow}$\nwarrow_2$ & $\nwarrow_2$ & $\leftarrow_2$ & $\nwarrow_3$ & $\leftarrow_3$ & $\nwarrow_3$ & $\leftarrow_3$\\
+1 & $\nwarrow_1$ & \cellcolor{yellow}$\uparrow_2$ & $\leftarrow_2$ & $\nwarrow_3$ & $\leftarrow_3$ & $\nwarrow_4$ & $\leftarrow_4$ & $\nwarrow_4$\\
+1 & $\nwarrow_1$ & \cellcolor{yellow}$\uparrow_2$ & $\leftarrow_2$ & $\nwarrow_3$ & $\leftarrow_3$ & $\nwarrow_4$ & $\leftarrow_4$ & $\nwarrow_5$\\
+0 & $\uparrow_1$ & $\nwarrow_2$ & \cellcolor{yellow}$\nwarrow_3$ & $\leftarrow_3$ & $\nwarrow_4$ & $\leftarrow_4$ & $\nwarrow_5$ & $\leftarrow_5$\\
+1 & $\nwarrow_1$ & $\uparrow_2$ & $\uparrow_3$ & \cellcolor{yellow}$\nwarrow_4$ & \cellcolor{yellow}$\leftarrow_4$ & $\nwarrow_5$ & $\leftarrow_5$ & $\nwarrow_6$\\
+1 & $\nwarrow_1$ & $\uparrow_2$ & $\uparrow_3$ & $\nwarrow_4$ & $\leftarrow_4$ & \cellcolor{yellow}$\nwarrow_5$ & $\leftarrow_5$ & $\nwarrow_6$\\
+0 & $\uparrow_1$ & $\nwarrow_2$ & $\nwarrow_3$ & $\uparrow_4$ & $\nwarrow_5$ & $\leftarrow_5$ & \cellcolor{yellow}$\nwarrow_6$ & \cellcolor{yellow}$\leftarrow_6$\\
+\hline
+ & 1 & 0 & 0 & 1 &  & 1 & 0 &\\
+\hline
+\end{tabular}\\
+Using the table method we can see that the longest subsequence is "100110"
 \end{solution}
 
 \begin{problem}[15 points]
 Solve Exercise 15.4-2 on page 396. 
 \end{problem}
-\begin{solution}
+\begin{solution}Trace LCS function:\\
+\begin{verbatim}
+def trace_lcs(c, x, y):
+    i = x.length()-1
+    j = y.length()-1
+    result = ""
+    while(i,j != 0):
+        if x[i] == y[j]:
+            result += x[i]
+            i = i - 1
+            j = j - 1
+        else:
+            if c[i-1,j] < c[i, j-1]:
+                j = j - 1
+            else:
+                i = i - 1
+    return result
+\end{verbatim}
 \end{solution}
 
 
 \begin{problem}[20 points]
 Solve Exercise 15.4-5 on page 397. 
 \end{problem}
-\begin{solution}
+\begin{solution} Here is the solution in psuedo-code: (or see the paragraph after for a textual explanation)\\
+\begin{verbatim}
+def mono_sub(x,y):
+    result = []
+    for i in 1..x.length():
+        q = []
+        x_sub = elements from i to the end of the sequence x
+        p = x_sub[0]
+        for j in x_sub:
+            if j >= p:
+                p = j
+                q.append(j)
+        if q.length() > result.length():
+            result = q
+    return result 
+\end{verbatim}
+
+Iterate over subsequences $s_0,s_1,...s_{n-1}$ where $s_k$ is defined as the subsequence starting at element $i$ and going to the end of the list.\\
+For each subsequence, iterate over each element and check if that element is greater than $p$ ($p$ is initially defined as the first element of the subsequence) if the element is greater, then append that element to a list $q$ and set $p$ to the current element. If it is not greater, then continue on to the next element. At the end of iterating over each element, if $q$ is bigger than the subsequence to return, set that list to $q$. If not, then go on to the next element.\\
+This will iterate $n$ times over $n-k$ elements (where $k$ is the starting index of each subsequence), thus:
+$$ n(n-k) \in O(n^2) $$
+$$ n^2-nk \in O(n^2) $$
+$$ n^2 \in O(n^2) $$
+Which confirms that this algorithm operates in $O(n^2)$ time.
 \end{solution}
 
 \begin{problem}[20 points]
@@ -123,6 +182,7 @@ length $\ge 2$ when $s[i]=s[j]$. Let $l[i,j]$ denote the length of a
 maximum length palindrom in $s[i,j]$. Relate $l[i,j]$ to subproblems. ] 
 \end{problem}
 \begin{solution}
+An optimal algorithm can be provided through an adaptation the LCS algorithm. By providing the LCS with the input as one sequence and the reverse of the input as the other sequence, it will produce the longest palindrome (also known as the longest common subsequence) in $O(n^2)$ time.
 \end{solution}
 
 

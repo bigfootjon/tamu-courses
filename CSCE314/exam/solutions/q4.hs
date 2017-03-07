@@ -19,6 +19,6 @@ sat p = \inp -> case inp of
 		(x:xs)	-> if (p x) then [(x,xs)] else []
 
 myParser = sat isAlpha >>= \l ->
-           sat (toUpper l ==) >>= \u ->
+           sat (toLower l ==) >>= \u ->
            return [l,u]
 

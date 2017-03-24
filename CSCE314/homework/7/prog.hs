@@ -1,7 +1,6 @@
 module Main where
 
 import Prelude hiding (lookup)
-import Debug.Trace
 import Test.HUnit
 import System.Exit
 

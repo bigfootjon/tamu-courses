@@ -111,3 +111,4 @@ exec (Block sts          ) mem = helper sts (marker:mem) >>= \mem' -> cleanup me
 exec (Print exp         ) mem = putStr (show (eval exp mem)) >> return mem
 
 wprogram :: Parser WStmt
+

@@ -1,0 +1,20 @@
+irmovl $0, %eax # i = 0
+irmovl $0, %ecx # j = 0
+# ...
+rrmovl %eax, %ebx # tmp = i
+subl %ecx, %ebx # tmp = tmp - j
+jg True # tmp > 0
+
+False:
+irmovl $0, %eax # i = 0
+irmovl $1, %edx # tmp = 1
+addl %edx, %ecx # j += tmp
+jmp End
+
+True:
+irmovl $5, %edx # tmp = 5
+addl %edx, %eax # i += tmp`
+jmp End
+
+End:
+halt

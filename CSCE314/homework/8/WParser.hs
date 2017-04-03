@@ -11,11 +11,7 @@ module WParser ( parse,
     -- This is the main parser --
     -----------------------------
     wprogram = whitespace >> many stmt >>= \ss -> return (Block ss)
-    -- a program is a sequence of statements; the parser returns them
-    -- as a single block-statement
 
-    -- only two of the statement types above are supported, the rest are undefined.
-    -- please implement them
     stmt = varDeclStmt +++ assignStmt +++ ifStmt +++ whileStmt +++ 
            blockStmt +++ emptyStmt +++ printStmt
 
@@ -48,12 +44,13 @@ module WParser ( parse,
       keyword "if" >>
       parens expr >>= \cnd ->
       stmt >>= \tst ->
-      keyword "else" >>
-      stmt >>= \fst ->
-      return (If cnd tst fst)
+      (keyword "else" >>
+       stmt >>= \fst ->
+       return (If cnd tst fst))
+      +++ return (If cnd tst Empty)
 
     whileStmt = 
-      keyword "while " >>
+      keyword "while" >>
       parens expr >>= \cnd ->
       stmt >>= \tst ->
       return (While cnd tst)
@@ -65,7 +62,11 @@ module WParser ( parse,
       return (Block m)
 
 
-    expr = (term >>= termSeq) +++ stringLiteral +++ boolLiteral +++ idLiteral
+    expr = notFirst +++ precedence 5 +++ literals
+
+    literals = intLiteral +++ boolLiteral +++ stringLiteral +++ idLiteral
+
+    intLiteral = nat >>= \i -> return (Val (VInt i))
 
     stringLiteral = char ('"') >>
                     many stringChar >>= \s ->
@@ -76,31 +77,49 @@ module WParser ( parse,
     stringChar = (char '\\' >> char 'n' >> return '\n') 
                  +++ sat (/= '"')
 
-    boolLiteral = (keyword "true" >> return (Val (VBool True)))
+    boolLiteral = (keyword "true"  >> return (Val (VBool True)))
               +++ (keyword "false" >> return (Val (VBool False)))
 
-    idLiteral = identifier >>= \i -> return (Var i)
+    idLiteral = identifier >>= \i -> if isKeyword i then failure else return (Var i)
 
-    term = factor >>= factorSeq 
+    genSeq k ops left = (foldr (+++) failure s_ops >>= \s ->
+                       precedence k >>= \right ->
+                       genSeq k ops ((toOp s) left right)
+                      ) +++ return left
+                    where s_ops = map (symbol) ops
 
-    termSeq left = ( (symbol "+" +++ symbol "-") >>= \s ->
-                     term >>= \right ->
-                     termSeq ((toOp s) left right)
-                   ) +++ return left
+    multSeq = genSeq 1 ["*","/"]
+    addSeq  = genSeq 2 ["+","-"]
+    compSeq = genSeq 3 ["==","!=","<",">","<=",">="]
+    binSeq  = genSeq 4 ["&&","||"]
 
-    factor = ( nat >>= \i ->
-               return (Val (VInt i))
-             ) +++ parens expr +++ (identifier >>= \i -> return $ Var i)
+    notFirst =
+            symbol "!" >>
+            (notFirst +++ litOrParens) >>= \right ->
+            return (Not right)
 
-    factorSeq left = ( (symbol "*" +++ symbol "/") >>= \s ->
-                       factor >>= \right ->
-                       factorSeq ((toOp s) left right)
-                     ) +++ return left
+    precedence 1 = litOrParens
+    precedence 2 = precedence 1 >>= multSeq
+    precedence 3 = precedence 2 >>= addSeq
+    precedence 4 = precedence 3 >>= compSeq
+    precedence 5 = precedence 4 >>= binSeq
 
-    toOp "+" = Plus
-    toOp "-" = Minus
-    toOp "*" = Multiplies
-    toOp "/" = Divides
+    litOrParens = literals +++ parens expr
+
+    toOp "+"  = Plus
+    toOp "-"  = Minus
+    toOp "*"  = Multiplies
+    toOp "/"  = Divides
+
+    toOp "==" = Equals
+    toOp "!=" = NotEqual
+    toOp "<"  = Less
+    toOp ">"  = Greater
+    toOp "<=" = LessOrEqual
+    toOp ">=" = GreaterOrEqual
+
+    toOp "&&" = And
+    toOp "||" = Or
 
     ----------------------
     -- Parser utilities --

@@ -39,6 +39,7 @@ module W ( WValue(..),
 
     data WStmt = Empty 
                | VarDecl String WExp
+               | FuncDecl String WStmt
                | Assign String WExp
                | If WExp WStmt WStmt
                | While WExp WStmt
@@ -73,8 +74,11 @@ module W ( WValue(..),
     eval (Plus e1 e2) m =
       let e1' = eval e1 m
           e2' = eval e2 m
-      in
-       VInt $ asInt e1' + asInt e2'
+      in case (e1', e2') of
+          (VInt i1,    VInt i2)    -> VInt $ i1 + i2
+          (VString s1, VString s2) -> VString $ s1 ++ s2
+          (VString s1, VInt i2)    -> VString $ s1 ++ show i2
+          (VInt i1,    VString s2) -> VString $ show i1 ++ s2
     
     eval (Minus e1 e2) m =
       let e1' = eval e1 m
@@ -145,8 +149,8 @@ module W ( WValue(..),
         where
           definedInThisScope (hd@(d, _):ds) | isMarker hd = False
                                             | d == s = True
-                                            | otherwise = definedInThisScope ds                                              
-                                                          
+                                            | otherwise = definedInThisScope ds
+
     exec (Assign s e) m = return $ replaceFirstDef (eval e m) m
         where replaceFirstDef _ [] = error $ "Undefined variable " ++ s ++ " in assignment"
               replaceFirstDef v (hd@(n, _):m) | n == s = (n, v):m

@@ -103,9 +103,16 @@ algorithm at most $t$ times. Denote by $X_k$ the random variable
 modeling running time of the $k$-th try. Determine the probability
 that the randomized algorithm exceeds  $(1+\epsilon)\E[X]$ steps in
 all $t$ repetitions. This probability models the failure probability
-of this algorithm. 
+of this algorithm.
 \end{problem}
 \begin{solution}
+This question can be expressed as a probability with:
+$$ Pr[X \geq (1+\epsilon)\E[X]] $$
+Which is the left hand sign of the matching Markov Inequality:
+$$ Pr[X \geq (1+\epsilon)\E[X]] \leq \frac{\E[X]}{(1+\epsilon)\E[X]} $$
+Simplifying:
+$$ Pr[X \geq (1+\epsilon)\E[X]] \leq \frac{1}{(1+\epsilon)} $$
+This is the upper bound on the probability that execution exceeds $(1+\epsilon)\E[X]$ steps.
 \end{solution}
 
 \begin{problem} [20 points] How should we choose the number of repetitions $t$
@@ -113,8 +120,17 @@ of this algorithm.
   least one run such that $X\le (1+\epsilon)\E[X]$ among the $t$ runs.
 \end{problem}
 \begin{solution}
-Plugging things into Markov's Inequality, we get:
-$$ 1 - \frac{1}{n} \leq \frac{E[|X|]}{t} $$
+We are searching for $Pr[X \leq (1+\epsilon)\E[X]]$, we can solve this using the complement as follows:
+$$ Pr[X \leq (1+\epsilon)\E[X]] = 1 - Pr[X \geq (1+\epsilon)\E[X]] $$
+The right hand sign can be represented as a Markov Inequality:
+$$ Pr[X \geq (1+\epsilon)\E[X]] \leq \frac{\E[X]}{(1+\epsilon)\E[X]} $$
+We can use the complement of the original probability to find the probability for the complement:
+$$ 1 - (1 - \frac{1}{n}) = 1 - 1 + \frac{1}{n} = \frac{1}{n} $$
+We can plug this in for the probability that execution exceeds $(1+\epsilon)\E[X]$ steps in the Markov Inequality:
+$$ \frac{1}{n} \leq \frac{1}{(1+\epsilon)} $$
+$$ \epsilon \leq n -1 $$
+We can use this to solve for $t = (1+\epsilon)E[X]$ in the Markov Inequality:
+$$ t = (1+ \epsilon)E[X] $$
 \end{solution}
 
 \begin{problem}[20 points] How many people need to be in a room such that two of

@@ -1,5 +1,5 @@
 var a = 13;
-if (true) {
+if (false) {
     a = 12;
 } else {
     a = 14;

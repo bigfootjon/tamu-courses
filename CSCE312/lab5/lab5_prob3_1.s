@@ -1,7 +1,7 @@
-; Metadata:
+# Metadata:
 	.file	"lab5_prob3_1.c"
 	.section	.rodata
-; Static things
+# Static things
 .LC0:
 	.string	"Hello, world"
 	.text
@@ -18,16 +18,16 @@ main:
 	subq	$16, %rsp
 	movl	%edi, -4(%rbp)
 	movq	%rsi, -16(%rbp)
-; The following 2 lines print out "Hello, world" by reading it from .LC0 and calling "puts"
+# The following 2 lines print out "Hello, world" by reading it from .LC0 and calling "puts"
 	movl	$.LC0, %edi
 	call	puts 
-; The following lines (until "ret") set the return value and then return from the function 
+# The following lines (until "ret") set the return value and then return from the function 
 	movl	$0, %eax
 	leave
 	.cfi_def_cfa 7, 8
 	ret
 	.cfi_endproc
-; This area contains more metadata
+# This area contains more metadata
 .LFE0:
 	.size	main, .-main
 	.ident	"GCC: (GNU) 6.3.0"

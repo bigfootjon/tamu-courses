@@ -1,11 +1,14 @@
-irmovl Stack, %esp
-
 irmovl $0, %eax # j = 0
 irmovl $0, %ecx # k = 0
 # ...
 irmovl $0, %edx # i = 0
 
 Loop:
+# Break loop
+irmovl $5, %ebx
+subl %edx, %ebx
+jle End
+
 
 # j = i * 2
 rrmovl %edx, %ebx
@@ -17,13 +20,11 @@ irmovl $1, %ebx
 addl %eax, %ebx
 rrmovl %ebx, %ecx
 
-# for loop calcs:
+# increment i
 irmovl $1, %ebx
 addl %ebx, %edx
-irmovl $5, %ebx
-subl %edx, %ebx
-jne Loop
+jmp Loop
 
+End:
 halt
 
-Stack:

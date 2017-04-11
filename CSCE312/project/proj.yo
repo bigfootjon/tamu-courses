@@ -1,0 +1,45 @@
+                      | # Setup matrix addresses
+  0x000: 30f000000000 | irmovl $0, %eax
+  0x006: 30f104000000 | irmovl $4, %ecx
+                      | 
+                      | # Copy first matrix into memory
+  0x00c: 30f200000000 | irmovl $0, %edx
+  0x012: 402000000000 | rmmovl %edx, $0 (%eax)
+  0x018: 30f200000000 | irmovl $0, %edx
+  0x01e: 402001000000 | rmmovl %edx, $1 (%eax)
+  0x024: 30f200000000 | irmovl $0, %edx
+  0x02a: 402002000000 | rmmovl %edx, $2 (%eax)
+  0x030: 30f200000000 | irmovl $0, %edx
+  0x036: 401003000000 | rmmovl %ecx, $3 (%eax)
+                      | 
+                      | # Copy second matrix into memory
+  0x03c: 30f200000000 | irmovl $0, %edx
+  0x042: 402100000000 | rmmovl %edx, $0 (%ecx)
+  0x048: 30f201000000 | irmovl $1, %edx
+  0x04e: 402101000000 | rmmovl %edx, $1 (%ecx)
+  0x054: 30f202000000 | irmovl $2, %edx
+  0x05a: 402102000000 | rmmovl %edx, $2 (%ecx)
+  0x060: 30f203000000 | irmovl $3, %edx
+  0x066: 402103000000 | rmmovl %edx, $3 (%ecx)
+                      | 
+                      | # Add
+  0x06c: 502000000000 | mrmovl $0 (%eax), %edx
+  0x072: 503100000000 | mrmovl $0 (%ecx), %ebx
+  0x078: 6023         | addl %edx, %ebx
+  0x07a: 403100000000 | rmmovl %ebx, $0 (%ecx)
+                      | 
+  0x080: 502001000000 | mrmovl $1 (%eax), %edx
+  0x086: 503101000000 | mrmovl $1 (%ecx), %ebx
+  0x08c: 6023         | addl %edx, %ebx
+  0x08e: 403101000000 | rmmovl %ebx, $1 (%ecx)
+                      | 
+  0x094: 502002000000 | mrmovl $2 (%eax), %edx
+  0x09a: 503102000000 | mrmovl $2 (%ecx), %ebx
+  0x0a0: 6023         | addl %edx, %ebx
+  0x0a2: 403102000000 | rmmovl %ebx, $2 (%ecx)
+                      | 
+  0x0a8: 502003000000 | mrmovl $3 (%eax), %edx
+  0x0ae: 503103000000 | mrmovl $3 (%ecx), %ebx
+  0x0b4: 6023         | addl %edx, %ebx
+  0x0b6: 403103000000 | rmmovl %ebx, $3 (%ecx)
+                      | 

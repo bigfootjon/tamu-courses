@@ -1,0 +1,108 @@
+\documentclass{article}
+\usepackage{amsmath,amssymb,amsthm,latexsym,paralist}
+
+\theoremstyle{definition}
+\newtheorem{problem}{Problem}
+\newtheorem*{solution}{Solution}
+\newtheorem*{resources}{Resources}
+
+\newcommand{\name}[1]{\noindent\textbf{Name: #1}}
+\newcommand{\honor}{\noindent On my honor, as an Aggie, I have neither
+  given nor received any unauthorized aid on any portion of the
+  academic work included in this assignment. Furthermore, I have
+  disclosed all resources (people, books, web sites, etc.) that have
+  been used to prepare this homework. \\[1ex]
+ \textbf{Signature:} \underline{\hspace*{5cm}} }
+
+ 
+\newcommand{\checklist}{\noindent\textbf{Checklist:}
+\begin{compactitem}[$\Box$] 
+\item Did you add your name? 
+\item Did you disclose all resources that you have used? \\
+(This includes all people, books, websites, etc. that you have consulted)
+\item Did you sign that you followed the Aggie honor code? 
+\item Did you solve all problems? 
+\item Did you submit the pdf file resulting from your latex file 
+  of your homework?
+\item Did you submit (c) a hardcopy of the pdf file in class? 
+\end{compactitem}
+}
+
+\newcommand{\problemset}[1]{\begin{center}\textbf{Problem Set #1}\end{center}}
+\newcommand{\duedate}[2]{\begin{quote}\textbf{Due dates:} Electronic
+    submission of this homework is due on \textbf{#1} on ecampus, a
+    signed paper copy of the pdf file is due on \textbf{#2} at the
+    beginning of class. \end{quote} }
+
+\newcommand{\N}{\mathbf{N}}
+\newcommand{\R}{\mathbf{R}}
+\newcommand{\Z}{\mathbf{Z}}
+
+
+\begin{document}
+\problemset{10}
+\duedate{4/17/2017 before 10:00am}{4/17/2017}
+\name{ (put your name here)}
+\begin{resources} (All people, books, articles, web pages, etc. that
+  have been consulted when producing your answers to this homework)
+\end{resources}
+\honor
+
+\newpage
+
+Read Chapter 34 in our textbook. 
+
+%\begin{problem} (15 points)
+%Solve Exercise 34.1-6 on page 1061. [Hint: Carefully read Section 34.1 and make
+%sure that you understand the notations.] 
+%\end{problem}
+
+\begin{problem} (15 points) % Graph-Iso is in NP
+Solve Exercise 34.2-1 on page 1065. 
+\end{problem}
+
+\begin{problem} (10 points) % If NP != co-NP then NP != P. 
+Exercise 34.2-10 on page 1066. [Hint: Read Chapter 34.2 and make sure you
+understand the definition of co-NP.]  
+\end{problem}
+
+\begin{problem} (15 points) % SAT in P implies one can find a
+                            % satisfying assignment in P
+Exercise 34.4-6 on page 1086. 
+\end{problem}
+
+\begin{problem} (20 points) 
+A partial Latin square of order $n$ is an $n\times n$ array in which
+each entry is either empty or contains an element from $[n] = \{1,\ldots,
+n\}$. Each row and each column contains each element from $[n]$ at
+most once. Colburn showed that the problem to decide whether a given
+partial Latin square can be completed to a Latin square is
+NP-complete. Given this fact, show that 
+\begin{compactenum}[(a)]
+\item the problem to decide whether a given $n\times n$ Futoshiki
+  problem can be solved is NP-complete. 
+\item the problem to decide whether a given $n^2\times n^2$ Sudoku 
+  problem can be solved is NP-complete. 
+\end{compactenum}
+\end{problem}
+
+\begin{problem} (20 points) % 0-1 ILP is NP complete
+Exercise 34.5-2 on page 1100. 
+\end{problem}
+
+\begin{problem} (20 points) % Set partition is NP complete
+Exercise 34.5-5 on page 1101 [Hint: Reduce SUBSET SUM
+to SET PARTITION.] 
+\end{problem}
+
+Discussions on piazza are always encouraged, especially to clarify
+concepts that were introduced in the lecture. However, discussions of
+homework problems on piazza should not contain spoilers. It is okay to
+ask for clarifications concerning homework questions if needed. 
+\medskip
+
+
+
+\goodbreak
+\checklist
+\end{document}

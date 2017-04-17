@@ -1,8 +1,8 @@
 package shapes;
 
 public class Rectangle extends Shape {
-    private final Point tl;
-    private final Point br;
+    final Point tl;
+    final Point br;
 
     Rectangle(Point tl, Point br) {
         this.tl = tl;

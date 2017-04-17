@@ -1,6 +1,5 @@
 package shapes;
 
-import java.util.Arrays;
 import java.util.Scanner;
 
 public class Main {
@@ -9,49 +8,45 @@ public class Main {
     }
 
     private Main(String[] args) {
-        Shape[] shapes = new Shape[args.length];
-        for (int i = 0; i < args.length; i++) {
-            String arg = args[i];
+        Node<Shape> root = new Node<>(parseShape(args[0]), null);
+        Node<Shape> cur = root;
+        for (String arg : args) {
             Shape s = parseShape(arg);
-            shapes[i] = s;
+            Node<Shape> next = new Node<>(s, null);
+            cur.next = next;
+            cur = next;
         }
 
         int count = 0;
-        Arrays.sort(shapes);
-        for (Shape s : shapes) {
+        // Arrays.sort(shapes);
+        for (Shape s : root) {
             System.out.println(++count + ") " + s + "\t\t area=" + s.area());
         }
 
-        AreaCalculator ac = new AreaCalculator();
-        double area = ac.calculate(shapes);
-        System.out.printf("The total area for the %d objects is %1.2f units squared\n", shapes.length, area);
+        // AreaCalculator ac = new AreaCalculator();
+        // double area = ac.calculate(shapes);
+        // System.out.printf("The total area for the %d objects is %1.2f units squared\n", shapes.length, area);
     }
 
     private Point parsePoint(Scanner s) {
         double x = s.nextDouble();
         double y = s.nextDouble();
-        Point toReturn = new Point(x, y);
-        System.out.println(toReturn);
-        return toReturn;
+        return new Point(x, y);
     }
 
     private Circle parseCircle(Scanner s) {
-        System.out.println("Circle:");
         Point center = parsePoint(s);
         double radius = s.nextDouble();
-        System.out.println(radius);
         return new Circle(center, radius);
     }
 
     private Rectangle parseRectangle(Scanner s) {
-        System.out.println("Rectangle:");
         Point tl = parsePoint(s);
         Point br = parsePoint(s);
         return new Rectangle(tl, br);
     }
 
     private Triangle parseTriangle(Scanner s) {
-        System.out.println("Triangle:");
         Point a = parsePoint(s);
         Point b = parsePoint(s);
         Point c = parsePoint(s);
@@ -68,5 +63,44 @@ public class Main {
             case 'c': return parseCircle(s);
             default: return null;
         }
+    }
+
+    public static Shape maxArea(Node<Shape> root) {
+        Shape max = root.v;
+        double max_area = max.area();
+        for (Shape s : root) {
+            double s_area = s.area();
+            if (s_area > max_area) {
+                max = s;
+                max_area = s_area;
+            }
+        }
+        return max;
+    }
+
+    public static Rectangle boundingRect(Node<Rectangle> root) {
+        double tlx = root.v.tl.x;
+        double tly = root.v.tl.y;
+        double brx = root.v.br.x;
+        double bry = root.v.br.y;
+
+        for (Rectangle r : root) {
+            if (r.tl.x < tlx) {
+                tlx = r.tl.x;
+            }
+            if (r.tl.y < tly) {
+                tly = r.tl.y;
+            }
+            if (r.br.x > brx) {
+                brx = r.br.x;
+            }
+            if (r.br.y > bry) {
+                bry = r.br.y;
+            }
+        }
+
+        Point tl = new Point(tlx, tly);
+        Point br = new Point(brx, bry);
+        return new Rectangle(tl, br);
     }
 }

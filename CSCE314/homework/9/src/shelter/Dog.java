@@ -1,5 +1,7 @@
-public class Dog extends Animal {
-    public Dog(String name) {
+package shelter;
+
+class Dog extends Animal {
+    Dog(String name) {
         super(name);
     }
 

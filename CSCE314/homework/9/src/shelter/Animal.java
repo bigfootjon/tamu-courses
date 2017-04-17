@@ -1,3 +1,5 @@
+package shelter;
+
 abstract class Animal {
     private final String name;
     private int order;
@@ -7,7 +9,7 @@ abstract class Animal {
         this.order = 0;
     }
 
-    final String getName() {
+    private String getName() {
         return name;
     }
 

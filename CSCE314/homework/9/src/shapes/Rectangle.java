@@ -28,4 +28,9 @@ public class Rectangle extends Shape {
             return false;
         }
     }
+
+    @Override
+    public String toString() {
+        return "Rectangle " + tl.toString() + "-" + br.toString();
+    }
 }

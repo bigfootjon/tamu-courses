@@ -28,4 +28,9 @@ public class Circle extends Shape {
             return false;
         }
     }
+
+    @Override
+    public String toString() {
+        return "Circle " + center.toString() + ", radius = " + radius;
+    }
 }

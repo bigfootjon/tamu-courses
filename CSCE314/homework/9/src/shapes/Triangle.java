@@ -33,4 +33,9 @@ public class Triangle extends Shape {
             return false;
         }
     }
+
+    @Override
+    public String toString() {
+        return "Triangle " + a.toString() + "-" + b.toString() + "-" + c.toString();
+    }
 }

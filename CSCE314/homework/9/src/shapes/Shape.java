@@ -8,6 +8,9 @@ public abstract class Shape implements Comparable<Shape> {
     public abstract boolean equals(Object obj);
 
     @Override
+    public abstract String toString();
+
+    @Override
     public int compareTo(Shape o) {
         double ta = area();
         double oa = o.area();

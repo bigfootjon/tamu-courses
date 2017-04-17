@@ -1,5 +1,6 @@
 package shapes;
 
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class Main {
@@ -14,6 +15,13 @@ public class Main {
             Shape s = parseShape(arg);
             shapes[i] = s;
         }
+
+        int count = 0;
+        Arrays.sort(shapes);
+        for (Shape s : shapes) {
+            System.out.println(++count + ") " + s + "\t\t area=" + s.area());
+        }
+
         AreaCalculator ac = new AreaCalculator();
         double area = ac.calculate(shapes);
         System.out.printf("The total area for the %d objects is %1.2f units squared\n", shapes.length, area);

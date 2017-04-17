@@ -119,7 +119,9 @@ NP-complete. Given this fact, show that
 \begin{solution} The following are both extensions to the original Latin square problem.
 \begin{compactenum}[(a)]
 \item Futoshiki problems are an extension of Latin squares that add a further constraint of inequalities places between tiles.\\
-    The inequalities can simply be removed and a partial Latin square problem is revealed. The addition of this constraint does not make the problem easier, in fact it makes it harder because Futoshiki problems only have one solution. Since the Futoshiki problems are no easier than the original Latin square problems they are still NP-complete problems.
+    The inequalities can simply be removed and a partial Latin square problem is revealed. The reduction is therefore trivial: \\
+    $$ \text{CPLS} \leq_p \text{FUTOSHIKI} $$
+    The Futoshiki problem is therefore NP-Complete.
 \item Sudoku problems are simply a Latin square of Latin squares, and therefore still have the same complexity as the original Latin square problem, so it is NP-complete.
 \end{compactenum}
 \end{solution}

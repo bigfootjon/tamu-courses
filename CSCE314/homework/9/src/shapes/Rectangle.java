@@ -4,7 +4,7 @@ public class Rectangle extends Shape {
     private final Point tl;
     private final Point br;
 
-    public Rectangle(Point tl, Point br) {
+    Rectangle(Point tl, Point br) {
         this.tl = tl;
         this.br = br;
     }
@@ -17,5 +17,15 @@ public class Rectangle extends Shape {
     @Override
     double area() {
         return Math.abs(tl.x - br.x) * Math.abs(tl.y - br.y);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof Rectangle) {
+            Rectangle r = (Rectangle)o;
+            return tl.equals(r.tl) && br.equals(r.br);
+        } else {
+            return false;
+        }
     }
 }

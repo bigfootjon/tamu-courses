@@ -3,7 +3,7 @@ package shapes;
 public class Triangle extends Shape {
     private final Point a, b, c;
 
-    public Triangle(Point a, Point b, Point c) {
+    Triangle(Point a, Point b, Point c) {
         this.a = a;
         this.b = b;
         this.c = c;
@@ -22,5 +22,15 @@ public class Triangle extends Shape {
         double sc = Math.sqrt(Math.pow(a.x - c.x, 2) + Math.pow(a.y - c.y, 2));
         double s = (sa+sb+sc)/2;
         return Math.sqrt(s*(s-sa)*(s-sb)*(s-sc));
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof Triangle) {
+            Triangle t = (Triangle)o;
+            return a.equals(t.a) && b.equals(t.b) && c.equals(t.c);
+        } else {
+            return false;
+        }
     }
 }

@@ -8,7 +8,7 @@ public class NodeIterator<T extends Shape> implements Iterator<T> {
 
     NodeIterator(Node<T> shape) {
         this.cur = shape;
-        this.last = shape;
+        this.last = null;
     }
 
     @Override
@@ -18,12 +18,17 @@ public class NodeIterator<T extends Shape> implements Iterator<T> {
 
     @Override
     public T next() {
-        last = cur;
-        if (cur.next == null){
-            return null;
-        } else {
-            cur = cur.next;
+        if (last == null) {
+            last = cur;
             return cur.v;
+        } else {
+            last = cur;
+            if (cur.next == null){
+                return null;
+            } else {
+                cur = cur.next;
+                return cur.v;
+            }
         }
     }
 

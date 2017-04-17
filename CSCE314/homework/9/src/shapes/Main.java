@@ -1,5 +1,6 @@
 package shapes;
 
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class Main {
@@ -8,24 +9,34 @@ public class Main {
     }
 
     private Main(String[] args) {
-        Node<Shape> root = new Node<>(parseShape(args[0]), null);
-        Node<Shape> cur = root;
-        for (String arg : args) {
+        Shape[] shapes = new Shape[args.length];
+
+        for (int i = 0; i < args.length; i++) {
+            String arg = args[i];
             Shape s = parseShape(arg);
-            Node<Shape> next = new Node<>(s, null);
-            cur.next = next;
-            cur = next;
+            shapes[i] = s;
         }
 
-        int count = 0;
-        // Arrays.sort(shapes);
-        for (Shape s : root) {
-            System.out.println(++count + ") " + s + "\t\t area=" + s.area());
-        }
+        Circle c1 = new Circle(new Point(1,1),1);
+        Circle d1 = new Circle(new Point(2,2),2);
+        Circle e1 = new Circle(new Point(3,3),3);
 
-        // AreaCalculator ac = new AreaCalculator();
-        // double area = ac.calculate(shapes);
-        // System.out.printf("The total area for the %d objects is %1.2f units squared\n", shapes.length, area);
+        ShapeList<Shape> emptyShapes = new ShapeList<>();
+        ShapeList<Circle> someCircles = new ShapeList<>(Arrays.asList(c1, d1, e1));
+
+        System.out.println("emptyShapes = " + emptyShapes);
+        System.out.println("reversed emptyShapes = " + emptyShapes.reverse());
+        System.out.println("someCircles = " + someCircles);
+        System.out.println("reversed someCircles = " + someCircles.reverse());
+
+        double sumOfXs = 0.0;
+        double sumOfYs = 0.0;
+        for (Circle c: someCircles) {
+            sumOfXs += c.position().x;
+            sumOfYs += c.position().y;
+        }
+        System.out.println("Some of Xs = " + sumOfXs);
+        System.out.println("Some of Ys = " + sumOfYs);
     }
 
     private Point parsePoint(Scanner s) {

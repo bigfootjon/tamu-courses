@@ -1,0 +1,45 @@
+# Setup matrix addresses
+regset V0, R0
+regset V4, R1
+
+# Copy first matrix into memory
+regset V0, R2
+memset R2, R0, V0
+regset V0, R2
+memset R2, R0, V1
+regset V0, R2
+memset R2, R0, V2
+regset V0, R2
+memset R2, R0, V3
+
+# Copy second matrix into memory
+regset V0, R2
+memset R2, R1, V0
+regset V1, R2
+memset R2, R1, V1
+regset V2, R2
+memset R2, R1, V2
+regset V3, R2
+memset R2, R1, V3
+
+# Add
+memld R0, V0, R2
+memld R1, V0, R3
+add R2, R3
+memset R3, R1, V0
+
+memld R0, V1, R2
+memld R1, V1, R3
+add R2, R3
+memset R3, R1, V1
+
+memld R0, V2, R2
+memld R1, V2, R3
+add R2, R3
+memset R3, R1, V2
+
+memld R0, V3, R2
+memld R1, V3, R3
+add R2, R3
+memset R3, R1, V3
+

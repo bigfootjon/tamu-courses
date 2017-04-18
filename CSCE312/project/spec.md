@@ -16,28 +16,28 @@ halt	(no args)	Stop the processor by keeping PC the same
 01			(do nothing)
 
 memset	r1, r2, v1	Set r2+v1 to r1
-02	4b  4b  8b	PC += 2
+02	4b  4b  8b	PC += 3
 
 memld	r1, r2, v1	Set r1 to r2+v1
-03	4b  4b  8b	PC += 2
+03	4b  4b  8b	PC += 3
 
 regset	v1, r1, i4	Set r1 to v1
-04	8b  4b	4b	PC += 2
+04	8b  4b	4b	PC += 3
 
 add	r1, r2		Set r2 to r1+r2
-05	4b  4b		PC += 1
+05	4b  4b		PC += 2
 
 sub	r1, r2		Set r2 to r1-r2
-06	4b  4b		PC += 1
+06	4b  4b		PC += 2
 
 jmp	v1		Set PC to v1
-07	8b		PC += 1
+07	8b		PC += 2
 
 jz	r1, i4, v1	If r1 = 0 then set PC to v1
-08	4b  4b  8b	PC += 2
+08	4b  4b  8b	PC += 3
 
 jp	r1, i4, v1	If r1 > 0 then set PC to v1
-09	4b  4b  8b	PC += 2
+09	4b  4b  8b	PC += 3
 
 Legend:
 vX is a value with index X

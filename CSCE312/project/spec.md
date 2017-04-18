@@ -3,16 +3,17 @@ RRISC
 
 Registers:
 4 general purposes available: R0, R1, R2, R3
+1 special register: PC (not directly accesible)
 
 Constant Values:
 Use the character "V" followed by a natural number (e.g. V13)
 
 Instructions:
-halt	(no args)	Stop the processor by keeping PC the same
-00			(do nothing)
-
 nop	(no args)	Do nothing this cycle
-01			PC += 1
+00			PC += 1
+
+halt	(no args)	Stop the processor by keeping PC the same
+01			(do nothing)
 
 memset	r1, r2, v1	Set r2+v1 to r1
 02	4b  4b  8b	PC += 2
@@ -21,7 +22,7 @@ memld	r1, r2, v1	Set r1 to r2+v1
 03	4b  4b  8b	PC += 2
 
 regset	v1, r1, i4	Set r1 to v1
-04	8b  4b	4b	PC += 3
+04	8b  4b	4b	PC += 2
 
 add	r1, r2		Set r2 to r1+r2
 05	4b  4b		PC += 1

@@ -43,3 +43,4 @@ memld R3, R1, V3
 add R2, R3
 memset R3, R1, V3
 
+halt

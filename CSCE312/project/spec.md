@@ -2,7 +2,7 @@ RRISC
 =====
 
 Registers:
-4 general purposes available: R0, R1, R2, R3
+5 general purposes available: R0, R1, R2, R3, R4
 1 special register: PC (not directly accesible)
 
 Constant Values:

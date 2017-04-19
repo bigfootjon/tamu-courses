@@ -1,6 +1,7 @@
 # Setup matrix addresses
 regset V0, R0
 regset V4, R1
+regset V8, R4
 
 # Copy first matrix into memory
 regset V0, R2
@@ -26,21 +27,21 @@ memset R2, R1, V3
 memld R2, R0, V0
 memld R3, R1, V0
 add R2, R3
-memset R3, R1, V0
+memset R3, R5, V0
 
 memld R2, R0, V1
 memld R3, R1, V1
 add R2, R3
-memset R3, R1, V1
+memset R3, R5, V1
 
 memld R2, R0, V2
 memld R3, R1, V2
 add R2, R3
-memset R3, R1, V2
+memset R3, R5, V2
 
 memld R2, R0, V3
 memld R3, R1, V3
 add R2, R3
-memset R3, R1, V3
+memset R3, R5, V3
 
 halt

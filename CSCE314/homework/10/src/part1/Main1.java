@@ -1,3 +1,5 @@
+package part1;
+
 public class Main1 {
 
     private static void pause(long n) {

@@ -1,1 +1,0 @@
--- See Bobby/Dr. Shell's notes. This class was skipped

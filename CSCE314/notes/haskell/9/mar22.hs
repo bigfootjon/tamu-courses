@@ -1,1 +1,0 @@
--- Just talked about the midterm today

@@ -1,4 +1,0 @@
--- OUTPUT --
-BELL = 1
-DLA  = 1
-BA   = 1

@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include "main.h"
 
 using namespace std;
 
@@ -39,7 +40,7 @@ int main(int argc, char** argv) {
 		} else if (command == "PD") {
 		} else if (command == "PM") {
 		} else {
-			// TODO: Handle invalid command
+			cout << "Invalid command: '" << command << ''' << endl;
 		}
 	}
 }

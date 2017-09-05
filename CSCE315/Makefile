@@ -4,7 +4,7 @@ run: main out
 main: main.o out
 	g++ -o out/main out/main.o
 
-main.o: main.cpp out
+main.o: main.cpp main.h out
 	g++ -c main.cpp -o out/main.o
 
 out:

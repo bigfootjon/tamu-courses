@@ -34,7 +34,7 @@ unsigned int init_allocator(unsigned int _basic_block_size, unsigned int _length
 
 Addr my_malloc(size_t _length) {
 	if (start == NULL) {
-		init_allocator(0, MEMORY_SIZE);
+		return NULL;
 	}
 	if (remaining < _length) {
 		return NULL;
@@ -47,6 +47,10 @@ Addr my_malloc(size_t _length) {
 }
 
 int my_free(Addr _a) {
+	return 0;
+}
+
+int release_allocator() {
 	return 0;
 }
 

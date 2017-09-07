@@ -1,12 +1,12 @@
-all: memtest
+all: out/memtest
 
 run: all out
 	./out/memtest
 
-my_allocator.o : my_allocator.c my_allocator.h out
+out/my_allocator.o: my_allocator.c my_allocator.h out
 	gcc -c -g my_allocator.c -o ./out/my_allocator.o
 
-memtest: memtest.c my_allocator.o out
+out/memtest: memtest.c out/my_allocator.o out
 	gcc -o ./out/memtest memtest.c ./out/my_allocator.o
 
 out:

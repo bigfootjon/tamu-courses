@@ -76,15 +76,21 @@ void print_time_diff(struct timeval * tp1, struct timeval * tp2);
 /*--------------------------------------------------------------------------*/
 
 int main(int argc, char ** argv) {
-
   // Add code to process input parameters (basic block size, memory length)
 
   // Initialize the allocator by calling: init_allocator(basic block size, memory length)
+  init_allocator(0, 20000000);
 
+  /*
+  printf("\n%d", init_allocator(1, 100)); // Should print 100
+  printf("\n%x", my_malloc(2)); // Should print some random hex value
+  printf("\n%x", my_malloc(1)); // Should print the random hex value plus 2
+  printf("\n%x", my_malloc(100)); // Should be null
+  */
   ackerman_main();
 
   // Release the memory in the allocator by calling: release_allocator()
-
+  release_allocator();
 }
 
 /*--------------------------------------------------------------------------*/

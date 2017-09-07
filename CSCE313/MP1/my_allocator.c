@@ -18,26 +18,29 @@
 
 const int MEMORY_SIZE = 200000000;
 
-Addr base;
+char* start;
 unsigned int remaining;
 
 unsigned int init_allocator(unsigned int _basic_block_size, unsigned int _length) {
-	if (base == NULL) {
-		base = malloc(_length);
+	if (start == NULL) {
+		start = (char*)malloc(_length);
+		if (start == NULL) {
+			return 0;
+		}
 		remaining = _length;
 	}
 	return _length;
 }
 
 Addr my_malloc(size_t _length) {
-	if (base == NULL) {
+	if (start == NULL) {
 		init_allocator(0, MEMORY_SIZE);
 	}
 	if (remaining < _length) {
 		return NULL;
 	} else {
-		Addr allocated = base;
-		base += _length;
+		Addr allocated = (Addr)start;
+		start += _length;
 		remaining -= _length;
 		return allocated;
 	}

@@ -16,6 +16,8 @@
 #include <stdio.h>
 #include "my_allocator.h"
 
+const int MEMORY_SIZE = 1000000000;
+
 Addr base;
 unsigned int remaining;
 
@@ -30,7 +32,7 @@ unsigned int init_allocator(unsigned int _basic_block_size, unsigned int _length
 Addr my_malloc(size_t _length) {
 	if (base == NULL) {
 		printf("Allocating memory");
-		init_allocator(0, 20000000);
+		init_allocator(0, MEMORY_SIZE);
 	}
 	if (remaining < _length) {
 		return NULL;

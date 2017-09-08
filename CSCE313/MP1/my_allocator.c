@@ -18,15 +18,17 @@
 
 const int MEMORY_SIZE = 200000000;
 
+char* base; // This is used to release the entire block of memory instead of wherever start is pointing to right now 
 char* start;
 unsigned int remaining;
 
 unsigned int init_allocator(unsigned int _basic_block_size, unsigned int _length) {
 	if (start == NULL) {
-		start = (char*)malloc(_length);
-		if (start == NULL) {
+		base = (char*)malloc(_length);
+		if (base == NULL) {
 			return 0;
 		}
+		start = base;
 		remaining = _length;
 	}
 	return _length;
@@ -51,6 +53,7 @@ int my_free(Addr _a) {
 }
 
 int release_allocator() {
+	free(base);
 	return 0;
 }
 

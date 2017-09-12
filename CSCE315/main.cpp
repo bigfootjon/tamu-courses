@@ -1,42 +1,41 @@
 #include <iostream>
 #include <vector>
-#include <string>
 #include "main.h"
 
 using namespace std;
 
-BookManager books;
-
 int main(int argc, char** argv) {
+    BookManager books;
+
 	while (true) {
-		string input = "";
+		string input;
 		getline(cin, input);
 
 		vector<string> split;
-		string current = "";
-		for (int i = 0; i < input.length(); ++i) {
-			if (input[i] == ' ') {
+		string current;
+		for (char i : input) {
+			if (i == ' ') {
 				split.push_back(current);
 				current = "";
 			} else {
-				current += input[i];
+				current += i;
 			}
 		}
 		if (current.length() != 0) {
 			split.push_back(current);
 		}
 		
-		if (split.size() == 0) {
+		if (split.empty()) {
 			continue;
 		}
 	
-		string command = split.at(0);
+		string& command = split.at(0);
 
 		try {
 			if (command == "B") {
-				Book book = books.getOrCreate(split.at(1));
-				string title = "";
-				for (int i = 2; i < split.size(); ++i) {
+				Book& book = books.getOrCreate(split.at(1));
+				string title;
+				for (unsigned i = 2; i < split.size(); ++i) {
 					if (i != 2) {
 						title += " ";
 					}
@@ -59,6 +58,7 @@ int main(int argc, char** argv) {
 			} else if (command == "PM") {
 			} else {
 				cout << "Invalid command: '" << command << "'" << endl;
+                break;
 			}
 		} catch (const char* error) {
 			cerr << error << endl;
@@ -82,16 +82,16 @@ void Book::setTitle(string new_title) {
 	title = new_title;
 }
 
-Book BookManager::get(string isbn) {
-	for (Book book : books) {
-		if (book.getIsbn() == isbn) {
+Book& BookManager::get(const string isbn) {
+	for (auto& book : books) {
+        if (book.getIsbn() == isbn) {
 			return book;
 		}
 	}
 	throw "No book exists with that ISBN";
 }
 
-Book BookManager::getOrCreate(string isbn) {
+Book& BookManager::getOrCreate(const string isbn) {
 	// Attempt to get from known books
 	try {
 		return get(isbn);
@@ -100,6 +100,6 @@ Book BookManager::getOrCreate(string isbn) {
 		Book new_book;
 		new_book.setIsbn(isbn);
 		books.push_back(new_book);
-		return new_book;
+		return get(isbn);
 	}
 }

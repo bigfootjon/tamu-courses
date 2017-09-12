@@ -24,8 +24,8 @@ class BookManager {
 	vector<Book> books;
 
 	public:
-	Book get(string isbn);
-	Book getOrCreate(string isbn);
+	Book& get(string isbn);
+	Book& getOrCreate(string isbn);
 };
 
 class Course {

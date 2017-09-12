@@ -7,16 +7,13 @@
 using namespace std;
 
 class Book {
-	private:
-	string isbn;
-	string title;
-	
 	public:
-	void setIsbn(string isbn);
-	string getIsbn();
-
-	void setTitle(string title);
-	string getTitle();
+	string isbn = "";
+	string title = "";
+	string author = "";
+	int edition = 0;
+	int publication_month = 0;
+	int publication_year = 0;
 };
 
 class BookManager {

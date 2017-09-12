@@ -26,6 +26,27 @@ Course& CourseManager::getOrCreate(string department, string number) {
     }
 }
 
+vector<Book> CourseManager::getBooksInDepartment(string department) {
+    vector<Book> books;
+    for (auto& course : courses) {
+        if (course.department == department) {
+            for (auto& new_book : course.books) {
+                bool alreadyIncluded = false;
+                for (auto& book : books) {
+                    if (new_book.book.isbn == book.isbn) {
+                        alreadyIncluded = true;
+                        break;
+                    }
+                }
+                if (!alreadyIncluded) {
+                    books.push_back(new_book.book);
+                }
+            }
+        }
+    }
+    return books;
+}
+
 void Course::addBookForSection(Book &book, string section, bool required) {
     BookBinding binding;
     binding.book = book;

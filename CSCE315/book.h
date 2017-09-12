@@ -21,10 +21,9 @@ public:
 	double cost_electronic = 0;
 };
 
-class BookManager {
+struct BookManager {
 	vector<Book> books;
 
-public:
 	Book& get(string isbn);
 	Book& getOrCreate(string isbn);
 };

@@ -106,6 +106,18 @@ int main(int argc, char** argv) {
                     cout << ")" << endl;
                 }
 			} else if (command == "GS") {
+                Course& course = courses.get(split.at(1), split.at(2));
+                for (auto& binding : course.books) {
+                    if (binding.section == split.at(3)) {
+                        cout << binding.book.title << " (";
+                        if (binding.required) {
+                            cout << "Required";
+                        } else {
+                            cout << "Optional";
+                        }
+                        cout << ")" << endl;
+                    }
+                }
 			} else if (command == "GB") {
 				Book book = books.get(split.at(1));
 				cout << "Title: " << book.title << endl;
@@ -117,10 +129,66 @@ int main(int argc, char** argv) {
                 cout << "Cost (rented): " << book.cost_rented << endl;
                 cout << "Cost (electronic): " << book.cost_electronic << endl;
 			} else if (command == "PB") {
+                for (auto& book : books.books) {
+                    cout << book.title << endl;
+                }
 			} else if (command == "PC") {
+                for (auto& course : courses.courses) {
+                    cout << course.department << " " << course.number << endl;
+                }
 			} else if (command == "PY") {
+                int month = stoi(split.at(1).substr(0,2));
+                int year = stoi(split.at(1).substr(3,8));
+                for (auto& book : books.books) {
+                    bool shouldPrint = false;
+                    if (book.publication_year > year) {
+                        shouldPrint = true;
+                    } else if (book.publication_year == year && book.publication_month >= month) {
+                        shouldPrint = true;
+                    }
+                    if (shouldPrint) {
+                        cout << book.title << endl;
+                    }
+                }
 			} else if (command == "PD") {
+                vector<Book> departmentBooks = courses.getBooksInDepartment(split.at(1));
+                for (auto& book : departmentBooks) {
+                    cout << book.title << endl;
+                }
 			} else if (command == "PM") {
+                vector<Book> departmentBooks = courses.getBooksInDepartment(split.at(1));
+                int count = 0;
+                double max_double = numeric_limits<double>::max();
+                double min_double = numeric_limits<double>::min();
+
+                double max_total = 0;
+                double min_total = 0;
+                for (auto& book : departmentBooks) {
+                    double min = max_double;
+                    double max = min_double;
+                    if (book.cost_new < min) min = book.cost_new;
+                    if (book.cost_used < min) min = book.cost_used;
+                    if (book.cost_rented < min) min = book.cost_rented;
+                    if (book.cost_electronic < min) min = book.cost_electronic;
+
+                    if (book.cost_new > max) max = book.cost_new;
+                    if (book.cost_used > max) max = book.cost_used;
+                    if (book.cost_rented > max) max = book.cost_rented;
+                    if (book.cost_electronic > max) max = book.cost_electronic;
+
+                    if (min != 0) {
+                        min_total += min;
+                    }
+                    if (max != 0) {
+                        max_total += max;
+                    }
+                    if (max != 0 || min != 0) {
+                        ++count;
+                    }
+                }
+
+                cout << "Average (MIN): " << min_total <<
+                        "Average (MAX): " << max_total << endl;
 			} else {
 				cout << "Invalid command: '" << command << "'" << endl;
                 break;

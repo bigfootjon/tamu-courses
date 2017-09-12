@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include "book.h"
+#include "course.h"
 
 string combine(vector<string> split, unsigned int initial) {
     string title;
@@ -17,6 +18,7 @@ using namespace std;
 
 int main(int argc, char** argv) {
     BookManager books;
+    CourseManager courses;
 
 	while (true) {
 		string input;
@@ -65,16 +67,55 @@ int main(int argc, char** argv) {
                     cout << "Command '" << split.at(2) << "' not recognized";
                 }
 			} else if (command == "M") {
+                Book& book = books.get(split.at(1));
+                double cost = stod(split.at(2));
+                if (split.at(3) == "N") {
+                    book.cost_new = cost;
+                } else if (split.at(3) == "U") {
+                    book.cost_used = cost;
+                } else if (split.at(3) == "R") {
+                    book.cost_rented = cost;
+                } else if (split.at(3) == "E") {
+                    book.cost_electronic = cost;
+                }
 			} else if (command == "C") {
+                Course& course = courses.getOrCreate(split.at(1), split.at(2));
+                course.name = combine(split, 3);
 			} else if (command == "A") {
+                Book& book = books.get(split.at(1));
+                Course& course = courses.getOrCreate(split.at(2), split.at(3));
+                string& section = split.at(4);
+                bool required;
+                if (split.at(5) == "R") {
+                    required = true;
+                } else if (split.at(5) == "O") {
+                    required = false;
+                } else {
+                    throw "Invalid selection for R/O";
+                }
+                course.addBookForSection(book, section, required);
 			} else if (command == "GC") {
+                Course& course = courses.get(split.at(1), split.at(2));
+                for (auto& binding : course.books) {
+                    cout << binding.book.title << " (Section " << binding.section << ", ";
+                    if (binding.required) {
+                        cout << "Required";
+                    } else {
+                        cout << "Optional";
+                    }
+                    cout << ")" << endl;
+                }
 			} else if (command == "GS") {
 			} else if (command == "GB") {
 				Book book = books.get(split.at(1));
-				cout << '"' << book.title << '"' << endl;
-                cout << book.author << endl;
-                cout << book.edition << endl;
-                cout << book.publication_month << "/" << book.publication_year << endl;
+				cout << "Title: " << book.title << endl;
+                cout << "Author: " << book.author << endl;
+                cout << "Edition: " << book.edition << endl;
+                cout << "Publication Date: " << book.publication_month << "/" << book.publication_year << endl;
+                cout << "Cost (new): " << book.cost_new << endl;
+                cout << "Cost (used): " << book.cost_used << endl;
+                cout << "Cost (rented): " << book.cost_rented << endl;
+                cout << "Cost (electronic): " << book.cost_electronic << endl;
 			} else if (command == "PB") {
 			} else if (command == "PC") {
 			} else if (command == "PY") {

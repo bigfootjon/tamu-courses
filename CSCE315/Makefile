@@ -10,6 +10,9 @@ main: main.o out
 main.o: main.cpp main.h out
 	g++ --std=c++11 -g -c main.cpp -o out/main.o
 
+book.o: book.cpp book.h out
+	g++ --std=c++11 -g -c book.cpp -o out/book.o
+
 out:
 	mkdir -p out
 

@@ -1,0 +1,14 @@
+#ifndef COURSE_MANAGER_HEADER
+#define COURSE_MANAGER_HEADER
+
+#include "course.h"
+
+struct CourseManager {
+	vector<Course> courses;
+	Course& get(string department, string number);
+	Course& getOrCreate(string department, string number);
+
+	vector<Book> getBooksInDepartment(string department);
+};
+
+#endif

@@ -3,6 +3,8 @@
 #include <limits>
 #include "book.h"
 #include "course.h"
+#include "book_manager.h"
+#include "course_manager.h"
 
 using namespace std;
 

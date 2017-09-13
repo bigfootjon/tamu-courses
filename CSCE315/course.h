@@ -22,12 +22,4 @@ struct Course {
 	void addBookForSection(Book& book, string section, bool required);
 };
 
-struct CourseManager {
-	vector<Course> courses;
-	Course& get(string department, string number);
-	Course& getOrCreate(string department, string number);
-
-	vector<Book> getBooksInDepartment(string department);
-};
-
 #endif

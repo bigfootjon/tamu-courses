@@ -22,13 +22,6 @@ public:
 	double cost_electronic = 0;
 };
 
-struct BookManager {
-	vector<Book> books;
-
-	Book& get(string isbn);
-	Book& getOrCreate(string isbn);
-};
-
 ostream& operator<<(ostream& out, const Book& book);
 
 #endif

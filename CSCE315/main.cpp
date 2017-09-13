@@ -7,6 +7,10 @@
 using namespace std;
 
 string combine(vector<string> split, unsigned int initial) {
+	if (initial >= split.size()) {
+		throw out_of_range("combine");
+	}
+
 	string title;
 	for (unsigned i = initial; i < split.size(); ++i) {
 		if (i != initial) {
@@ -168,6 +172,8 @@ int main(int argc, char** argv) {
 			}
 		} catch (const char* error) {
 			cerr << error << endl;
+		} catch (out_of_range& error) {
+			cerr << "Invalid command: " << input << endl;
 		}
 	}
 }

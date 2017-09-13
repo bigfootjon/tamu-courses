@@ -36,9 +36,10 @@ bool BookManager::isValidIsbn(string isbn) {
 	for (int i = 0; i < isbn.length(); ++i) {
 		int digit = isbn[i] - '0';
 		int multiplier = 1;
-		if (i % 2 == 0) {
+		if (i % 2 == 1) {
 			multiplier = 3;
 		}
 		sum += multiplier * digit;
 	}
+	return sum % 10 == 0;
 }

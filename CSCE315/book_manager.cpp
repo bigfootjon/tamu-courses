@@ -2,7 +2,7 @@
 
 Book& BookManager::get(const string isbn) {
 	if (!isValidIsbn(isbn)) {
-		throw isbn + " is not a valid ISBN";
+		throw "ISBN is not valid";
 	}
 	for (auto& book : books) {
 		if (book.isbn == isbn) {
@@ -14,7 +14,7 @@ Book& BookManager::get(const string isbn) {
 
 Book& BookManager::getOrCreate(const string isbn) {
 	if (!isValidIsbn(isbn)) {
-		throw isbn + " is not a valid ISBN";
+		throw "ISBN is not valid";
 	}
 	// Attempt to get from known books
 	try {
@@ -29,5 +29,16 @@ Book& BookManager::getOrCreate(const string isbn) {
 }
 
 bool BookManager::isValidIsbn(string isbn) {
-	return true;
+	if (isbn.length() != 13) {
+		return false;
+	}
+	int sum = 0;
+	for (int i = 0; i < isbn.length(); ++i) {
+		int digit = isbn[i] - '0';
+		int multiplier = 1;
+		if (i % 2 == 0) {
+			multiplier = 3;
+		}
+		sum += multiplier * digit;
+	}
 }

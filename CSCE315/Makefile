@@ -1,7 +1,7 @@
 CC=g++ --std=c++11 -g
 
 run: out/main out
-	./out/main
+	./out/main <input.txt
 
 gdb: out/main out
 	gdb ./out/main

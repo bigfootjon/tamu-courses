@@ -188,7 +188,7 @@ int main(int argc, char** argv) {
 					}
 				}
 
-				cout << "Average (MIN): " << min_total <<
+				cout << "Average (MIN): " << min_total << endl <<
 					 "Average (MAX): " << max_total << endl;
 			} else if (command == "_EXIT") {
 				break;

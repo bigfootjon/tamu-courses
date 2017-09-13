@@ -8,26 +8,26 @@
 using namespace std;
 
 struct Course {
-    string department = "";
-    string number = "";
-    string name = "";
+	string department = "";
+	string number = "";
+	string name = "";
 
-    struct BookBinding {
-        Book book;
-        string section;
-        bool required;
-    };
+	struct BookBinding {
+		Book book;
+		string section;
+		bool required;
+	};
 
-    vector<BookBinding> books{};
-    void addBookForSection(Book& book, string section, bool required);
+	vector<BookBinding> books{};
+	void addBookForSection(Book& book, string section, bool required);
 };
 
 struct CourseManager {
-    vector<Course> courses;
-    Course& get(string department, string number);
-    Course& getOrCreate(string department, string number);
+	vector<Course> courses;
+	Course& get(string department, string number);
+	Course& getOrCreate(string department, string number);
 
-    vector<Book> getBooksInDepartment(string department);
+	vector<Book> getBooksInDepartment(string department);
 };
 
 #endif

@@ -192,6 +192,8 @@ int main(int argc, char** argv) {
 					 "Average (MAX): " << max_total << endl;
 			} else if (command == "_EXIT") {
 				break;
+			} else if (command == "_PRINT") {
+				cout << combine(split, 1) << endl;
 			} else {
 				cout << "Invalid command: '" << command << "'" << endl;
 			}

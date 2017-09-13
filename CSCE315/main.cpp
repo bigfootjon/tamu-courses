@@ -84,7 +84,7 @@ int main(int argc, char** argv) {
 				course.name = combine(split, 3);
 			} else if (command == "A") {
 				Book& book = books.get(split.at(1));
-				Course& course = courses.getOrCreate(split.at(2), split.at(3));
+				Course& course = courses.get(split.at(2), split.at(3));
 				string& section = split.at(4);
 				bool required;
 				if (split.at(5) == "R") {

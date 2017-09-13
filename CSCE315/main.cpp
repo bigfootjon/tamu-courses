@@ -164,7 +164,7 @@ int main(int argc, char** argv) {
 
 				double max_total = 0;
 				double min_total = 0;
-				for (auto& book : departmentBooks) {
+				for (auto &book : departmentBooks) {
 					double min = max_double;
 					double max = min_double;
 					if (book.cost_new < min) min = book.cost_new;
@@ -189,10 +189,11 @@ int main(int argc, char** argv) {
 				}
 
 				cout << "Average (MIN): " << min_total <<
-						"Average (MAX): " << max_total << endl;
+					 "Average (MAX): " << max_total << endl;
+			} else if (command == "_EXIT") {
+				break;
 			} else {
 				cout << "Invalid command: '" << command << "'" << endl;
-				break;
 			}
 		} catch (const char* error) {
 			cerr << error << endl;

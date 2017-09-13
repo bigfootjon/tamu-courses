@@ -125,17 +125,10 @@ int main(int argc, char** argv) {
 				}
 			} else if (command == "GB") {
 				Book book = books.get(split.at(1));
-				cout << "Title: " << book.title << endl;
-				cout << "Author: " << book.author << endl;
-				cout << "Edition: " << book.edition << endl;
-				cout << "Publication Date: " << book.publication_month << "/" << book.publication_year << endl;
-				cout << "Cost (new): " << book.cost_new << endl;
-				cout << "Cost (used): " << book.cost_used << endl;
-				cout << "Cost (rented): " << book.cost_rented << endl;
-				cout << "Cost (electronic): " << book.cost_electronic << endl;
+				cout << book << endl;
 			} else if (command == "PB") {
 				for (auto& book : books.books) {
-					cout << book.title << endl;
+					cout << book << endl;
 				}
 			} else if (command == "PC") {
 				for (auto& course : courses.courses) {
@@ -152,13 +145,13 @@ int main(int argc, char** argv) {
 						shouldPrint = true;
 					}
 					if (shouldPrint) {
-						cout << book.title << endl;
+						cout << book << endl;
 					}
 				}
 			} else if (command == "PD") {
 				vector<Book> departmentBooks = courses.getBooksInDepartment(split.at(1));
 				for (auto& book : departmentBooks) {
-					cout << book.title << endl;
+					cout << book << endl;
 				}
 			} else if (command == "PM") {
 				vector<Book> departmentBooks = courses.getBooksInDepartment(split.at(1));

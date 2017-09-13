@@ -3,6 +3,7 @@
 
 #include <string>
 #include <vector>
+#include <iostream>
 
 using namespace std;
 
@@ -27,5 +28,7 @@ struct BookManager {
 	Book& get(string isbn);
 	Book& getOrCreate(string isbn);
 };
+
+ostream& operator<<(ostream& out, const Book& book);
 
 #endif

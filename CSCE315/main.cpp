@@ -158,38 +158,7 @@ int main(int argc, char** argv) {
 				}
 			} else if (command == "PM") {
 				vector<Book> departmentBooks = courses.getBooksInDepartment(split.at(1));
-				int count = 0;
-				double max_double = numeric_limits<double>::max();
-				double min_double = numeric_limits<double>::min();
-
-				double max_total = 0;
-				double min_total = 0;
-				for (auto &book : departmentBooks) {
-					double min = max_double;
-					double max = min_double;
-					if (book.cost_new < min) min = book.cost_new;
-					if (book.cost_used < min) min = book.cost_used;
-					if (book.cost_rented < min) min = book.cost_rented;
-					if (book.cost_electronic < min) min = book.cost_electronic;
-
-					if (book.cost_new > max) max = book.cost_new;
-					if (book.cost_used > max) max = book.cost_used;
-					if (book.cost_rented > max) max = book.cost_rented;
-					if (book.cost_electronic > max) max = book.cost_electronic;
-
-					if (min != 0) {
-						min_total += min;
-					}
-					if (max != 0) {
-						max_total += max;
-					}
-					if (max != 0 || min != 0) {
-						++count;
-					}
-				}
-
-				cout << "Average (MIN): " << min_total << endl <<
-					 "Average (MAX): " << max_total << endl;
+				cout << "TODO This command has not been implemented" << endl;
 			} else if (command == "_EXIT") {
 				break;
 			} else if (command == "_PRINT") {

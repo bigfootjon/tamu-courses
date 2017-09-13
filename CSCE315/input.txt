@@ -1,0 +1,27 @@
+B 123 This is a book
+D 123 A Jon Janzen
+D 123 E 4
+D 123 D 12/1997
+M 123 12.39 N
+M 123 5.16 U
+M 123 3.04 R
+M 123 10.69 E
+
+B 234 This is another book
+D 234 A Wes Hig
+D 234 E 2
+D 234 D 04/2009
+M 234 189.99 N
+M 234 160.99 U
+M 234 45.87 R
+M 234 150.50 E
+
+C CSCE 121 Introduction to C++ Programming
+C HORT 241 Floral Design
+
+A 123 CSCE 121 501 R
+A 123 CSCE 121 502 R
+A 234 CSCE 121 501 O
+
+A 234 HORT 121 501 R
+A 123 HORT 121 501 O

@@ -1,4 +1,4 @@
-#import <string>
+#include <string>
 #include "course.h"
 
 using namespace std;

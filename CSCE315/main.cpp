@@ -1,7 +1,10 @@
 #include <iostream>
 #include <vector>
+#include <limits>
 #include "book.h"
 #include "course.h"
+
+using namespace std;
 
 string combine(vector<string> split, unsigned int initial) {
     string title;
@@ -13,8 +16,6 @@ string combine(vector<string> split, unsigned int initial) {
     }
     return title;
 }
-
-using namespace std;
 
 int main(int argc, char** argv) {
     BookManager books;

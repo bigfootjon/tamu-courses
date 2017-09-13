@@ -1,20 +1,25 @@
-run: main out
+CC=g++ --std=c++11 -g
+
+run: out/main out
 	./out/main
 
-gdb: main out
+gdb: out/main out
 	gdb ./out/main
 
-main: main.o out
-	g++ --std=c++11 -g -o out/main out/main.o
+out/main: out/main.o out/book.o out/course.o out
+	$(CC) -o out/main out/main.o out/book.o out/course.o
 
-main.o: main.cpp main.h out
-	g++ --std=c++11 -g -c main.cpp -o out/main.o
+out/main.o: main.cpp main.h out
+	$(CC) -c main.cpp -o out/main.o
 
-book.o: book.cpp book.h out
-	g++ --std=c++11 -g -c book.cpp -o out/book.o
+out/book.o: book.cpp book.h out
+	$(CC) -c book.cpp -o out/book.o
+
+out/course.o: course.cpp course.h out
+	$(CC) -c course.cpp -o out/course.o
 
 out:
 	mkdir -p out
 
 clean:
-	rm -rf out/*
+	rm -rf out

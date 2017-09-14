@@ -9,6 +9,8 @@ struct BookManager {
 
 	Book& get(string isbn);
 	Book& getOrCreate(string isbn);
+
+	bool isISBNValid(string isbn);
 };
 
 #endif

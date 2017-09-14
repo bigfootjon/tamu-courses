@@ -2,6 +2,11 @@
 
 // Get a book from the manager by its ISBN (throw an error if not found)
 Book& BookManager::get(const string isbn) {
+	// Check ISBN validity
+	if (isISBNValid(isbn)) {
+		throw "ISBN is not valid";
+	}
+
 	// Iterate through all known books
 	for (auto& book : books) {
 		// If the ISBN matches the requested ISBN, return the book
@@ -15,6 +20,11 @@ Book& BookManager::get(const string isbn) {
 
 // Try to lookup a book in the manager by its ISBN, if that fails create the book
 Book& BookManager::getOrCreate(const string isbn) {
+	// Check ISBN validity
+	if (isISBNValid(isbn)) {
+		throw "ISBN is not valid";
+	}
+
 	// Attempt to get from known books
 	try {
 		return get(isbn);
@@ -25,4 +35,8 @@ Book& BookManager::getOrCreate(const string isbn) {
 		books.push_back(new_book);
 		return get(isbn);
 	}
+}
+
+bool BookManager::isISBNValid(const string isbn) {
+	return isbn.length() == 13;
 }

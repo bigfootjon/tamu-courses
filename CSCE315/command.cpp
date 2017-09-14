@@ -1,7 +1,7 @@
 #import "command.h"
 
 
-// Implements "B <ISBN> <title>..." command
+// Implements "B <ISBN> <title>" command
 void CommandManager::commandAddBook(string isbn, string title) {
 	Book& book = books.getOrCreate(isbn);
 	book.title = title;

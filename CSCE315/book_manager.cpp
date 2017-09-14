@@ -1,9 +1,7 @@
 #include "book_manager.h"
 
+// Get a book from the manager by its ISBN (throw an error if not found)
 Book& BookManager::get(const string isbn) {
-	if (!isValidIsbn(isbn)) {
-		throw "ISBN is not valid";
-	}
 	for (auto& book : books) {
 		if (book.isbn == isbn) {
 			return book;
@@ -12,10 +10,8 @@ Book& BookManager::get(const string isbn) {
 	throw "No book exists with that ISBN";
 }
 
+// Try to lookup a book in the manager by its ISBN, if that fails create the book
 Book& BookManager::getOrCreate(const string isbn) {
-	if (!isValidIsbn(isbn)) {
-		throw "ISBN is not valid";
-	}
 	// Attempt to get from known books
 	try {
 		return get(isbn);
@@ -26,20 +22,4 @@ Book& BookManager::getOrCreate(const string isbn) {
 		books.push_back(new_book);
 		return get(isbn);
 	}
-}
-
-bool BookManager::isValidIsbn(string isbn) {
-	if (isbn.length() != 13) {
-		return false;
-	}
-	int sum = 0;
-	for (int i = 0; i < isbn.length(); ++i) {
-		int digit = isbn[i] - '0';
-		int multiplier = 1;
-		if (i % 2 == 1) {
-			multiplier = 3;
-		}
-		sum += multiplier * digit;
-	}
-	return sum % 10 == 0;
 }

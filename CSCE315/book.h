@@ -7,8 +7,8 @@
 
 using namespace std;
 
+// This struct is used for storing all information about a book
 struct Book {
-public:
 	string isbn = "";
 	string title = "";
 	string author = "";
@@ -22,6 +22,7 @@ public:
 	double cost_electronic = 0;
 };
 
+// Declare output operator for Book objects
 ostream& operator<<(ostream& out, const Book& book);
 
 #endif

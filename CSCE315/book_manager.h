@@ -3,10 +3,10 @@
 
 #include "book.h"
 
+// Object that stores the known books and provides helper methods for looking up books
 struct BookManager {
 	vector<Book> books;
 
-	bool isValidIsbn(string isbn);
 	Book& get(string isbn);
 	Book& getOrCreate(string isbn);
 };

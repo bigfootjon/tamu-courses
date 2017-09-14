@@ -3,6 +3,7 @@
 
 #include "course.h"
 
+// Define a structure to store known courses
 struct CourseManager {
 	vector<Course> courses;
 	Course& get(string department, string number);

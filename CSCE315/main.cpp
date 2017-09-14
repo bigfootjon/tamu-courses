@@ -1,6 +1,5 @@
 #include <iostream>
 #include <vector>
-#include <limits>
 #include "book.h"
 #include "course.h"
 #include "book_manager.h"
@@ -8,6 +7,11 @@
 
 using namespace std;
 
+// Many commands require a few arguments separated by spaces and then the rest of input is combined as the final argument
+// For example, in the command "A 1234567890123 A book about books" the text "A book about books" is treated as a single
+//     argument.
+// This function takes the input (as a vector split up by spaces) and the index of the first argument to combine.
+// It then returns all the variables from that index to the end of the input vector and joins them with spaces
 string combine(vector<string> split, unsigned int initial) {
 	if (initial >= split.size()) {
 		throw out_of_range("combine");
@@ -23,32 +27,46 @@ string combine(vector<string> split, unsigned int initial) {
 	return title;
 }
 
-int main(int argc, char** argv) {
+// Entry point to the program, input is ignored so those arguments have been removed
+int main() {
+	// Create the manager to store the books
 	BookManager books;
+	// Create the manager to store the courses
 	CourseManager courses;
 
+	// Continually take input until the program ends
 	while (true) {
 		string input;
 		getline(cin, input);
 
+		// Vector to store the split input
 		vector<string> split;
+		// Temporary variable to store substrings of input
 		string current;
+		// Read through each character of input in turn
 		for (char i : input) {
 			if (i == ' ') {
+				// If the input is a space then add the current string to the vector and clear the current string
 				split.push_back(current);
 				current = "";
 			} else {
+				// If the input character is not a space add it to the current string
 				current += i;
 			}
 		}
-		if (current.length() != 0) {
+		// Since there isn't a space at the end of input to trigger the logic to add it to the input vector
+		//    we need to check if there is data in the current string and add it to the end of the input if there is
+		if (current.empty()) {
 			split.push_back(current);
 		}
-		
+
+		// If the input is empty, go to the next line
 		if (split.empty()) {
 			continue;
 		}
-	
+
+
+		// The first part of input is the command code, so we store that here for convenience
 		string& command = split.at(0);
 
 		try {

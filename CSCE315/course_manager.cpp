@@ -1,5 +1,7 @@
 #include "course_manager.h"
 
+// Get a course object by its department and number (e.g. CSCE 121)
+// Otherwise, throw an exception
 Course& CourseManager::get(const string department, const string number) {
 	for (auto& course : courses) {
 		if (course.department == department && course.number == number) {
@@ -9,6 +11,8 @@ Course& CourseManager::get(const string department, const string number) {
 	throw "No course exists with that department and number";
 }
 
+// Get a course object by its department and number (e.g. CSCE 121)
+// Create it if it can't be found
 Course& CourseManager::getOrCreate(string department, string number) {
 	// Attempt to get from known books
 	try {
@@ -23,6 +27,8 @@ Course& CourseManager::getOrCreate(string department, string number) {
 	}
 }
 
+
+// Fetch all books in a given department
 vector<Book> CourseManager::getBooksInDepartment(string department) {
 	vector<Book> books;
 	for (auto& course : courses) {

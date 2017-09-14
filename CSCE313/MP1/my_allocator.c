@@ -15,40 +15,52 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "my_allocator.h"
+#include "free_list.h"
 
 const int MEMORY_SIZE = 200000000;
 
 char* base; // This is used to release the entire block of memory instead of wherever start is pointing to right now 
-char* start;
-unsigned int remaining;
+FL_HEADER* start;
 
 unsigned int init_allocator(unsigned int _basic_block_size, unsigned int _length) {
-	if (start == NULL) {
+	if (start == 0) {
 		base = (char*)malloc(_length);
-		if (base == NULL) {
+		if (base == 0) {
 			return 0;
 		}
-		start = base;
-		remaining = _length;
+		start = FL_init(base, _length);
 	}
 	return _length;
 }
 
 Addr my_malloc(size_t _length) {
-	if (start == NULL) {
-		return NULL;
+	if (start == 0) {
+		return 0;
 	}
-	if (remaining < _length) {
-		return NULL;
-	} else {
-		Addr allocated = (Addr)start;
-		start += _length;
-		remaining -= _length;
-		return allocated;
+	FL_HEADER* current = start;
+	while (current != 0) {
+		if (current->length >= _length) {
+			break;
+		}
+		current = start->next;
 	}
+	if (current == 0) {
+		return 0;
+	}
+	FL_remove(start, current);
+	if (_length + sizeof(FL_HEADER) < current->length) {
+		int extra_space = current->length - _length - sizeof(FL_HEADER);
+		FL_HEADER* new_header = FL_init((char*)current + _length + sizeof(FL_HEADER), extra_space);
+		FL_add(start, new_header);
+	}
+	return (Addr)(((char*)current) + sizeof(FL_HEADER));
 }
 
 int my_free(Addr _a) {
+	FL_HEADER* header = (FL_HEADER*)(_a - sizeof(FL_HEADER));
+	header->next = 0;
+	header->previous = 0;
+	FL_add(start, header);
 	return 0;
 }
 

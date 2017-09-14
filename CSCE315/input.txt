@@ -29,33 +29,22 @@ A 234 CSCE 121 501 O
 A 234 HORT 241 501 R
 A 123 HORT 241 501 O
 
-_PRINT ***** THESE COMMANDS SHOULD ALL SUCCEED *****
-
-_PRINT * Printing all books:
 PB
 
-_PRINT * Printing all courses:
 PC
 
-_PRINT * Books since 02/2000:
 PY 02/2000
 
-_PRINT * Books for CSCE:
 PD CSCE
 
-_PRINT * Books for HORT:
 PD HORT
 
-_PRINT * Average min/max for CSCE:
 PM CSCE
 
-_PRINT * Books for CSCE 121 (all sections):
 GC CSCE 121
 
-_PRINT * Books for CSCE 121 (section 501):
 GS CSCE 121 501
 
-_PRINT ***** THESE COMMANDS SHOULD ALL FAIL *****
 D 678 A Blah
 D 678 D 01/1970
 D 678 E 4
@@ -64,5 +53,3 @@ M 678 5.16 U
 M 678 3.04 R
 M 678 10.69 E
 A 123 HORT 121 501 R
-
-_EXIT

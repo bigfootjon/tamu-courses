@@ -29,7 +29,7 @@ Book& BookManager::getOrCreate(const string isbn) {
 	// Attempt to get from known books
 	try {
 		return get(isbn);
-	} catch (InvalidCommand error) {
+	} catch (const InvalidCommand error) {
 		// Create if not found
 		Book new_book;
 		new_book.isbn = isbn;

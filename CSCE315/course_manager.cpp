@@ -21,7 +21,7 @@ Course& CourseManager::getOrCreate(string department, string number) {
 	// Attempt to get from known books
 	try {
 		return get(department, number);
-	} catch (const char*) {
+	} catch (const InvalidCommand exception) {
 		// Create if not found
 		Course new_course;
 		new_course.department = department;

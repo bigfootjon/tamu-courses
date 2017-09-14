@@ -1,10 +1,13 @@
 #import "command.h"
 
+
+// Implements "B <ISBN> <title>..." command
 void CommandManager::commandAddBook(string isbn, string title) {
 	Book& book = books.getOrCreate(isbn);
 	book.title = title;
 }
 
+// Implements "D <ISBN> <A | E | D> <value>" command
 void CommandManager::commandSetBookDetail(string isbn, const string mode, string data) {
 	Book& book = books.get(isbn);
 	if (mode == "A") {
@@ -22,6 +25,7 @@ void CommandManager::commandSetBookDetail(string isbn, const string mode, string
 	}
 }
 
+// Implements "M <ISBN> <cost> <N | U | R | E>" command
 void CommandManager::commandSetCost(string isbn, double cost, const string type) {
 	Book& book = books.get(isbn);
 	if (type == "N") {
@@ -32,14 +36,18 @@ void CommandManager::commandSetCost(string isbn, double cost, const string type)
 		book.cost_rented = cost;
 	} else if (type == "E") {
 		book.cost_electronic = cost;
+	} else {
+		throw "Invalid cost type";
 	}
 }
 
+// Implements "C <department> <number> <name>" command
 void CommandManager::commandAddCourse(string department, string number, string name) {
 	Course& course = courses.getOrCreate(department, number);
 	course.name = name;
 }
 
+// Implements "A <ISBN> <department> <number> <section> <R | O>" command
 void CommandManager::commandAddBookToCourse(string isbn, string department, string number, string section, string type) {
 	Book& book = books.get(isbn);
 	Course& course = courses.get(department, number);
@@ -54,6 +62,7 @@ void CommandManager::commandAddBookToCourse(string isbn, string department, stri
 	course.addBookForSection(book, section, required);
 }
 
+// Implements "GC <department> <number>" command
 void CommandManager::commandPrintBooksForCourse(string department, string number) {
 	Course& course = courses.get(department, number);
 	for (auto& binding : course.books) {
@@ -67,6 +76,7 @@ void CommandManager::commandPrintBooksForCourse(string department, string number
 	}
 }
 
+// Implements "GS <department> <number> <section>" command
 void CommandManager::commandPrintBooksForSection(string department, string number, string section) {
 	Course& course = courses.get(department, number);
 	for (auto& binding : course.books) {
@@ -82,23 +92,27 @@ void CommandManager::commandPrintBooksForSection(string department, string numbe
 	}
 }
 
+// Implements "GB <ISBN>" command
 void CommandManager::commandPrintBook(string isbn) {
 	Book book = books.get(isbn);
 	cout << book << endl;
 }
 
+// Implements "PB" command
 void CommandManager::commandPrintAllBooks() {
 	for (auto& book : books.books) {
 		cout << book << endl;
 	}
 }
 
+// Implements "PC" command
 void CommandManager::commandPrintAllCourses() {
 	for (auto& course : courses.courses) {
 		cout << course.department << " " << course.number << endl;
 	}
 }
 
+// Implements "PY <MM/YYYY>" command
 void CommandManager::commandPrintBooksSince(int month, int year) {
 	for (auto& book : books.books) {
 		bool shouldPrint = false;
@@ -113,6 +127,7 @@ void CommandManager::commandPrintBooksSince(int month, int year) {
 	}
 }
 
+// Implements "PD <department>" command
 void CommandManager::commandPrintBooksInDepartment(string department) {
 	vector<Book> departmentBooks = courses.getBooksInDepartment(department);
 	for (auto& book : departmentBooks) {
@@ -120,6 +135,7 @@ void CommandManager::commandPrintBooksInDepartment(string department) {
 	}
 }
 
+// Implements "PM <department>" command
 void CommandManager::commandPrintAverages(string department) {
 	vector<Book> departmentBooks = courses.getBooksInDepartment(department);
 	cout << "TODO This command has not been implemented" << endl;

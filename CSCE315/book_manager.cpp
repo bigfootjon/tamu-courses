@@ -4,7 +4,7 @@
 // Get a book from the manager by its ISBN (throw an error if not found)
 Book& BookManager::get(const string isbn) {
 	// Check ISBN validity
-	if (isISBNValid(isbn)) {
+	if (!isISBNValid(isbn)) {
 		throw InvalidCommand("ISBN is not valid");
 	}
 
@@ -22,7 +22,7 @@ Book& BookManager::get(const string isbn) {
 // Try to lookup a book in the manager by its ISBN, if that fails create the book
 Book& BookManager::getOrCreate(const string isbn) {
 	// Check ISBN validity
-	if (isISBNValid(isbn)) {
+	if (!isISBNValid(isbn)) {
 		throw InvalidCommand("ISBN is not valid");
 	}
 

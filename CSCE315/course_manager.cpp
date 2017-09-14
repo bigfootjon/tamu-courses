@@ -1,4 +1,5 @@
 #include "course_manager.h"
+#include "main.h"
 
 // Get a course object by its department and number (e.g. CSCE 121)
 // Otherwise, throw an exception
@@ -11,7 +12,7 @@ Course& CourseManager::get(const string department, const string number) {
 		}
 	}
 	// If no courses match, throw an error
-	throw "No course exists with that department and number";
+	throw InvalidCommand("No course exists with that department and number");
 }
 
 // Get a course object by its department and number (e.g. CSCE 121)

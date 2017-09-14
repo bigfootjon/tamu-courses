@@ -1,10 +1,11 @@
 #include "book_manager.h"
+#include "main.h"
 
 // Get a book from the manager by its ISBN (throw an error if not found)
 Book& BookManager::get(const string isbn) {
 	// Check ISBN validity
 	if (isISBNValid(isbn)) {
-		throw "ISBN is not valid";
+		throw InvalidCommand("ISBN is not valid");
 	}
 
 	// Iterate through all known books
@@ -15,14 +16,14 @@ Book& BookManager::get(const string isbn) {
 		}
 	}
 	// If no books match the exception, throw an error
-	throw "No book exists with that ISBN";
+	throw InvalidCommand("No book exists with that ISBN");
 }
 
 // Try to lookup a book in the manager by its ISBN, if that fails create the book
 Book& BookManager::getOrCreate(const string isbn) {
 	// Check ISBN validity
 	if (isISBNValid(isbn)) {
-		throw "ISBN is not valid";
+		throw InvalidCommand("ISBN is not valid");
 	}
 
 	// Attempt to get from known books

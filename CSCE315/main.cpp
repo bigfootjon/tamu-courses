@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include "command.h"
+#include "main.h"
 
 using namespace std;
 
@@ -125,8 +126,8 @@ void call_command(CommandManager& commandManager, string input_line) {
 		} else {
 			cout << "Invalid command: '" << command << "'" << endl;
 		}
-	} catch (const char* error) {
-		cerr << error << endl;
+	} catch (InvalidCommand exception) {
+		cerr << exception.what() << endl;
 	} catch (out_of_range& error) {
 		cerr << "Incomplete command: " << input_line << endl;
 	}

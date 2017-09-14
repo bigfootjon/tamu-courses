@@ -1,4 +1,5 @@
 #import "command.h"
+#include "main.h"
 
 
 // Implements "B <ISBN> <title>" command
@@ -37,7 +38,7 @@ void CommandManager::commandSetCost(string isbn, double cost, const string type)
 	} else if (type == "E") {
 		book.cost_electronic = cost;
 	} else {
-		throw "Invalid cost type";
+		throw InvalidCommand("Invalid cost type");
 	}
 }
 
@@ -57,7 +58,7 @@ void CommandManager::commandAddBookToCourse(string isbn, string department, stri
 	} else if (type == "O") {
 		required = false;
 	} else {
-		throw "Invalid selection for R/O";
+		throw InvalidCommand("Invalid selection for R/O");
 	}
 	course.addBookForSection(book, section, required);
 }

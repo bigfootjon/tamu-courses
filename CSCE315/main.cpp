@@ -14,9 +14,9 @@ CourseManager courses;
 
 // Many commands require a few arguments separated by spaces and then the rest of input is combined as the final argument
 // For example, in the command "A 1234567890123 A book about books" the text "A book about books" is treated as a single
-//     argument.
+//     argument to the command.
 // This function takes the input (as a vector split up by spaces) and the index of the first argument to combine.
-// It then returns all the variables from that index to the end of the input vector and joins them with spaces
+// It then returns all the strings from that index to the end of the input vector and joins them with spaces
 string combine(vector<string> split, unsigned int initial) {
 	// Return an error is the input is shorter than the given initial index
 	if (initial >= split.size()) {

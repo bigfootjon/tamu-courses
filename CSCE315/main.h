@@ -6,8 +6,11 @@
 
 using namespace std;
 
+
+// struct for throwing as an exception
 struct InvalidCommand : public exception {
 private:
+	// Allow for a dynamic reason message
 	const char* reason = "";
 
 public:

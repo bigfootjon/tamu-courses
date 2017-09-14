@@ -22,7 +22,7 @@ void CommandManager::commandSetBookDetail(string isbn, const string mode, string
 		book.publication_month = month;
 		book.publication_year = year;
 	} else {
-		cout << "Command mode '" << mode << "' not recognized";
+		throw InvalidCommand("Command mode not recognized");
 	}
 }
 

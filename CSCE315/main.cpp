@@ -55,27 +55,56 @@ void call_command(CommandManager& commandManager, string input_line) {
 		return;
 	}
 
-
 	// The first part of input is the command code, so we store that here for convenience
 	string& command = split.at(0);
 
 	try {
 		if (command == "B") {
-			commandManager.commandAddBook(split.at(1), combine(split, 2));
+			string& isbn = split.at(1);
+			string title = combine(split, 2);
+
+			commandManager.commandAddBook(isbn, title);
 		} else if (command == "D") {
-			commandManager.commandSetBookDetail(split.at(1), split.at(2), combine(split, 3));
+			string& isbn = split.at(1);
+			string& mode = split.at(2);
+			string data = combine(split, 3);
+
+			commandManager.commandSetBookDetail(isbn, mode, data);
 		} else if (command == "M") {
-			commandManager.commandSetPrice(split.at(1), stod(split.at(2)), split.at(3));
+			string& isbn = split.at(1);
+			double cost = stod(split.at(2));
+			string& type = split.at(3);
+
+			commandManager.commandSetCost(isbn, cost, type);
 		} else if (command == "C") {
-			commandManager.commandAddCourse(split.at(1), split.at(2), combine(split, 3));
+			string& department = split.at(1);
+			string& number = split.at(2);
+			string name = combine(split, 3);
+
+			commandManager.commandAddCourse(department, number, name);
 		} else if (command == "A") {
-			commandManager.commandAddBookToCourse(split.at(1), split.at(2), split.at(3), split.at(4), split.at(5));
+			string& isbn = split.at(1);
+			string& department = split.at(2);
+			string& number = split.at(3);
+			string& section = split.at(4);
+			string& type = split.at(5);
+
+			commandManager.commandAddBookToCourse(isbn, department, number, section, type);
 		} else if (command == "GC") {
-			commandManager.commandPrintBooksForCourse(split.at(1), split.at(2));
+			string& department = split.at(1);
+			string& number = split.at(2);
+
+			commandManager.commandPrintBooksForCourse(department, number);
 		} else if (command == "GS") {
-			commandManager.commandPrintBooksForSection(split.at(1), split.at(2), split.at(3));
+			string& department = split.at(1);
+			string& number = split.at(2);
+			string& section = split.at(3);
+
+			commandManager.commandPrintBooksForSection(department, number, section);
 		} else if (command == "GB") {
-			commandManager.commandPrintBook(split.at(1));
+			string& isbn = split.at(1);
+
+			commandManager.commandPrintBook(isbn);
 		} else if (command == "PB") {
 			commandManager.commandPrintAllBooks();
 		} else if (command == "PC") {
@@ -83,11 +112,16 @@ void call_command(CommandManager& commandManager, string input_line) {
 		} else if (command == "PY") {
 			int month = stoi(split.at(1).substr(0,2));
 			int year = stoi(split.at(1).substr(3,8));
+
 			commandManager.commandPrintBooksSince(month, year);
 		} else if (command == "PD") {
-			commandManager.commandPrintBooksInDepartment(split.at(1));
+			string& department = split.at(1);
+
+			commandManager.commandPrintBooksInDepartment(department);
 		} else if (command == "PM") {
-			commandManager.commandPrintAverages(split.at(1));
+			string& department = split.at(1);
+
+			commandManager.commandPrintAverages(department);
 		} else {
 			cout << "Invalid command: '" << command << "'" << endl;
 		}

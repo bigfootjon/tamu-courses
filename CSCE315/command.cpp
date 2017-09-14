@@ -22,7 +22,7 @@ void CommandManager::commandSetBookDetail(string isbn, const string mode, string
 	}
 }
 
-void CommandManager::commandSetPrice(string isbn, double cost, const string type) {
+void CommandManager::commandSetCost(string isbn, double cost, const string type) {
 	Book& book = books.get(isbn);
 	if (type == "N") {
 		book.cost_new = cost;

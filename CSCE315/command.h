@@ -1,3 +1,6 @@
+#ifndef COMMAND_HEADER
+#define COMMAND_HEADER
+
 #include "book_manager.h"
 #include "course_manager.h"
 
@@ -24,3 +27,5 @@ public:
 	void commandPrintBooksInDepartment(string department);
 	void commandPrintAverages(string department);
 };
+
+#endif

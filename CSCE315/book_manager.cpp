@@ -37,6 +37,7 @@ Book& BookManager::getOrCreate(const string isbn) {
 	}
 }
 
+// Check if given ISBN number contains 13 digits
 bool BookManager::isISBNValid(const string isbn) {
 	return isbn.length() == 13;
 }

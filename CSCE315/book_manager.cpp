@@ -2,11 +2,14 @@
 
 // Get a book from the manager by its ISBN (throw an error if not found)
 Book& BookManager::get(const string isbn) {
+	// Iterate through all known books
 	for (auto& book : books) {
+		// If the ISBN matches the requested ISBN, return the book
 		if (book.isbn == isbn) {
 			return book;
 		}
 	}
+	// If no books match the exception, throw an error
 	throw "No book exists with that ISBN";
 }
 

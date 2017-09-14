@@ -3,11 +3,14 @@
 // Get a course object by its department and number (e.g. CSCE 121)
 // Otherwise, throw an exception
 Course& CourseManager::get(const string department, const string number) {
+	// Iterate through all known courses
 	for (auto& course : courses) {
+		// If the department and number match, return that course
 		if (course.department == department && course.number == number) {
 			return course;
 		}
 	}
+	// If no courses match, throw an error
 	throw "No course exists with that department and number";
 }
 
@@ -31,9 +34,13 @@ Course& CourseManager::getOrCreate(string department, string number) {
 // Fetch all books in a given department
 vector<Book> CourseManager::getBooksInDepartment(string department) {
 	vector<Book> books;
+	// Iterate through known courses
 	for (auto& course : courses) {
+		// If the department matches, add the books from that courses
 		if (course.department == department) {
+			// Iterate through the books in the course
 			for (auto& new_book : course.books) {
+				// Make sure the book is not already included in the book vector
 				bool alreadyIncluded = false;
 				for (auto& book : books) {
 					if (new_book.book.isbn == book.isbn) {
@@ -41,6 +48,7 @@ vector<Book> CourseManager::getBooksInDepartment(string department) {
 						break;
 					}
 				}
+				// If it isn't, add it
 				if (!alreadyIncluded) {
 					books.push_back(new_book.book);
 				}

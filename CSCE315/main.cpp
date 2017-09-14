@@ -13,18 +13,21 @@ using namespace std;
 // This function takes the input (as a vector split up by spaces) and the index of the first argument to combine.
 // It then returns all the variables from that index to the end of the input vector and joins them with spaces
 string combine(vector<string> split, unsigned int initial) {
+	// Return an error is the input is shorter than the given initial index
 	if (initial >= split.size()) {
 		throw out_of_range("combine");
 	}
 
-	string title;
+	string combined;
+	// Iterate through the split parts of the input
 	for (unsigned i = initial; i < split.size(); ++i) {
+		// If we're not on the first iteration, add a space before adding the input segment
 		if (i != initial) {
-			title += " ";
+			combined += " ";
 		}
-		title += split.at(i);
+		combined += split.at(i);
 	}
-	return title;
+	return combined;
 }
 
 // Entry point to the program, input is ignored so those arguments have been removed

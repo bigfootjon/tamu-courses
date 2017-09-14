@@ -35,6 +35,131 @@ string combine(vector<string> split, unsigned int initial) {
 	return combined;
 }
 
+void commandAddBook(string isbn, string title) {
+	Book& book = books.getOrCreate(isbn);
+	book.title = title;
+}
+
+void commandSetBookDetail(string isbn, const string mode, string data) {
+	Book& book = books.get(isbn);
+	if (mode == "A") {
+		book.author = data;
+	} else if (mode == "E") {
+		int edition = stoi(data);
+		book.edition = edition;
+	} else if (mode == "D") {
+		int month = stoi(data.substr(0,2));
+		int year = stoi(data.substr(3,8));
+		book.publication_month = month;
+		book.publication_year = year;
+	} else {
+		cout << "Command mode '" << mode << "' not recognized";
+	}
+}
+
+void commandSetPrice(string isbn, double cost, const string type) {
+	Book& book = books.get(isbn);
+	if (type == "N") {
+		book.cost_new = cost;
+	} else if (type == "U") {
+		book.cost_used = cost;
+	} else if (type == "R") {
+		book.cost_rented = cost;
+	} else if (type == "E") {
+		book.cost_electronic = cost;
+	}
+}
+
+void commandAddCourse(string department, string number, string name) {
+	Course& course = courses.getOrCreate(department, number);
+	course.name = name;
+}
+
+void commandAddBookToCourse(string isbn, string department, string number, string section, string type) {
+	Book& book = books.get(isbn);
+	Course& course = courses.get(department, number);
+	bool required;
+	if (type == "R") {
+		required = true;
+	} else if (type == "O") {
+		required = false;
+	} else {
+		throw "Invalid selection for R/O";
+	}
+	course.addBookForSection(book, section, required);
+}
+
+void commandPrintBooksForCourse(string department, string number) {
+	Course& course = courses.get(department, number);
+	for (auto& binding : course.books) {
+		cout << binding.book.title << " (Section " << binding.section << ", ";
+		if (binding.required) {
+			cout << "Required";
+		} else {
+			cout << "Optional";
+		}
+		cout << ")" << endl;
+	}
+}
+
+void commandPrintBooksForSection(string department, string number, string section) {
+	Course& course = courses.get(department, number);
+	for (auto& binding : course.books) {
+		if (binding.section == section) {
+			cout << binding.book.title << " (";
+			if (binding.required) {
+				cout << "Required";
+			} else {
+				cout << "Optional";
+			}
+			cout << ")" << endl;
+		}
+	}
+}
+
+void commandPrintBook(string isbn) {
+	Book book = books.get(isbn);
+	cout << book << endl;
+}
+
+void commandPrintAllBooks() {
+	for (auto& book : books.books) {
+		cout << book << endl;
+	}
+}
+
+void commandPrintAllCourses() {
+	for (auto& course : courses.courses) {
+		cout << course.department << " " << course.number << endl;
+	}
+}
+
+void commandPrintBooksSince(int month, int year) {
+	for (auto& book : books.books) {
+		bool shouldPrint = false;
+		if (book.publication_year > year) {
+			shouldPrint = true;
+		} else if (book.publication_year == year && book.publication_month >= month) {
+			shouldPrint = true;
+		}
+		if (shouldPrint) {
+			cout << book << endl;
+		}
+	}
+}
+
+void commandPrintBooksInDepartment(string department) {
+	vector<Book> departmentBooks = courses.getBooksInDepartment(department);
+	for (auto& book : departmentBooks) {
+		cout << book << endl;
+	}
+}
+
+void commandPrintAverages(string department) {
+	vector<Book> departmentBooks = courses.getBooksInDepartment(department);
+	cout << "TODO This command has not been implemented" << endl;
+}
+
 void call_command(string input_line) {
 	// Vector to store the split input
 	vector<string> split;
@@ -57,7 +182,7 @@ void call_command(string input_line) {
 		split.push_back(current);
 	}
 
-	// If the input is empty, go to the next line
+	// If the input is empty, go to the next line of input
 	if (split.empty()) {
 		return;
 	}
@@ -68,118 +193,40 @@ void call_command(string input_line) {
 
 	try {
 		if (command == "B") {
-			Book& book = books.getOrCreate(split.at(1));
-			string title = combine(split, 2);
-			book.title = title;
+			commandAddBook(split.at(1), combine(split, 2));
 		} else if (command == "D") {
-			Book& book = books.get(split.at(1));
-			if (split.at(2) == "A") {
-				string author = combine(split, 3);
-				book.author = author;
-			} else if (split.at(2) == "E") {
-				int edition = stoi(split.at(3));
-				book.edition = edition;
-			} else if (split.at(2) == "D") {
-				string& date = split.at(3);
-				int month = stoi(date.substr(0,2));
-				int year = stoi(date.substr(3,8));
-				book.publication_month = month;
-				book.publication_year = year;
-			} else {
-				cout << "Command '" << split.at(2) << "' not recognized";
-			}
+			commandSetBookDetail(split.at(1), split.at(2), combine(split, 3));
 		} else if (command == "M") {
-			Book& book = books.get(split.at(1));
-			double cost = stod(split.at(2));
-			if (split.at(3) == "N") {
-				book.cost_new = cost;
-			} else if (split.at(3) == "U") {
-				book.cost_used = cost;
-			} else if (split.at(3) == "R") {
-				book.cost_rented = cost;
-			} else if (split.at(3) == "E") {
-				book.cost_electronic = cost;
-			}
+			commandSetPrice(split.at(1), stod(split.at(2)), split.at(3));
 		} else if (command == "C") {
-			Course& course = courses.getOrCreate(split.at(1), split.at(2));
-			course.name = combine(split, 3);
+			commandAddCourse(split.at(1), split.at(2), combine(split, 3));
 		} else if (command == "A") {
-			Book& book = books.get(split.at(1));
-			Course& course = courses.get(split.at(2), split.at(3));
-			string& section = split.at(4);
-			bool required;
-			if (split.at(5) == "R") {
-				required = true;
-			} else if (split.at(5) == "O") {
-				required = false;
-			} else {
-				throw "Invalid selection for R/O";
-			}
-			course.addBookForSection(book, section, required);
+			commandAddBookToCourse(split.at(1), split.at(2), split.at(3), split.at(4), split.at(5));
 		} else if (command == "GC") {
-			Course& course = courses.get(split.at(1), split.at(2));
-			for (auto& binding : course.books) {
-				cout << binding.book.title << " (Section " << binding.section << ", ";
-				if (binding.required) {
-					cout << "Required";
-				} else {
-					cout << "Optional";
-				}
-				cout << ")" << endl;
-			}
+			commandPrintBooksForCourse(split.at(1), split.at(2));
 		} else if (command == "GS") {
-			Course& course = courses.get(split.at(1), split.at(2));
-			for (auto& binding : course.books) {
-				if (binding.section == split.at(3)) {
-					cout << binding.book.title << " (";
-					if (binding.required) {
-						cout << "Required";
-					} else {
-						cout << "Optional";
-					}
-					cout << ")" << endl;
-				}
-			}
+			commandPrintBooksForSection(split.at(1), split.at(2), split.at(3));
 		} else if (command == "GB") {
-			Book book = books.get(split.at(1));
-			cout << book << endl;
+			commandPrintBook(split.at(1));
 		} else if (command == "PB") {
-			for (auto& book : books.books) {
-				cout << book << endl;
-			}
+			commandPrintAllBooks();
 		} else if (command == "PC") {
-			for (auto& course : courses.courses) {
-				cout << course.department << " " << course.number << endl;
-			}
+			commandPrintAllCourses();
 		} else if (command == "PY") {
 			int month = stoi(split.at(1).substr(0,2));
 			int year = stoi(split.at(1).substr(3,8));
-			for (auto& book : books.books) {
-				bool shouldPrint = false;
-				if (book.publication_year > year) {
-					shouldPrint = true;
-				} else if (book.publication_year == year && book.publication_month >= month) {
-					shouldPrint = true;
-				}
-				if (shouldPrint) {
-					cout << book << endl;
-				}
-			}
+			commandPrintBooksSince(month, year);
 		} else if (command == "PD") {
-			vector<Book> departmentBooks = courses.getBooksInDepartment(split.at(1));
-			for (auto& book : departmentBooks) {
-				cout << book << endl;
-			}
+			commandPrintBooksInDepartment(split.at(1));
 		} else if (command == "PM") {
-			vector<Book> departmentBooks = courses.getBooksInDepartment(split.at(1));
-			cout << "TODO This command has not been implemented" << endl;
+			commandPrintAverages(split.at(1));
 		} else {
 			cout << "Invalid command: '" << command << "'" << endl;
 		}
 	} catch (const char* error) {
 		cerr << error << endl;
 	} catch (out_of_range& error) {
-		cerr << "Invalid command: " << input_line << endl;
+		cerr << "Incomplete command: " << input_line << endl;
 	}
 }
 

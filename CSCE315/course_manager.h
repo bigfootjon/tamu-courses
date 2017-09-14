@@ -10,6 +10,8 @@ struct CourseManager {
 	Course& getOrCreate(string department, string number);
 
 	vector<Book> getBooksInDepartment(string department);
+
+	vector<Course> getCoursesInDepartment(string department);
 };
 
 #endif

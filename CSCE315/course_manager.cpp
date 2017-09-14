@@ -58,3 +58,13 @@ vector<Book> CourseManager::getBooksInDepartment(string department) {
 	}
 	return books;
 }
+
+vector<Course> CourseManager::getCoursesInDepartment(string department) {
+	vector<Course> courses;
+	for (Course& course : courses) {
+		if (course.department == department) {
+			courses.push_back(course);
+		}
+	}
+	return courses;
+}

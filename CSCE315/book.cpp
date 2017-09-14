@@ -37,3 +37,31 @@ ostream& operator<<(ostream& out, const Book& book) {
 	}
 	return out;
 }
+
+double Book::lowestCost() {
+	double lowestCost = cost_new;
+	if (cost_used < lowestCost) {
+		lowestCost = cost_used;
+	}
+	if (cost_rented < lowestCost) {
+		lowestCost = cost_rented;
+	}
+	if (cost_electronic < lowestCost) {
+		lowestCost = cost_electronic;
+	}
+	return lowestCost;
+}
+
+double Book::highestCost() {
+	double highestCost = cost_new;
+	if (cost_used > highestCost) {
+		highestCost = cost_used;
+	}
+	if (cost_rented > highestCost) {
+		highestCost = cost_rented;
+	}
+	if (cost_electronic > highestCost) {
+		highestCost = cost_electronic;
+	}
+	return highestCost;
+}

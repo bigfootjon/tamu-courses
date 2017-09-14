@@ -20,6 +20,9 @@ struct Book {
 	double cost_used = 0;
 	double cost_rented = 0;
 	double cost_electronic = 0;
+
+	double lowestCost();
+	double highestCost();
 };
 
 // Declare output operator for Book objects

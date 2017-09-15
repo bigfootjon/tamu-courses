@@ -17,8 +17,6 @@
 #include "my_allocator.h"
 #include "free_list.h"
 
-const int MEMORY_SIZE = 200000000;
-
 char* base; // This is used to release the entire block of memory instead of wherever start is pointing to right now 
 FL_HEADER* start;
 
@@ -47,11 +45,11 @@ Addr my_malloc(size_t _length) {
 	if (current == 0) {
 		return 0;
 	}
-	FL_remove(start, current);
-	if (_length + sizeof(FL_HEADER) < current->length) {
-		int extra_space = current->length - _length - sizeof(FL_HEADER);
+	start = FL_remove(start, current);
+	if (_length + 2 * sizeof(FL_HEADER) < current->length) {
+		unsigned int extra_space = current->length - _length - sizeof(FL_HEADER);
 		FL_HEADER* new_header = FL_init((char*)current + _length + sizeof(FL_HEADER), extra_space);
-		FL_add(start, new_header);
+		start = FL_add(start, new_header);
 	}
 	return (Addr)(((char*)current) + sizeof(FL_HEADER));
 }
@@ -60,7 +58,7 @@ int my_free(Addr _a) {
 	FL_HEADER* header = (FL_HEADER*)(_a - sizeof(FL_HEADER));
 	header->next = 0;
 	header->previous = 0;
-	FL_add(start, header);
+	start = FL_add(start, header);
 	return 0;
 }
 

@@ -151,12 +151,12 @@ void CommandManager::commandPrintAverages(string department) {
 		for (Course::BookBinding& bookBinding : course.books) {
 			string key = course.number + "-" + bookBinding.section;
 
-			vector<Book>& sectionRequiredBooks = mapRequiredBooks.at(key);
+			vector<Book>& sectionRequiredBooks = mapRequiredBooks[key];
 			if (bookBinding.required) {
 				sectionRequiredBooks.push_back(bookBinding.book);
 			}
 
-			vector<Book>& sectionAllBooks = mapAllBooks.at(key);
+			vector<Book>& sectionAllBooks = mapAllBooks[key];
 			sectionAllBooks.push_back(bookBinding.book);
 		}
 	}

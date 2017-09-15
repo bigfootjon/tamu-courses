@@ -21,7 +21,7 @@ Course& CourseManager::getOrCreate(string department, string number) {
 	// Attempt to get from known books
 	try {
 		return get(department, number);
-	} catch (const InvalidCommand exception) {
+	} catch (InvalidCommand& exception) {
 		// Create if not found
 		Course new_course;
 		new_course.department = department;
@@ -61,7 +61,7 @@ vector<Book> CourseManager::getBooksInDepartment(string department) {
 
 vector<Course> CourseManager::getCoursesInDepartment(string department) {
 	vector<Course> courses;
-	for (Course& course : courses) {
+	for (Course& course : this->courses) {
 		if (course.department == department) {
 			courses.push_back(course);
 		}

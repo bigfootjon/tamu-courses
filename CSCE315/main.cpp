@@ -126,7 +126,7 @@ void call_command(CommandManager& commandManager, string input_line) {
 		} else {
 			cout << "Invalid command: '" << command << "'" << endl;
 		}
-	} catch (InvalidCommand exception) {
+	} catch (InvalidCommand& exception) {
 		cerr << exception.what() << endl;
 	} catch (out_of_range& error) {
 		cerr << "Incomplete command: " << input_line << endl;

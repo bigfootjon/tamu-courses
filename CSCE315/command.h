@@ -15,7 +15,7 @@ class CommandManager {
 public:
 	void commandAddBook(string isbn, string title);
 	void commandSetBookDetail(string isbn, string mode, string data);
-	void commandSetCost(string isbn, double cost, string type);
+	void commandSetCost(string isbn, int cost, string type);
 	void commandAddCourse(string department, string number, string name);
 	void commandAddBookToCourse(string isbn, string department, string number, string section, string type);
 	void commandPrintBooksForCourse(string department, string number);

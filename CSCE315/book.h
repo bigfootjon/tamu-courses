@@ -16,13 +16,13 @@ struct Book {
 	int publication_month = 0;
 	int publication_year = 0;
 
-	double cost_new = 0;
-	double cost_used = 0;
-	double cost_rented = 0;
-	double cost_electronic = 0;
+	int cost_new_cents = 0;
+	int cost_used_cents = 0;
+	int cost_rented_cents = 0;
+	int cost_electronic_cents = 0;
 
-	double lowestCost();
-	double highestCost();
+	int lowestCostCents();
+	int highestCostCents();
 };
 
 // Declare output operator for Book objects

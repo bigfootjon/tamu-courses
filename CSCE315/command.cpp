@@ -28,16 +28,16 @@ void CommandManager::commandSetBookDetail(string isbn, const string mode, string
 }
 
 // Implements "M <ISBN> <cost> <N | U | R | E>" command
-void CommandManager::commandSetCost(string isbn, double cost, const string type) {
+void CommandManager::commandSetCost(string isbn, int cost, const string type) {
 	Book& book = books.get(isbn);
 	if (type == "N") {
-		book.cost_new = cost;
+		book.cost_new_cents = cost;
 	} else if (type == "U") {
-		book.cost_used = cost;
+		book.cost_used_cents = cost;
 	} else if (type == "R") {
-		book.cost_rented = cost;
+		book.cost_rented_cents = cost;
 	} else if (type == "E") {
-		book.cost_electronic = cost;
+		book.cost_electronic_cents = cost;
 	} else {
 		throw InvalidCommand("Invalid cost type");
 	}
@@ -164,29 +164,29 @@ void CommandManager::commandPrintAverages(string department) {
 	// Map definition
 	// key is "<number>-<section>"
 	// value is cost to buy all books for this section (required only for the first map, and all books for the second)
-	unordered_map<string, double> mapRequiredCost;
-	unordered_map<string, double> mapFullCost;
+	unordered_map<string, int> mapRequiredCost;
+	unordered_map<string, int> mapFullCost;
 
 	for (auto pair : mapRequiredBooks) {
 		vector<Book> requiredBooks = pair.second;
-		double total = 0;
+		int total = 0;
 		for (Book& book : requiredBooks) {
-			total += book.lowestCost();
+			total += book.lowestCostCents();
 		}
 		mapRequiredCost[pair.first] = total;
 	}
 
 	for (auto pair : mapAllBooks) {
 		vector<Book> allBooks = pair.second;
-		double total = 0;
+		int total = 0;
 		for (Book& book : allBooks) {
-			total += book.highestCost();
+			total += book.highestCostCents();
 		}
 		mapFullCost[pair.first] = total;
 	}
 
-	double requiredCostAverage = 0;
-	double fullCostAverage = 0;
+	int requiredCostAverage = 0;
+	int fullCostAverage = 0;
 
 	for (auto pair : mapRequiredCost) {
 		requiredCostAverage += pair.second;
@@ -199,6 +199,12 @@ void CommandManager::commandPrintAverages(string department) {
 	requiredCostAverage /= mapRequiredCost.size();
 	fullCostAverage /= mapFullCost.size();
 
-	cout << "Minimum cost: " << requiredCostAverage << endl
-		 << "Maximum cost: " << fullCostAverage << endl;
+	int requiredCostAverageDollars = requiredCostAverage / 100;
+	int requiredCostAverageCents = requiredCostAverage % 100;
+
+	int fullCostAverageDollars = fullCostAverage / 100;
+	int fullCostAverageCents = fullCostAverage % 100;
+
+	cout << "Minimum cost: " << requiredCostAverageDollars << "." << requiredCostAverageCents << endl
+		 << "Maximum cost: " << fullCostAverageDollars << "." << fullCostAverageCents << endl;
 }

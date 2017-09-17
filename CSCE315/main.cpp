@@ -76,7 +76,9 @@ void call_command(CommandManager& commandManager, string input_line) {
 			double cost = stod(split.at(2));
 			string& type = split.at(3);
 
-			commandManager.commandSetCost(isbn, cost, type);
+			auto cost_cents = static_cast<int>(cost * 100);
+
+			commandManager.commandSetCost(isbn, cost_cents, type);
 		} else if (command == "C") {
 			string& department = split.at(1);
 			string& number = split.at(2);

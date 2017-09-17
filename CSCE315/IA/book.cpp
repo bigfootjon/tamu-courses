@@ -1,4 +1,5 @@
 #include "book.h"
+#include <limits>
 
 using namespace std;
 

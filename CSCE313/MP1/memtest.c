@@ -189,7 +189,8 @@ int ackerman(int a, int b) {
       result = ackerman(a - 1, ackerman(a, b - 1) );
 
     /* We returned from recursion. Now let's check if the memory allocated above still has the same value. */
-    for (int i = 0; i < to_alloc; i++) {
+    int i;
+    for (i = 0; i < to_alloc; i++) {
         if (mem[i] != c) {
 	    /* The value does not match. It must have been overwritten somewhere. This is very bad. */
 	    printf("Memory checking error!\n");

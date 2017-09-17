@@ -23,7 +23,7 @@ FL_HEADER* FL_remove(FL_HEADER *free_list, FL_HEADER *block) {
 	return free_list;
 }
 
-FL_HEADER* FL_init(void* raw_pointer, unsigned int length) {
+FL_HEADER* FL_init(Addr raw_pointer, unsigned int length) {
 	FL_HEADER* pointer = (FL_HEADER*)raw_pointer;
 	pointer->next = 0;
 	pointer->previous = 0;

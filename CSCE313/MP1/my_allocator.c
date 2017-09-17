@@ -55,7 +55,7 @@ Addr my_malloc(size_t _length) {
 }
 
 int my_free(Addr _a) {
-	FL_HEADER* header = (FL_HEADER*)(_a - sizeof(FL_HEADER));
+	FL_HEADER* header = (FL_HEADER*)((char*)_a - sizeof(FL_HEADER));
 	header->next = 0;
 	header->previous = 0;
 	start = FL_add(start, header);

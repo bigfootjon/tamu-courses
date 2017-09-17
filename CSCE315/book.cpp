@@ -5,8 +5,12 @@ using namespace std;
 // Enable printing of Book objects to an output stream
 // E.g. std::cout << book << std::endl;
 ostream& operator<<(ostream& out, const Book& book) {
-	// Always print the title
-	out << "Title: " << book.title;
+	// Always print the ISBN
+	out << "ISBN: " << book.isbn;
+	// If the title is not blank, print it
+	if (!book.title.empty()) {
+		out << endl << "- Title: " << book.title;
+	}
 	// If the author has been set, print it
 	if (!book.author.empty()) {
 		out  << endl << "- Author: " << book.author;

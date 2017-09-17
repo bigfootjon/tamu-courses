@@ -114,6 +114,10 @@ void call_command(CommandManager& commandManager, string input_line) {
 			int month = stoi(split.at(1).substr(0,2));
 			int year = stoi(split.at(1).substr(3,8));
 
+			if (month < 0 || month > 12) {
+				throw InvalidCommand("Month must be in the range 01 <= X <= 12");
+			}
+
 			commandManager.commandPrintBooksSince(month, year);
 		} else if (command == "PD") {
 			string& department = split.at(1);

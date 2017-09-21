@@ -49,6 +49,7 @@ Addr my_malloc(size_t _length) {
 	if (_length + 2 * sizeof(FL_HEADER) < current->length) {
 		unsigned int extra_space = current->length - _length - sizeof(FL_HEADER);
 		FL_HEADER* new_header = FL_init((char*)current + _length + sizeof(FL_HEADER), extra_space);
+		current->length = _length - sizeof(FL_HEADER);
 		start = FL_add(start, new_header);
 	}
 	return (Addr)(((char*)current) + sizeof(FL_HEADER));

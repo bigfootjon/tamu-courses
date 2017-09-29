@@ -27,6 +27,7 @@
 #include<string.h>
 #include<sys/time.h>
 #include<assert.h>
+#include<unistd.h>
 
 #include "my_allocator.h"
 
@@ -77,9 +78,32 @@ void print_time_diff(struct timeval * tp1, struct timeval * tp2);
 
 int main(int argc, char ** argv) {
   // Add code to process input parameters (basic block size, memory length)
+  int c;
+  // default options:
+  int block_size = 72;
+  int length = 2000000000;
 
+  while ((c = getopt (argc, argv, "b:s:")) != -1) {
+    switch (c) {
+      case 'b':
+        block_size = atoi(optarg);
+        break;
+      case 's':
+        length = atoi(optarg);
+        break;
+      case '?':
+        if (optopt == 'b' || optopt == 's') {
+          printf("Option -%c requires an argument\n", optopt);
+        } else {
+          printf("Unknown option: -%c\n", optopt);
+        }
+      default:
+        return -1;
+    }
+  }
+  
   // Initialize the allocator by calling: init_allocator(basic block size, memory length)
-  init_allocator(72, 2000000000);
+  init_allocator(block_size, length);
 
   ackerman_main();
 

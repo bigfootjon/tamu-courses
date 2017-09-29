@@ -1,7 +1,7 @@
 all: out/memtest out/test
 
 run: out/memtest out
-	./out/memtest
+	./out/memtest -b 72 -s 2000000000
 
 out/%.o: %.c %.h out
 	gcc --std=c99 -c -g $< -o $@

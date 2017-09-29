@@ -112,8 +112,6 @@ Addr my_malloc(size_t _length) {
 	if (allocated == 0) {
 		return 0;
 	} else {
-		//printf("ALLOCATED: (%d)\n", allocated->length);
-		//fl_print();
 		return (Addr)(((char*)allocated) + sizeof(FL_HEADER));
 	}
 }
@@ -149,8 +147,6 @@ void merge_block(FL_HEADER* header) {
 int my_free(Addr _a) {
 	FL_HEADER* header = (FL_HEADER*)((char*)_a - sizeof(FL_HEADER));
 	merge_block(header);
-	//printf("FREED: (%d)\n", header->length);
-	//fl_print();
 	return 0;
 }
 

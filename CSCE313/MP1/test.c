@@ -5,15 +5,19 @@
 #include "free_list.h"
 
 int main(int arv, char** argc) {
-	printf("Initializing allocator with 128 bytes (bbs=4): %x\n", init_allocator(4, 128));
-	printf("Size of FL_HEADER: %x\n", (unsigned int)sizeof(FL_HEADER));
+	printf("Initializing allocator with 256 bytes (bbs=4): %d\n", init_allocator(32, 1056));
+	printf("Size of FL_HEADER : %ld\n", (long)sizeof(FL_HEADER));
 	void* pointer1 = my_malloc(1);
-	printf("Allocate memory(1): %x\n", (unsigned int)pointer1);
+	printf("Allocate memory(1) : %ld\n", (long)pointer1);
 	void* pointer2 = my_malloc(2);
-	printf("Allocate memory(2): %x\n", (unsigned int)pointer2);
-	printf("Allocate memory(L): %x\n", (unsigned int)my_malloc(100));
-	/*printf("Free     memory(2): %x\n", my_free(pointer2));
-	printf("Allocate memory(2): %x\n", (unsigned int)my_malloc(2));
-*/
+	printf("Allocate memory(2) : %ld\n", (long)pointer2);
+	void* long1 = my_malloc(100);
+	printf("Allocate memory(L) : %ld\n", (long)long1);
+	printf("Free     memory(2) : %d\n", my_free(pointer2));
+	pointer2 = my_malloc(2);
+	printf("Allocate memory(2) : %ld\n", (long)pointer2);
+	printf("Free     memory(1) : %d\n", my_free(pointer1));
+	printf("Free     memory(2) : %d\n", my_free(pointer2));
+	printf("Free     memory(L) : %d\n", my_free(long1));
 	release_allocator();
 }

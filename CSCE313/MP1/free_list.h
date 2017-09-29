@@ -2,11 +2,13 @@
 #define _free_list_h_
 
 #include "my_allocator.h"
+#include <stdbool.h>
 
 struct fl_header {
 	unsigned int length;
 	struct fl_header *previous;
 	struct fl_header *next;
+	bool free;
 };
 
 typedef struct fl_header FL_HEADER;

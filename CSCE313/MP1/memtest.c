@@ -79,7 +79,7 @@ int main(int argc, char ** argv) {
   // Add code to process input parameters (basic block size, memory length)
 
   // Initialize the allocator by calling: init_allocator(basic block size, memory length)
-  init_allocator(0, 320000000);
+  init_allocator(72, 2000000000);
 
   ackerman_main();
 

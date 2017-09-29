@@ -2,6 +2,7 @@
 
 
 FL_HEADER* FL_add(FL_HEADER *free_list, FL_HEADER *block) {
+	block->free = true;
 	if (free_list == 0) {
 		return block;
 	}
@@ -11,6 +12,7 @@ FL_HEADER* FL_add(FL_HEADER *free_list, FL_HEADER *block) {
 }
 
 FL_HEADER* FL_remove(FL_HEADER *free_list, FL_HEADER *block) {
+	block->free = false;
 	if (free_list == block) {
 		return 0;
 	}
@@ -27,6 +29,7 @@ FL_HEADER* FL_init(Addr raw_pointer, unsigned int length) {
 	FL_HEADER* pointer = (FL_HEADER*)raw_pointer;
 	pointer->next = 0;
 	pointer->previous = 0;
-	pointer->length = length - sizeof(FL_HEADER);
+	pointer->length = length;
+	pointer->free = false;
 	return pointer;
 }

@@ -1,7 +1,7 @@
 all: out/memtest out/test
 
-run: out/test out
-	./out/test
+run: out/memtest out
+	./out/memtest
 
 out/%.o: %.c %.h out
 	gcc -c -g $< -o $@

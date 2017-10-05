@@ -30,7 +30,7 @@
 
 #include <errno.h>
 
-#include "reqchannel.H"
+#include "reqchannel.h"
 
 using namespace std;
 
@@ -199,6 +199,7 @@ int RequestChannel::cwrite(string _msg) {
   }
 
   //  cout << "(" << my_name << ") done writing." << endl;
+  return 0;
 }
 
 /*--------------------------------------------------------------------------*/

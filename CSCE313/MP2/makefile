@@ -1,6 +1,6 @@
 CC=g++
 
-all: client mutex.o mutex_guard.o
+all: client mutex.o mutex_guard.o semaphore.o
 
 reqchannel.o: reqchannel.h reqchannel.cpp
 	$(CC) -c reqchannel.cpp
@@ -16,6 +16,9 @@ mutex.o: mutex.cpp mutex.h
 
 mutex_guard.o: mutex_guard.cpp mutex_guard.h
 	$(CC) -c mutex_guard.cpp
+
+semaphore.o: semaphore.cpp semaphore.h
+	$(CC) -c semaphore.cpp
 
 client: client.o reqchannel.o dataserver.o
 	$(CC) -o client client.o reqchannel.o dataserver.o -lpthread

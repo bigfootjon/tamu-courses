@@ -1,4 +1,4 @@
-#include "mutex_guard.h"
+#include "mutex_guard.H"
 
 MutexGuard::MutexGuard(Mutex & m_new) {
 	m = &m_new;

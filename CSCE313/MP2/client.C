@@ -30,8 +30,7 @@
 #include <errno.h>
 #include <unistd.h>
 
-#include "reqchannel.h"
-#include "dataserver.h"
+#include "reqchannel.H"
 
 using namespace std;
 
@@ -69,7 +68,7 @@ string int2string(int number) {
 
 int main(int argc, char * argv[]) {
   if (!fork()) {
-    main_dataserver();
+    system("./dataserver");
     return 0;
   }
   
@@ -107,7 +106,7 @@ int main(int argc, char * argv[]) {
       sec--;
     }
     total_musecs += musec;
-    printf("TIME [sec = %ld, musec = %ld, total_musec = %ld, total_count = %ld]\n", sec, musec, total_musecs, i);
+    printf("TIME [sec = %ld, musec = %ld, total_musec = %ld, total_count = %d]\n", sec, musec, total_musecs, i);
 	cout << "reply to request " << i << ":" << reply_string << endl;;
   }
  

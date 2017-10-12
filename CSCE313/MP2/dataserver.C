@@ -25,14 +25,13 @@
 #include <iostream>
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <sys/time.h>
 
 #include <pthread.h>
 #include <errno.h>
 #include <unistd.h>
 #include <stdlib.h>
 
-#include "reqchannel.h"
+#include "reqchannel.H"
 
 using namespace std;
 
@@ -64,7 +63,7 @@ void handle_process_loop(RequestChannel & _channel);
 /* LOCAL FUNCTIONS -- SUPPORT FUNCTIONS */
 /*--------------------------------------------------------------------------*/
 
-string int2string_dataserver(int number) {
+string int2string(int number) {
    stringstream ss;//create a stringstream
    ss << number;//add number to the stream
    return ss.str();//return a string with the contents of the stream
@@ -74,27 +73,9 @@ string int2string_dataserver(int number) {
 /* LOCAL FUNCTIONS -- GENERATE THE DATA */
 /*--------------------------------------------------------------------------*/
 
-// Tracking execution time
-//long total_musecs;
-//long total_count;
-
 string generate_data() {
-  //struct timeval tp_start;
-  //struct timeval tp_end;
-  
-  //gettimeofday(&tp_start, 0);
-  string data = int2string_dataserver(rand() % 100);
-  /*gettimeofday(&tp_end, 0);
-  long sec = tp_end.tv_sec - tp_start.tv_sec;
-  long musec = tp_end.tv_usec - tp_start.tv_usec;
-  if (musec < 0) {
-    musec += 1000000;
-    sec--;
-  }
-  total_musecs += musec;
-  total_count++;
-  printf("TIME [sec = %ld, musec = %ld, total_musec = %ld, total_count = %ld]\n", sec, musec, total_musecs, total_count);*/
-  return data;
+  // Generate the data to be returned to the client.
+  return int2string(rand() % 100);
 }
 
 /*--------------------------------------------------------------------------*/
@@ -133,7 +114,7 @@ void process_newthread(RequestChannel & _channel, const string & _request) {
 
   // -- Name new data channel
 
-  string new_channel_name = "data" + int2string_dataserver(nthreads) + "_";
+  string new_channel_name = "data" + int2string(nthreads) + "_";
  
   // -- Pass new channel name back to client
 
@@ -197,7 +178,8 @@ void handle_process_loop(RequestChannel & _channel) {
 /*--------------------------------------------------------------------------*/
 /* MAIN FUNCTION */
 /*--------------------------------------------------------------------------*/
-int main_dataserver() {
+
+int main(int argc, char * argv[]) {
 
   //  cout << "Establishing control channel... " << flush;
   RequestChannel control_channel("control", RequestChannel::SERVER_SIDE);

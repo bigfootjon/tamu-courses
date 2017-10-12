@@ -1,4 +1,4 @@
-#include "semaphore.h"
+#include "semaphore.H"
 
 Semaphore::Semaphore(int _value) {
 	value = _value;

@@ -1,13 +1,16 @@
-all: dataserver simpleclient
+all: out/dataserver out/simpleclient
 
-reqchannel.o: reqchannel.H reqchannel.C
-	g++ -c -g reqchannel.C
+out:
+	mkdir out
 
-dataserver: dataserver.C reqchannel.o 
-	g++ -g -o dataserver dataserver.C reqchannel.o -lpthread
+out/%.o: %.C %.H out
+	g++ -g -o $@ -c $<
 
-simpleclient: simpleclient.C reqchannel.o
-	g++ -g -o simpleclient simpleclient.C reqchannel.o
+out/dataserver: dataserver.C out/reqchannel.o out
+	g++ -g -o $@ dataserver.C out/reqchannel.o -lpthread
+
+out/simpleclient: simpleclient.C out/reqchannel.o out
+	g++ -g -o $@ simpleclient.C out/reqchannel.o
 
 clean:
-	rm -rf reqchannel.o dataserver simpleclient *.dSYM
+	rm -rf out/

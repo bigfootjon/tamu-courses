@@ -199,6 +199,7 @@ int RequestChannel::cwrite(string _msg) {
   }
 
   //  cout << "(" << my_name << ") done writing." << endl;
+  return 0;
 }
 
 /*--------------------------------------------------------------------------*/

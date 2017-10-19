@@ -1,36 +1,36 @@
 #include "bounded_buffer.H"
 
-template <class T>
-BoundedBuffer<T>::BoundedBuffer(int _n) {
+using namespace std;
+
+BoundedBuffer::BoundedBuffer(int _n) : mutex{1}, full{0}, empty{_n} {
 	n = _n;
-	buffer = new T[n];
+	buffer = new string[n];
 	push_index = 0;
 	pop_index = 0;
-	mutex(1);
-	full(0);
-	empty(n);
 }
 
-template <class T>
-BoundedBuffer<T>::~BoundedBuffer() {
+BoundedBuffer::~BoundedBuffer() {
 	delete buffer;
 }
 
-template <class T>
-void BoundedBuffer<T>::push(T item) {
+void BoundedBuffer::push(string item) {
 	empty.P();
 	mutex.P();
-	
+	buffer[push_index] = item;
+	if (++push_index >= n) {
+		push_index = 0;
+	}
 	mutex.V();
 	full.V();
 }
 
-template <class T>
-T BoundedBuffer<T>::pop() {
+string BoundedBuffer::pop() {
 	full.P();
 	mutex.P();
-	// POP HERE:
-	T item;
+	string item = buffer[pop_index];
+	if (++pop_index >= n) {
+		pop_index = 0;
+	}
 	mutex.V();
 	empty.V();
 	return item;

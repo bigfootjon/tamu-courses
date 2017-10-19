@@ -3,11 +3,12 @@
 
 #include "semaphore.H"
 
-template <class T>
+#include <string>
+
 class BoundedBuffer {
 private:
 	int n;
-	T *buffer;
+	std::string *buffer;
 	int push_index;
 	int pop_index;
 	Semaphore mutex;
@@ -17,8 +18,8 @@ public:
 	BoundedBuffer(int _n);
 	~BoundedBuffer();
 	
-	void push(T item);
-	T pop();
+	void push(std::string item);
+	std::string pop();
 };
 
 #endif

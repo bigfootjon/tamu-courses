@@ -43,6 +43,9 @@ int main(int argc, char * argv[]) {
 
 	/* -- Start sending a sequence of requests */
 	
+	string reply1 = chan.send_request("hello");
+	cout << "Reply to request 'hello' is '" << reply1 << "'" << endl;
+	
 	BoundedBuffer request_buffer(20);
 	vector<string> names = {"Joe Smith", "Jane Smith", "John Doe"};
 
@@ -53,9 +56,6 @@ int main(int argc, char * argv[]) {
 		pthread_t thread_id;
 		pthread_create(&thread_id, NULL, request_thread, (void*)&attr);
 	}
-
-	string reply1 = chan.send_request("hello");
-	cout << "Reply to request 'hello' is '" << reply1 << "'" << endl;
 
 	string reply2 = chan.send_request("data Joe Smith");
 	cout << "Reply to request 'data Joe Smith' is '" << reply2 << "'" << endl;

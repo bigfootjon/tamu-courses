@@ -10,7 +10,7 @@ BoundedBuffer::BoundedBuffer(int _n) : mutex{1}, full{0}, empty{_n} {
 }
 
 BoundedBuffer::~BoundedBuffer() {
-	delete buffer;
+	delete[] buffer;
 }
 
 void BoundedBuffer::push(string item) {

@@ -35,7 +35,7 @@
 using namespace std;
 
 const string QUIT_SIGIL = "MAGIC_QUIT_SIGIL_BETTATTI_IS_THE_BEST_PROF";
-Mutex mutex_l;
+Semaphore mutex_l(1);
 
 int main(int argc, char * argv[]) {
 	cout << "CLIENT STARTED:" << endl;
@@ -55,14 +55,13 @@ int main(int argc, char * argv[]) {
 	int request_threads = names.size();
 	int worker_threads = 1;
 	int stat_threads = names.size();
-	int request_count = 10000;
+	int request_count = 100;
 
 	for (string name : names) {
 		RequestDetails req_attr;
 		req_attr.name = name;
 		req_attr.buffer = &request_buffer;
 		req_attr.request_threads = &request_threads;
-		req_attr.worker_threads = &worker_threads;
 		req_attr.request_count = request_count;
 		pthread_t request_id;
 		pthread_create(&request_id, NULL, request_thread, (void*)&req_attr);
@@ -75,16 +74,17 @@ int main(int argc, char * argv[]) {
 		pthread_create(&stat_id, NULL, stat_thread, (void*)&stat_attr);
 		threads.push_back(stat_id);
 	}
-
-	WorkerDetails attr;
-	attr.in_buffer = &request_buffer;
-	attr.out_buffer = &response_buffer;
-	attr.base_chan = &chan;
-	attr.worker_threads = &worker_threads;
-	attr.stat_threads = &stat_threads;
-	pthread_t worker_id;
-	pthread_create(&worker_id, NULL, worker_thread, (void*)&attr);
-	threads.push_back(worker_id);
+	
+	for (int i = 0; i < worker_threads; ++i) {
+		WorkerDetails attr;
+		attr.in_buffer = &request_buffer;
+		attr.out_buffer = &response_buffer;
+		attr.base_chan = &chan;
+		attr.worker_threads = &worker_threads;
+		pthread_t worker_id;
+		pthread_create(&worker_id, NULL, worker_thread, (void*)&attr);
+		threads.push_back(worker_id);
+	}
 
 	for (pthread_t thread : threads) {
 		pthread_join(thread, NULL);
@@ -99,15 +99,13 @@ void * request_thread(void * _attr) {
 
 	for (int i = 0; i < attr.request_count; ++i) {
 		string request_string = "data " + attr.name;
-		mutex_l.Lock();
+		mutex_l.P();
 		cout << "Request: (" << attr.name << ") " << request_string << endl;
-		mutex_l.Unlock();
+		mutex_l.V();
 		attr.buffer->push(request_string);
 	}
 	if (--(*attr.request_threads) == 0) {
-		for (int i = 0; i < *attr.worker_threads; ++i) {
-			attr.buffer->push(QUIT_SIGIL);
-		}
+		attr.buffer->push(QUIT_SIGIL);
 	}
 	return 0;
 }
@@ -116,9 +114,9 @@ void * worker_thread(void * _attr) {
 	WorkerDetails attr = *((WorkerDetails*)_attr);
 
 	string chan_name = attr.base_chan->send_request("newthread");
-	mutex_l.Lock();
+	mutex_l.P();
 	cout << "Worker: (BASE) 'newthread' -> '" << chan_name << "'" << endl;
-	mutex_l.Unlock();
+	mutex_l.V();
 	RequestChannel chan(chan_name, RequestChannel::CLIENT_SIDE);
 	for (;;) {
 		string request_string = attr.in_buffer->pop();
@@ -126,20 +124,19 @@ void * worker_thread(void * _attr) {
 			break;
 		}
 		string reply_string = chan.send_request(request_string);
-		mutex_l.Lock();
+		mutex_l.P();
 		cout << "Worker: (" << chan_name << ") '" << request_string << "' -> '" << reply_string << "'" << endl;
-		mutex_l.Unlock();
+		mutex_l.V();
 		attr.out_buffer->push(reply_string);
 	}
+	attr.in_buffer->push(QUIT_SIGIL);
 	if (--(*attr.worker_threads) == 0) {
-		for (int i = 0; i < *attr.stat_threads; ++i) {
-			attr.out_buffer->push(QUIT_SIGIL);
-		}
+		attr.out_buffer->push(QUIT_SIGIL);
 	}
 	string quit_response = chan.send_request("quit");
-	mutex_l.Lock();
+	mutex_l.P();
 	cout << "Worker: (" << chan_name << ") 'quit' -> '" << quit_response << "'" << endl;
-	mutex_l.Unlock();
+	mutex_l.V();
 	return 0;
 }
 
@@ -151,9 +148,10 @@ void * stat_thread(void * _attr) {
 		if (response_string == QUIT_SIGIL) {
 			break;
 		}
-		mutex_l.Lock();
+		mutex_l.P();
 		cout << "Stat: (" << attr.name << ") " << response_string << endl;
-		mutex_l.Unlock();
+		mutex_l.V();
 	}
+	attr.buffer->push(QUIT_SIGIL);
 	return 0;
 }

@@ -8,7 +8,6 @@ struct RequestDetails {
 	std::string name;
 	BoundedBuffer * buffer;
 	int * request_threads;
-	int * worker_threads;
 	int request_count;
 };
 
@@ -17,7 +16,6 @@ struct WorkerDetails {
 	BoundedBuffer * out_buffer;
 	RequestChannel * base_chan;
 	int * worker_threads;
-	int * stat_threads;
 };
 
 struct StatsDetails {

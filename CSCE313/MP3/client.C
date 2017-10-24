@@ -31,7 +31,6 @@
 
 #include "client.H"
 #include "reqchannel.H"
-#include "mutex.H"
 
 using namespace std;
 

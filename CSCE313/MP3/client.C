@@ -38,6 +38,33 @@ const string QUIT_SIGIL = "MAGIC_QUIT_SIGIL_BETTATTI_IS_THE_BEST_PROF";
 Semaphore mutex_l(1);
 
 int main(int argc, char * argv[]) {
+	int request_count = 100;
+	int buffer_size = 2000;
+	int worker_threads = 1;
+	
+	char c;
+	while ((c = getopt (argc, argv, "n:b:w:")) != -1) {
+		switch (c) {
+		case 'n':
+			request_count = atoi(optarg);
+			break;
+		case 'b':
+			buffer_size = atoi(optarg);
+			break;
+		case 'w':
+			worker_threads = atoi(optarg);
+			break;
+		case '?':
+			if (optopt == 'n' || optopt == 'b' || optopt == 'w') {
+				printf("Option -%c requires an argument\n", optopt);
+			} else {
+				printf("Unknown option: -%c\n", optopt);
+			}
+		default:
+			return -1;
+		}
+	}
+	
 	cout << "CLIENT STARTED:" << endl;
 
 	cout << "Establishing control channel... " << flush;
@@ -47,31 +74,35 @@ int main(int argc, char * argv[]) {
 	string hello_reply = chan.send_request("hello");
 	cout << "Reply to request 'hello' is '" << hello_reply << "'" << endl;
 
-	int buffer_size = 2000;
 	BoundedBuffer request_buffer(buffer_size);
 	BoundedBuffer response_buffer(buffer_size);
+	
 	vector<string> names = {"Joe Smith", "Jane Smith", "John Doe"};
-	vector<pthread_t> threads;
+	
 	int request_threads = names.size();
-	int worker_threads = 1;
 	int stat_threads = names.size();
-	int request_count = 100;
 
+	vector<pthread_t> threads;
+	
 	for (string name : names) {
 		RequestDetails req_attr;
 		req_attr.name = name;
 		req_attr.buffer = &request_buffer;
 		req_attr.request_threads = &request_threads;
 		req_attr.request_count = request_count;
+		
 		pthread_t request_id;
 		pthread_create(&request_id, NULL, request_thread, (void*)&req_attr);
+		
 		threads.push_back(request_id);
 
 		StatsDetails stat_attr;
 		stat_attr.buffer = &response_buffer;
 		stat_attr.name = name;
+		
 		pthread_t stat_id;
 		pthread_create(&stat_id, NULL, stat_thread, (void*)&stat_attr);
+		
 		threads.push_back(stat_id);
 	}
 	
@@ -81,8 +112,10 @@ int main(int argc, char * argv[]) {
 		attr.out_buffer = &response_buffer;
 		attr.base_chan = &chan;
 		attr.worker_threads = &worker_threads;
+		
 		pthread_t worker_id;
 		pthread_create(&worker_id, NULL, worker_thread, (void*)&attr);
+		
 		threads.push_back(worker_id);
 	}
 

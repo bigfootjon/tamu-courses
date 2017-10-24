@@ -17,9 +17,8 @@ int Semaphore::P() {
 	value--;
 	if (value < 0) {
 		pthread_cond_wait(&c, &m);
-	} else {
-		pthread_mutex_unlock(&m);
 	}
+	pthread_mutex_unlock(&m);
 	return 0;
 }
 

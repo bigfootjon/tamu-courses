@@ -32,6 +32,7 @@
 
 #include "client.H"
 #include "reqchannel.H"
+#include "bounded_buffer.H"
 
 using namespace std;
 
@@ -83,23 +84,23 @@ int main(int argc, char * argv[]) {
 
 	string hello_reply = chan.send_request("hello");
 	cout << "Main: (control) 'hello' -> '" << hello_reply << "'" << endl;
+	
 	request_buffer = new BoundedBuffer(buffer_size);
 	response_buffer = new BoundedBuffer(buffer_size);
 	
 	vector<string> names = {"Joe Smith", "Jane Smith", "John Doe"};
-	
 	request_threads = names.size();
 
-	vector<pthread_t> threads(names.size()*2 + worker_threads);
+	vector<pthread_t> threads;
 	
 	for (int i = 0; i < names.size(); ++i) {
-		pthread_t request_id = threads.at(i*2);
+		pthread_t request_id;
 		pthread_create(&request_id, NULL, request_thread, (void*)new string(names[i]));
-		threads[i*2] = request_id;
+		threads.push_back(request_id);
 		
-		pthread_t stat_id = threads.at(i*2 + 1);
+		pthread_t stat_id;
 		pthread_create(&stat_id, NULL, stat_thread, (void*)new string(names[i]));
-		threads[i*2+1] = request_id;
+		threads.push_back(stat_id);
 	}
 	
 	for (int i = 0; i < worker_threads; ++i) {
@@ -108,9 +109,9 @@ int main(int argc, char * argv[]) {
 		cout << "Main: (control) 'newthread' -> '" << chan_name << "'" << endl;
 		mutex_l.V();
 
-		pthread_t worker_id = threads.at(names.size()*2 + i);
+		pthread_t worker_id;
 		pthread_create(&worker_id, NULL, worker_thread, (void*)new string(chan_name));
-		threads[names.size()*2 + i] = worker_id;
+		threads.push_back(worker_id);
 	}
 
 	for (pthread_t thread : threads) {

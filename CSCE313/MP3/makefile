@@ -15,4 +15,4 @@ fifo:
 	rm -rf fifo*
 
 clean: fifo
-	rm -rf client dataserver reqchannel.o bounded_buffer.o semaphore.o
+	rm -rf client dataserver reqchannel.o bounded_buffer.o semaphore.o *.dSYM/

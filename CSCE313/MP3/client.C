@@ -70,11 +70,11 @@ int main(int argc, char * argv[]) {
 	cout << "Establishing control channel... " << flush;
 	RequestChannel chan("control", RequestChannel::CLIENT_SIDE);
 	cout << "done." << endl;;
-	
+
 	string hello_reply = chan.send_request("hello");
 	cout << "Reply to request 'hello' is '" << hello_reply << "'" << endl;
-	BoundedBuffer request_buffer(buffer_size);
-	BoundedBuffer response_buffer(buffer_size);
+	BoundedBuffer* request_buffer = new BoundedBuffer(buffer_size);
+	BoundedBuffer* response_buffer = new BoundedBuffer(buffer_size);
 	
 	vector<string> names = {"Joe Smith", "Jane Smith", "John Doe"};
 	
@@ -85,13 +85,13 @@ int main(int argc, char * argv[]) {
 	cout << "THREAD SIZE " << threads.size() << endl;
 	
 	for (int i = 0; i < names.size(); ++i) {
-		RequestDetails* req_attr = new RequestDetails(names[i], &request_buffer, &request_threads, &request_count);
+		RequestDetails* req_attr = new RequestDetails(names[i], request_buffer, &request_threads, &request_count);
 		
 		pthread_t request_id = threads.at(i*2);
 		pthread_create(&request_id, NULL, request_thread, (void*)req_attr);
 		threads[i*2] = request_id;
 		
-		StatsDetails* stat_attr = new StatsDetails(names[i], &response_buffer);
+		StatsDetails* stat_attr = new StatsDetails(names[i], response_buffer);
 		
 		pthread_t stat_id = threads.at(i*2 + 1);
 		pthread_create(&stat_id, NULL, stat_thread, (void*)stat_attr);
@@ -99,10 +99,16 @@ int main(int argc, char * argv[]) {
 	}
 	
 	for (int i = 0; i < worker_threads; ++i) {
-		WorkerDetails* attr = new WorkerDetails(&request_buffer, &response_buffer, &chan, &worker_threads);
+		string chan_name = chan.send_request("newthread");
+		mutex_l.P();
+		cout << "Main: (control) 'newthread' -> '" << chan_name << "'" << endl;
+		mutex_l.V();
+
+		RequestChannel* chan = new RequestChannel(chan_name, RequestChannel::CLIENT_SIDE);
+		WorkerDetails* attr = new WorkerDetails(request_buffer, response_buffer, chan, &worker_threads);
 		
 		pthread_t worker_id = threads.at(names.size()*2 + i);
-		pthread_create(&worker_id, NULL, worker_thread, (void*)&attr);
+		pthread_create(&worker_id, NULL, worker_thread, (void*)attr);
 		threads[names.size()*2 + i] = worker_id;
 	}
 
@@ -137,19 +143,14 @@ void * request_thread(void * _attr) {
 void * worker_thread(void * _attr) {
 	WorkerDetails* attr = ((WorkerDetails*)_attr);
 
-	mutex_l.P();
-	string chan_name = attr->base_chan->send_request("newthread");
-	cout << "Worker: (BASE) 'newthread' -> '" << chan_name << "'" << endl;
-	mutex_l.V();
-	RequestChannel chan(chan_name, RequestChannel::CLIENT_SIDE);
 	for (;;) {
 		string request_string = attr->in_buffer->pop();
 		if (request_string == QUIT_SIGIL) {
 			break;
 		}
-		string reply_string = chan.send_request(request_string);
+		string reply_string = attr->base_chan->send_request(request_string);
 		mutex_l.P();
-		cout << "Worker: (" << chan_name << ") '" << request_string << "' -> '" << reply_string << "'" << endl;
+		cout << "Worker: '" << request_string << "' -> '" << reply_string << "'" << endl;
 		mutex_l.V();
 		attr->out_buffer->push(reply_string);
 	}
@@ -157,10 +158,11 @@ void * worker_thread(void * _attr) {
 	if (--(*attr->worker_threads) == 0) {
 		attr->out_buffer->push(QUIT_SIGIL);
 	}
-	string quit_response = chan.send_request("quit");
+	string quit_response = attr->base_chan->send_request("quit");
 	mutex_l.P();
-	cout << "Worker: (" << chan_name << ") 'quit' -> '" << quit_response << "'" << endl;
+	cout << "Worker: 'quit' -> '" << quit_response << "'" << endl;
 	mutex_l.V();
+	delete attr->base_chan;
 	delete attr;
 	pthread_exit(0);
 	return 0;

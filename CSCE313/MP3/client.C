@@ -22,6 +22,7 @@
 #include <cassert>
 #include <cstring>
 #include <iostream>
+#include <iomanip>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <sys/wait.h>
@@ -29,6 +30,7 @@
 #include <errno.h>
 #include <unistd.h>
 #include <vector>
+#include <map>
 
 #include "client.H"
 #include "reqchannel.H"
@@ -39,11 +41,15 @@ using namespace std;
 const string QUIT_SIGIL = "MAGIC_QUIT_SIGIL_BETTATTI_IS_THE_BEST_PROF";
 
 Semaphore mutex_l(1);
+
 int worker_threads = 1;
 int request_threads = 0;
 int request_count = 100;
+
 BoundedBuffer* request_buffer;
 BoundedBuffer* response_buffer;
+
+map<string, map<int, int> > stat_map;
 
 int main(int argc, char * argv[]) {
 	if (!fork()) {
@@ -122,6 +128,15 @@ int main(int argc, char * argv[]) {
 	cout << "Main: (control) 'quit' -> '" << quit_reply << "'" << endl;
 	
 	wait(NULL);
+
+	mutex_l.P();
+	for (auto& pair : stat_map) {
+		cout << "Main: (" << pair.first << ") Histogram: " << endl;
+		for (auto& pair : pair.second) {
+			cout << setw(3) << pair.first << ": " << string(pair.second, '*') << endl;
+		}
+	}
+	mutex_l.V();
 }
 
 void * request_thread(void * _attr) {
@@ -171,6 +186,7 @@ void * worker_thread(void * _attr) {
 
 void * stat_thread(void * _attr) {
 	string* name = (string*)_attr;
+	map<int, int> m;
 
 	for (;;) {
 		string response_string = response_buffer->pop();
@@ -180,8 +196,19 @@ void * stat_thread(void * _attr) {
 		mutex_l.P();
 		cout << "Stat:    (" << *name << ") " << response_string << endl;
 		mutex_l.V();
+		int val = stoi(response_string);
+		val += 5;
+		val -= val % 10;
+		if (m.find(val) == m.end()) {
+			m[val] = 1;
+		} else {
+			m[val] += 1;
+		}
 	}
 	response_buffer->push(QUIT_SIGIL);
+	mutex_l.P();
+	stat_map[*name] = m;
+	mutex_l.V();
 	delete name;
 	pthread_exit(0);
 	return 0;

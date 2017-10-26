@@ -130,9 +130,9 @@ int main(int argc, char * argv[]) {
 	wait(NULL);
 
 	mutex_l.P();
-	for (auto& pair : stat_map) {
-		cout << "Main: (" << pair.first << ") Histogram: " << endl;
-		for (auto& pair : pair.second) {
+	for (auto& out_pair : stat_map) {
+		cout << "Main: (" << out_pair.first << ") Histogram: " << endl;
+		for (auto& pair : out_pair.second) {
 			cout << setw(3) << pair.first << ": " << string(pair.second, '*') << endl;
 		}
 	}

@@ -26,6 +26,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <sys/wait.h>
+#include <sys/select.h>
 
 #include <errno.h>
 #include <unistd.h>
@@ -53,7 +54,7 @@ map<string, map<int, int> > stat_map;
 
 int main(int argc, char * argv[]) {
 	if (!fork()) {
-		system("./dataserver");
+		//system("./dataserver");
 		return 0;
 	}
 
@@ -109,16 +110,17 @@ int main(int argc, char * argv[]) {
 		threads.push_back(stat_id);
 	}
 	
+	vector<string>* worker_chan_names = new vector<string>();
 	for (int i = 0; i < worker_threads; ++i) {
 		string chan_name = chan.send_request("newthread");
 		mutex_l.P();
 		cout << "Main: (control) 'newthread' -> '" << chan_name << "'" << endl;
 		mutex_l.V();
-
-		pthread_t worker_id;
-		pthread_create(&worker_id, NULL, worker_thread, (void*)new string(chan_name));
-		threads.push_back(worker_id);
+		worker_chan_names->push_back(chan_name);
 	}
+	pthread_t worker_id;
+	pthread_create(&worker_id, NULL, worker_thread, (void*)worker_chan_names);
+	threads.push_back(worker_id);
 
 	for (pthread_t thread : threads) {
 		pthread_join(thread, NULL);
@@ -157,29 +159,49 @@ void * request_thread(void * _attr) {
 }
 
 void * worker_thread(void * _attr) {
-	string* chan_name = (string*)_attr;
-	RequestChannel* chan = new RequestChannel(*chan_name, RequestChannel::CLIENT_SIDE);
+	vector<RequestChannel*> channels;
+	vector<string>* chan_names = (vector<string>*)_attr;
 
+	fd_set* read_fds;
+	fd_set* write_fds;
+	
+	FD_ZERO(read_fds);
+	FD_ZERO(write_fds);
+	int max_fd;
+
+	for (string chan_name : *chan_names) {
+		RequestChannel* chan = new RequestChannel(chan_name, RequestChannel::CLIENT_SIDE);
+		channels.push_back(chan);
+		chan->cwrite(request_buffer->pop());
+		FD_SET(chan->read_fd(), read_fds);
+		FD_SET(chan->write_fd(), write_fds);
+		max_fd = max(max_fd, max(chan->read_fd(), chan->write_fd()));
+	}
+	
 	for (;;) {
+		int i = select(max_fd, read_fds, write_fds, NULL, NULL);
+		if (i == -1 && errno == EINTR) {
+			continue;
+		} else if (i == -1) {
+			break;
+		}
+		// TODO channel selection here
+		string reply_string = chan->cread();
+		response_buffer->push(reply_string);
 		string request_string = request_buffer->pop();
 		if (request_string == QUIT_SIGIL) {
 			break;
 		}
-		string reply_string = chan->send_request(request_string);
+	}
+	response_buffer->push(QUIT_SIGIL);
+	for (int i = 0; i < channels.size(); ++i) {
+		RequestChannel* chan = channels[i];
+		string quit_response = chan->send_request("quit");
 		mutex_l.P();
-		cout << "Worker:  (" << *chan_name << ") '" << request_string << "' -> '" << reply_string << "'" << endl;
+		cout << "Worker:  (" << chan->name() << ") 'quit' -> '" << quit_response << "'" << endl;
 		mutex_l.V();
-		response_buffer->push(reply_string);
 	}
-	request_buffer->push(QUIT_SIGIL);
-	if (--worker_threads == 0) {
-		response_buffer->push(QUIT_SIGIL);
-	}
-	string quit_response = chan->send_request("quit");
-	mutex_l.P();
-	cout << "Worker:  (" << *chan_name << ") 'quit' -> '" << quit_response << "'" << endl;
-	mutex_l.V();
-	delete chan_name;
+	delete chan_names;
 	pthread_exit(0);
 	return 0;
 }

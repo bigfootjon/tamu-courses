@@ -1,6 +1,9 @@
 CC=g++ -g --std=c++11
 
-all: dataserver client
+all: dataserver client fifo
+
+fifo:
+	rm -f fifo*
 
 %.o: %.C %.H
 	$(CC) -o $@ -c $<

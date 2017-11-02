@@ -1,12 +1,15 @@
-# makefile
+CC=g++ -g --std=c++11
 
-all: dataserver simpleclient
+all: dataserver client
 
-reqchannel.o: reqchannel.H reqchannel.C
-	g++ -c -g reqchannel.C
+%.o: %.C %.H
+	$(CC) -o $@ -c $<
 
 dataserver: dataserver.C reqchannel.o 
-	g++ -g -o dataserver dataserver.C reqchannel.o -lpthread
+	$(CC) -o dataserver dataserver.C reqchannel.o -lpthread
 
-simpleclient: simpleclient.C reqchannel.o
-	g++ -g -o simpleclient simpleclient.C reqchannel.o
+client: client.C reqchannel.o bounded_buffer.o semaphore.o
+	$(CC) -o $@ $^
+
+clean:
+	rm -rf *.o client dataserver *.dSYM

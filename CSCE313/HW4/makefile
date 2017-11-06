@@ -1,7 +1,7 @@
 all: pr2 picodbd
 
 %: %.c
-	gcc -o $@ $<
+	gcc -g -o $@ $<
 
 clean:
 	rm -f pr2 picodbd

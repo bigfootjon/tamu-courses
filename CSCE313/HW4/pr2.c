@@ -2,17 +2,24 @@
 #include <stdio.h>
 
 int main() {
-	int fd[2];
-	pipe(fd);
+	int wfd[2];
+	int rfd[2];
+	pipe(wfd);
+	pipe(rfd);
 	if (fork() == 0) { // Child
-		dup2(fd[0], STDOUT_FILENO);
-		dup2(fd[1], STDIN_FILENO);
+		dup2(wfd[0], STDIN_FILENO);
+		dup2(rfd[1], STDOUT_FILENO);
 		execv("./picodbd", NULL);
 	} else { // Parent
 		// Example requests:
-		write(fd[1], "a\n", 2);
-		char message[100];
-		int bytes_read = read(fd[0], message, 100);
-		printf("%s", message);
+		char request[1];
+		request[0] = 'a';
+		while ((int)request[0] < 150) {
+			write(wfd[1], request, 1);
+			char reply[1];
+			int bytes_read = read(rfd[0], reply, 1);
+			printf("'%c' -> '%c'\n", request[0], reply[0]);
+			request[0] = reply[0];
+		}
 	}
 }

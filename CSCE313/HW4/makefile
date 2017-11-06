@@ -1,7 +1,7 @@
-all: pr2 picodbd
+all: pr2
 
 %: %.c
 	gcc -g -o $@ $<
 
 clean:
-	rm -f pr2 picodbd
+	rm -rf pr2 *.dSYM

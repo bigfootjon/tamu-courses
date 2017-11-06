@@ -83,14 +83,14 @@ int main(int argc, char * argv[]) {
 		}
 	}
 	
-	cout << "Main: CLIENT STARTED:" << endl;
+	cout << "Main:    CLIENT STARTED:" << endl;
 
-	cout << "Main: Establishing control channel... " << flush;
+	cout << "Main:    Establishing control channel... " << flush;
 	RequestChannel chan("control", RequestChannel::CLIENT_SIDE);
 	cout << "done." << endl;;
 
 	string hello_reply = chan.send_request("hello");
-	cout << "Main: (control) 'hello' -> '" << hello_reply << "'" << endl;
+	cout << "Main:    (control) 'hello' -> '" << hello_reply << "'" << endl;
 	
 	request_buffer = new BoundedBuffer(buffer_size);
 	response_buffer = new BoundedBuffer(buffer_size);
@@ -110,16 +110,17 @@ int main(int argc, char * argv[]) {
 		threads.push_back(stat_id);
 	}
 	
-	vector<string>* worker_chan_names = new vector<string>();
+	vector<RequestChannel*>* worker_channels = new vector<RequestChannel*>();
 	for (int i = 0; i < worker_threads; ++i) {
 		string chan_name = chan.send_request("newthread");
 		mutex_l.P();
-		cout << "Main: (control) 'newthread' -> '" << chan_name << "'" << endl;
+		cout << "Main:    (control) 'newthread' -> '" << chan_name << "'" << endl;
 		mutex_l.V();
-		worker_chan_names->push_back(chan_name);
+		RequestChannel* channel = new RequestChannel(chan_name, RequestChannel::CLIENT_SIDE);
+		worker_channels->push_back(channel);
 	}
 	pthread_t worker_id;
-	pthread_create(&worker_id, NULL, worker_thread, (void*)worker_chan_names);
+	pthread_create(&worker_id, NULL, worker_thread, (void*)worker_channels);
 	threads.push_back(worker_id);
 
 	for (pthread_t thread : threads) {
@@ -127,13 +128,13 @@ int main(int argc, char * argv[]) {
 	}
 	
 	string quit_reply = chan.send_request("quit");
-	cout << "Main: (control) 'quit' -> '" << quit_reply << "'" << endl;
+	cout << "Main:    (control) 'quit' -> '" << quit_reply << "'" << endl;
 	
 	wait(NULL);
 
 	mutex_l.P();
 	for (auto& out_pair : stat_map) {
-		cout << "Main: (" << out_pair.first << ") Histogram: " << endl;
+		cout << "Main:    (" << out_pair.first << ") Histogram: " << endl;
 		for (auto& pair : out_pair.second) {
 			cout << setw(3) << pair.first << ": " << string(pair.second, '*') << endl;
 		}
@@ -159,49 +160,55 @@ void * request_thread(void * _attr) {
 }
 
 void * worker_thread(void * _attr) {
-	vector<RequestChannel*> channels;
-	vector<string>* chan_names = (vector<string>*)_attr;
+	vector<RequestChannel*>* channels = (vector<RequestChannel*>*)_attr;
 
-	fd_set* read_fds;
-	fd_set* write_fds;
+	fd_set* read_fds = new fd_set();
 	
 	FD_ZERO(read_fds);
-	FD_ZERO(write_fds);
-	int max_fd;
+	int max_fd = 0;
 
-	for (string chan_name : *chan_names) {
-		RequestChannel* chan = new RequestChannel(chan_name, RequestChannel::CLIENT_SIDE);
-		channels.push_back(chan);
+	for (RequestChannel* chan : *channels) {
 		chan->cwrite(request_buffer->pop());
 		FD_SET(chan->read_fd(), read_fds);
-		FD_SET(chan->write_fd(), write_fds);
 		max_fd = max(max_fd, max(chan->read_fd(), chan->write_fd()));
 	}
 	
-	for (;;) {
-		int i = select(max_fd, read_fds, write_fds, NULL, NULL);
-		if (i == -1 && errno == EINTR) {
+	bool done = false;
+	while (!done) {
+		int iready = select(max_fd, read_fds, NULL, NULL, NULL);
+		if (iready == -1 && errno == EINTR) {
 			continue;
-		} else if (i == -1) {
+		} else if (iready == -1) {
 			break;
 		}
-		// TODO channel selection here
-		string reply_string = chan->cread();
-		response_buffer->push(reply_string);
-		string request_string = request_buffer->pop();
-		if (request_string == QUIT_SIGIL) {
-			break;
+		for (int i = 0; i < channels->size(); ++i) {
+			RequestChannel* chan = (*channels)[i];
+			if (FD_ISSET(chan->read_fd(), read_fds)) {
+				string reply_string = chan->cread();
+				response_buffer->push(reply_string);
+				string request_string = request_buffer->pop();
+				if (request_string == QUIT_SIGIL) {
+					done = true;
+				} else {
+					chan->cwrite(request_string);
+				}
+			}
 		}
 	}
 	response_buffer->push(QUIT_SIGIL);
-	for (int i = 0; i < channels.size(); ++i) {
-		RequestChannel* chan = channels[i];
+	for (int i = 0; i < channels->size(); ++i) {
+		RequestChannel* chan = (*channels)[i];
 		string quit_response = chan->send_request("quit");
+		while (quit_response != "bye") {
+			response_buffer->push(quit_response);
+			quit_response = chan->cread();
+		}
 		mutex_l.P();
 		cout << "Worker:  (" << chan->name() << ") 'quit' -> '" << quit_response << "'" << endl;
 		mutex_l.V();
 	}
-	delete chan_names;
+	delete channels;
+	delete read_fds;
 	pthread_exit(0);
 	return 0;
 }

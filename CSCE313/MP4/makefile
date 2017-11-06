@@ -14,5 +14,5 @@ dataserver: dataserver.C reqchannel.o
 client: client.C reqchannel.o bounded_buffer.o semaphore.o
 	$(CC) -o $@ $^
 
-clean:
+clean: fifo
 	rm -rf *.o client dataserver *.dSYM

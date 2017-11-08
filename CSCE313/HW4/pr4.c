@@ -12,15 +12,14 @@ int fd[2];
 
 int main(int argc, char ** argv) {
 	pipe(fd);
+	if (argc != 2) {
+		printf("Please pass a directory as an agument\n");
+		return 1;
+	}
 	if (fork() == 0) {
 		count_process();
 		return 0;
 	} else {
-		if (argc != 2) {
-			printf("Please pass a directory as an agument\n");
-			return 1;
-		}
-
 		char *dirname = argv[1];
 		list_process(dirname);
 	}
@@ -74,6 +73,7 @@ void count_process() {
 		char buffer[100];
 		int read_bytes = read(fd[0], buffer, sizeof(buffer));
 		if (read_bytes == 0) {
+			printf("%s", buffer);
 			break;
 		}
 		++count;

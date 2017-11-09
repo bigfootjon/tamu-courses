@@ -54,7 +54,7 @@ map<string, map<int, int> > stat_map;
 
 int main(int argc, char * argv[]) {
 	if (!fork()) {
-		//system("./dataserver");
+		execv("./dataserver", NULL);
 		return 0;
 	}
 

@@ -4,6 +4,11 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
+#define READ 0
+#define WRITE 1
+
+#define BUF_SIZE 1024
+
 void do_dir(char * dirname);
 void count_process();
 void list_process(char * dirname);
@@ -18,7 +23,6 @@ int main(int argc, char ** argv) {
 	}
 	if (fork() == 0) {
 		count_process();
-		return 0;
 	} else {
 		char *dirname = argv[1];
 		list_process(dirname);
@@ -35,10 +39,10 @@ void do_dir(char *dirname) {
 		if (strcmp(fname, ".") == 0 || strcmp(fname, "..") == 0) {
 			continue;
 		}
-		char path[1000];
+		char path[BUF_SIZE];
 		snprintf(path, sizeof(path), "%s/%s", dirname, fname);
-		printf("L %s\n", path);
-		write(fd[1], path, strlen(path)+1);
+		write(fd[WRITE], path, sizeof(path));
+		printf("%s\n", path);
 		DIR * subdir = opendir(path);
 		if (subdir != NULL) {
 			do_dir(path);
@@ -48,8 +52,6 @@ void do_dir(char *dirname) {
 }
 
 void list_process(char * dirname) {
-	close(fd[0]);
-
 	DIR * dirp;
 
 	dirp = opendir(dirname);
@@ -62,16 +64,15 @@ void list_process(char * dirname) {
 	
 	do_dir(dirname);
 
-	close(fd[1]);
+	close(fd[WRITE]);
 	wait(NULL);
 }
 
 void count_process() {
-	close(fd[1]);
+	close(fd[WRITE]);
 	int count = 0;
-	char buffer[100];
-	while (read(fd[0], buffer, sizeof(buffer))) {
-		printf("C %s\n", buffer);
+	char buffer[BUF_SIZE];
+	while (read(fd[READ], buffer, sizeof(buffer))) {
 		++count;
 	}
 	printf("----- TOTAL ENTRIES: %d -----\n", count);

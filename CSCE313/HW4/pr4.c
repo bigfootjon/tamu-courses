@@ -36,8 +36,8 @@ void do_dir(char *dirname) {
 			continue;
 		}
 		char path[1000];
-		snprintf(path, 1000, "%s/%s", dirname, fname);
-		printf("%s\n", path);
+		snprintf(path, sizeof(path), "%s/%s", dirname, fname);
+		printf("L %s\n", path);
 		write(fd[1], path, strlen(path)+1);
 		DIR * subdir = opendir(path);
 		if (subdir != NULL) {
@@ -69,13 +69,9 @@ void list_process(char * dirname) {
 void count_process() {
 	close(fd[1]);
 	int count = 0;
-	while (1) {
-		char buffer[100];
-		int read_bytes = read(fd[0], buffer, sizeof(buffer));
-		if (read_bytes == 0) {
-			printf("%s", buffer);
-			break;
-		}
+	char buffer[100];
+	while (read(fd[0], buffer, sizeof(buffer))) {
+		printf("C %s\n", buffer);
 		++count;
 	}
 	printf("----- TOTAL ENTRIES: %d -----\n", count);

@@ -82,6 +82,10 @@ void * handle_data_requests(void * args) {
   handle_process_loop(*data_channel);
 
   // -- Client has quit. We remove channel.
+  nthreads--;
+  if (nthreads == 0) {
+    exit(0);
+  }
  
   delete data_channel;
   return 0;
@@ -101,22 +105,13 @@ void process_data(NetworkRequestChannel & _channel, const string &  _request) {
   _channel.cwrite(int2string(rand() % 100));
 }
 
-void process_newthread(NetworkRequestChannel & _channel, const string & _request) {
+void * process_newthread(int * fd) {
   int error;
   nthreads ++;
 
-  // -- Name new data channel
-
-  string new_channel_name = "data" + int2string(nthreads) + "_";
-  //  cout << "new channel name = " << new_channel_name << endl;
-
-  // -- Pass new channel name back to client
-
-  _channel.cwrite(new_channel_name);
-
   // -- Construct new data channel (pointer to be passed to thread function)
   
-  NetworkRequestChannel * data_channel = new NetworkRequestChannel(8000, NULL);
+  NetworkRequestChannel * data_channel = new NetworkRequestChannel(*fd);
 
   // -- Create new thread to handle request channel
 
@@ -140,9 +135,6 @@ void process_request(NetworkRequestChannel & _channel, const string & _request) 
   else if (_request.compare(0, 4, "data") == 0) {
     process_data(_channel, _request);
   }
-  else if (_request.compare(0, 9, "newthread") == 0) {
-    process_newthread(_channel, _request);
-  }
   else {
     _channel.cwrite("unknown request");
   }
@@ -158,7 +150,7 @@ void handle_process_loop(NetworkRequestChannel & _channel) {
     cout << " done." << endl;
     cout << "New request is " << request << endl;
 
-    if (request.compare("quit") == 0) {
+    if (request.compare(0, 4, "quit") == 0) {
       _channel.cwrite("bye");
       usleep(10000);          // give the other end a bit of time.
       break;                  // break out of the loop;
@@ -174,12 +166,6 @@ void handle_process_loop(NetworkRequestChannel & _channel) {
 /*--------------------------------------------------------------------------*/
 
 int main(int argc, char * argv[]) {
-
-  //  cout << "Establishing control channel... " << flush;
-  NetworkRequestChannel control_channel(8000, NULL);
-  //  cout << "done.\n" << flush;
-
-  handle_process_loop(control_channel);
-
+  NetworkRequestChannel control_channel(8000, process_newthread);
 }
 

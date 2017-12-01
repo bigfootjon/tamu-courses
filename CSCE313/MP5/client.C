@@ -53,7 +53,7 @@ map<string, map<int, int> > stat_map;
 
 int main(int argc, char * argv[]) {
 	if (!fork()) {
-		system("./dataserver");
+		//system("./dataserver");
 		return 0;
 	}
 
@@ -110,13 +110,8 @@ int main(int argc, char * argv[]) {
 	}
 	
 	for (int i = 0; i < worker_threads; ++i) {
-		string chan_name = chan.send_request("newthread");
-		mutex_l.P();
-		cout << "Main: (control) 'newthread' -> '" << chan_name << "'" << endl;
-		mutex_l.V();
-
 		pthread_t worker_id;
-		pthread_create(&worker_id, NULL, worker_thread, (void*)new string(chan_name));
+		pthread_create(&worker_id, NULL, worker_thread, NULL);
 		threads.push_back(worker_id);
 	}
 

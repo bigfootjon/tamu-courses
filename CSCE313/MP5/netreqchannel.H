@@ -13,7 +13,7 @@ public:
 	// Client
 	NetworkRequestChannel(const string _server_host_name, const unsigned short _port_no);
 	// Server
-	NetworkRequestChannel(const unsigned short _port_no, void * (*connection_handler) (int *));
+	NetworkRequestChannel(const unsigned short _port_no, int backlog, void * (*connection_handler) (int *));
 	// Server Slave
 	NetworkRequestChannel(int fd);
 	~NetworkRequestChannel();

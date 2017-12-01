@@ -46,6 +46,8 @@ int worker_threads = 1;
 int request_threads = 0;
 int request_count = 100;
 
+int port = 8000;
+
 BoundedBuffer* request_buffer;
 BoundedBuffer* response_buffer;
 
@@ -57,10 +59,11 @@ int main(int argc, char * argv[]) {
 		return 0;
 	}
 
+	const char * host = "localhost";
 	int buffer_size = 2000;
 	
 	char c;
-	while ((c = getopt (argc, argv, "n:b:w:")) != -1) {
+	while ((c = getopt (argc, argv, "n:b:w:h:p:")) != -1) {
 		switch (c) {
 		case 'n':
 			request_count = atoi(optarg);
@@ -71,8 +74,14 @@ int main(int argc, char * argv[]) {
 		case 'w':
 			worker_threads = atoi(optarg);
 			break;
+		case 'h':
+			host = optarg;
+			break;
+		case 'p':
+			port = atoi(optarg);
+			break;
 		case '?':
-			if (optopt == 'n' || optopt == 'b' || optopt == 'w') {
+			if (optopt == 'n' || optopt == 'b' || optopt == 'w' || optopt == 'h' || optopt == 'p') {
 				printf("Option -%c requires an argument\n", optopt);
 			} else {
 				printf("Unknown option: -%c\n", optopt);
@@ -85,7 +94,7 @@ int main(int argc, char * argv[]) {
 	cout << "Main: CLIENT STARTED:" << endl;
 
 	cout << "Main: Establishing control channel... " << flush;
-	NetworkRequestChannel chan("localhost", 8000);
+	NetworkRequestChannel chan(host, port);
 	cout << "done." << endl;;
 
 	string hello_reply = chan.send_request("hello");
@@ -111,7 +120,7 @@ int main(int argc, char * argv[]) {
 	
 	for (int i = 0; i < worker_threads; ++i) {
 		pthread_t worker_id;
-		pthread_create(&worker_id, NULL, worker_thread, NULL);
+		pthread_create(&worker_id, NULL, worker_thread, (void*)host);
 		threads.push_back(worker_id);
 	}
 
@@ -152,7 +161,11 @@ void * request_thread(void * _attr) {
 }
 
 void * worker_thread(void * _attr) {
-	NetworkRequestChannel* chan = new NetworkRequestChannel("localhost", 8000);
+	const char * hostname = (const char *)_attr;
+	mutex_l.P();
+	cout << hostname << "|>" << endl;
+	mutex_l.V();
+	NetworkRequestChannel* chan = new NetworkRequestChannel(hostname, port);
 
 	for (;;) {
 		string request_string = request_buffer->pop();

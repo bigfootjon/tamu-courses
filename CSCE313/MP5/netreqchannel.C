@@ -14,12 +14,10 @@ NetworkRequestChannel::NetworkRequestChannel(const string _server_host_name, con
 		printf("Server host '%s' lookup failed!\n", _server_host_name.c_str());
 		exit(1);
 	}
-	printf("%s\n", inet_ntoa( *(in_addr*)(host->h_addr_list[0])));
 	sockaddr_in sin;
 	sin.sin_family = AF_INET;
 	sin.sin_port = htons(_port_no);
 	sin.sin_addr = *(in_addr*)(host->h_addr_list[0]);
-	//inet_aton(_server_host_name.c_str(), &sin.sin_addr);
 	
 	sock = socket(AF_INET, SOCK_STREAM, 0);
 	if (sock < 0) {
@@ -32,7 +30,7 @@ NetworkRequestChannel::NetworkRequestChannel(const string _server_host_name, con
 }
 
 // Server
-NetworkRequestChannel::NetworkRequestChannel(const unsigned short _port_no, void * (*connection_handler) (int *)) {
+NetworkRequestChannel::NetworkRequestChannel(const unsigned short _port_no, int backlog, void * (*connection_handler) (int *)) {
 	int m_sock = socket(AF_INET, SOCK_STREAM, 0);
 	if (m_sock < 0) printf("can't create socket: %s\n", strerror(errno));
 	sockaddr_in sin;
@@ -43,7 +41,7 @@ NetworkRequestChannel::NetworkRequestChannel(const unsigned short _port_no, void
 	if (bind(m_sock, (struct sockaddr *)&sin, sizeof(sin)) < 0) {
 		printf("can't bind\n");
 	}
-	if (listen(m_sock, 32) < 0) {
+	if (listen(m_sock, backlog) < 0) {
 		printf("can't listen\n");
 	}
 	for (;;) {

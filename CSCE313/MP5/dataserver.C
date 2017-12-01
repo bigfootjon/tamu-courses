@@ -166,6 +166,28 @@ void handle_process_loop(NetworkRequestChannel & _channel) {
 /*--------------------------------------------------------------------------*/
 
 int main(int argc, char * argv[]) {
-  NetworkRequestChannel control_channel(8000, process_newthread);
+  int backlog = 32;
+  int port = 8000;
+  
+  char c;
+  while ((c = getopt (argc, argv, "b:p:")) != -1) {
+    switch (c) {
+    case 'b':
+      backlog = atoi(optarg);
+      break;
+    case 'p':
+      port = atoi(optarg);
+      break;
+    case '?':
+      if (optopt == 'b' || optopt == 'p') {
+        printf("Option -%c requires an argument\n", optopt);
+      } else {
+        printf("Unknown option: -%c\n", optopt);
+      }
+    default:
+      return -1;
+    }
+  }
+  NetworkRequestChannel control_channel(port, backlog, process_newthread);
 }
 

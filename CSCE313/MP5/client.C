@@ -33,7 +33,7 @@
 #include <map>
 
 #include "client.H"
-#include "reqchannel.H"
+#include "netreqchannel.H"
 #include "bounded_buffer.H"
 
 using namespace std;
@@ -85,7 +85,7 @@ int main(int argc, char * argv[]) {
 	cout << "Main: CLIENT STARTED:" << endl;
 
 	cout << "Main: Establishing control channel... " << flush;
-	RequestChannel chan("control", RequestChannel::CLIENT_SIDE);
+	NetworkRequestChannel chan("localhost", 8000);
 	cout << "done." << endl;;
 
 	string hello_reply = chan.send_request("hello");
@@ -157,8 +157,7 @@ void * request_thread(void * _attr) {
 }
 
 void * worker_thread(void * _attr) {
-	string* chan_name = (string*)_attr;
-	RequestChannel* chan = new RequestChannel(*chan_name, RequestChannel::CLIENT_SIDE);
+	NetworkRequestChannel* chan = new NetworkRequestChannel("localhost", 8000);
 
 	for (;;) {
 		string request_string = request_buffer->pop();
@@ -167,7 +166,7 @@ void * worker_thread(void * _attr) {
 		}
 		string reply_string = chan->send_request(request_string);
 		mutex_l.P();
-		cout << "Worker:  (" << *chan_name << ") '" << request_string << "' -> '" << reply_string << "'" << endl;
+		cout << "Worker:  " << request_string << "' -> '" << reply_string << "'" << endl;
 		mutex_l.V();
 		response_buffer->push(reply_string);
 	}
@@ -177,9 +176,8 @@ void * worker_thread(void * _attr) {
 	}
 	string quit_response = chan->send_request("quit");
 	mutex_l.P();
-	cout << "Worker:  (" << *chan_name << ") 'quit' -> '" << quit_response << "'" << endl;
+	cout << "Worker: 'quit' -> '" << quit_response << "'" << endl;
 	mutex_l.V();
-	delete chan_name;
 	pthread_exit(0);
 	return 0;
 }

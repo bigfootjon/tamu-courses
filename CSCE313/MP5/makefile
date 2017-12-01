@@ -5,11 +5,11 @@ all: dataserver client fifo
 %.o: %.C %.H
 	$(CC) -o $@ -c $<
 
-dataserver: dataserver.C reqchannel.o
-	$(CC) -g -o $@ dataserver.C reqchannel.o -lpthread
+dataserver: dataserver.C netreqchannel.o
+	$(CC) -g -o $@ dataserver.C netreqchannel.o -lpthread
 
-client: client.C client.H semaphore.o bounded_buffer.o reqchannel.o
-	$(CC) -g -o $@ client.C semaphore.o bounded_buffer.o reqchannel.o -lpthread
+client: client.C client.H semaphore.o bounded_buffer.o netreqchannel.o
+	$(CC) -g -o $@ client.C semaphore.o bounded_buffer.o netreqchannel.o -lpthread
 
 fifo:
 	rm -rf fifo*

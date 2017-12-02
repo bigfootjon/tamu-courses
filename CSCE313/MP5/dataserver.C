@@ -120,7 +120,7 @@ void * process_newthread(int * fd) {
   if ((error = pthread_create(& thread_id, NULL, handle_data_requests, data_channel))) {
     fprintf(stderr, "p_create failed: %s\n", strerror(error));
   }  
-
+  return NULL;
 }
 
 /*--------------------------------------------------------------------------*/

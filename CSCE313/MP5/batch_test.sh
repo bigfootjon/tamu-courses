@@ -1,4 +1,3 @@
-#!/bin/bash
 for W in $(seq 1 20); do
 	for B in $(seq 1 20); do
 		start=$(date +%s)

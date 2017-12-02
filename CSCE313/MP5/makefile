@@ -1,6 +1,6 @@
 CC=g++ -g --std=c++11
 
-all: dataserver client fifo
+all: dataserver client
 
 %.o: %.C %.H
 	$(CC) -o $@ -c $<
@@ -11,8 +11,5 @@ dataserver: dataserver.C netreqchannel.o
 client: client.C client.H semaphore.o bounded_buffer.o netreqchannel.o
 	$(CC) -g -o $@ client.C semaphore.o bounded_buffer.o netreqchannel.o -lpthread
 
-fifo:
-	rm -rf fifo*
-
-clean: fifo
+clean:
 	rm -rf client dataserver netreqchannel.o bounded_buffer.o semaphore.o *.dSYM/

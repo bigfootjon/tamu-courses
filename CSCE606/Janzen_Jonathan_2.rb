@@ -1,6 +1,6 @@
 def count_words(string)
 	words = string.downcase().split(/\W/)
-	dict = Hash.new
+	dict = Hash.new()
 	words.each {|word|
 		if word == ""
 			next

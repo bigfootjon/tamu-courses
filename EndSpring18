@@ -1,3 +1,6 @@
 Mac Uninstall:
 * Eclipse
 * Derby
+
+Mac Config:
+* clean .bash_profile/rc

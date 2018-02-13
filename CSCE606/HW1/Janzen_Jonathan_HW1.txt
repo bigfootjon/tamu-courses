@@ -1,3 +1,4 @@
+
 Ruby intro part 1
   #sum
     should be defined
@@ -50,3 +51,4 @@ BookInStock
 
 Finished in 0.01003 seconds (files took 0.10247 seconds to load)
 34 examples, 0 failures
+

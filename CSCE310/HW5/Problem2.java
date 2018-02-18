@@ -1,7 +1,7 @@
 import java.sql.*;
 import java.util.Scanner;
 
-public class Problem1 {
+public class Problem2 {
 	Connection conn = null;
 	String className;
 	Scanner scanner;

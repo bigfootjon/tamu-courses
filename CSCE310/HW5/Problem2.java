@@ -7,7 +7,7 @@ public class Problem2 {
 	Scanner scanner;
 
 	public static void main(String[] args) {
-		new Problem1();
+		new Problem2();
 	}
 
 	public Problem2() {

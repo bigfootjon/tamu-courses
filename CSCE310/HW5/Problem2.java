@@ -10,7 +10,7 @@ public class Problem2 {
 		new Problem1();
 	}
 
-	public Problem1() {
+	public Problem2() {
 		try {
 			Class.forName("com.mysql.jdbc.Driver").newInstance();
 		} catch (Exception e) {

@@ -7,10 +7,14 @@ public class Problem2 {
 	Scanner scanner;
 
 	public static void main(String[] args) {
-		new Problem1();
+		if (args.length != 2) {
+			System.out.println("Please supply an username and password as args");
+			return;
+		}
+		new Problem2(args[0], args[1]);
 	}
 
-	public Problem2() {
+	public Problem2(String username, String password) {
 		try {
 			Class.forName("com.mysql.jdbc.Driver").newInstance();
 		} catch (Exception e) {
@@ -18,7 +22,7 @@ public class Problem2 {
 			return;
 		}
 		try {
-			conn = DriverManager.getConnection("jdbc:mysql://database2.cs.tamu.edu/jonjanzen-shipsdb?user=jonjanzen&password=Jkl777919");
+			conn = DriverManager.getConnection("jdbc:mysql://database2.cs.tamu.edu/jonjanzen-shipsdb?user=" + username + "&password=" + password);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return;

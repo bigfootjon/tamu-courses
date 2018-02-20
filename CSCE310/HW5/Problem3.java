@@ -1,10 +1,12 @@
 import java.sql.*;
-import java.util.Scanner;
+import java.util.*;
+import java.io.*;
 
 public class Problem3 {
 	Connection conn = null;
 	String className;
 	Scanner scanner;
+	ArrayList<String> patentList = null;
 
 	public static void main(String[] args) {
 		if (args.length != 2) {
@@ -28,9 +30,19 @@ public class Problem3 {
 			return;
 		}
 		scanner = new Scanner(System.in);
-		newClass();
-		newShips();
-		
+		String fileName = "";
+		while (patentList == null && !fileName.equals("quit")) {
+			fileName = askUser("JSON file name");
+			try {
+				FileInputStream fis = new FileInputStream(fileName);
+				ObjectInputStream ois = new ObjectInputStream(fis);
+				patentList = (ArrayList<String>) ois.readObject();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		System.out.println("Patent count: " + patentList.size());
+		// READ DATA HERE
 		try {
 			conn.close();
 		} catch (SQLException e) {
@@ -43,14 +55,9 @@ public class Problem3 {
 		return scanner.nextLine();
 	}
 
-	private void newClass() {
-		className = askUser("Class name");
-		String type = askUser("Class type");
-		String country = askUser("Class country");
-		String numGuns = askUser("Class gun count");
-		String bore = askUser("Class bore");
-		String disp = askUser("Class displacement");
-		String query = "INSERT INTO classes (class, type, country, numGuns, bore, disp) VALUES ('" + className + "', '" + type + "', '" + country + "', " + numGuns + ", " + bore + ", " + disp + ");";
+	private void newShips() {
+		String shipName = className;
+		String query = "INSERT INTO ships (name, class, launched) VALUES ()";
 		Statement statement = null;
 		try {
 			statement = conn.createStatement();
@@ -65,31 +72,6 @@ public class Problem3 {
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
-		}
-	}
-
-	private void newShips() {
-		String shipName = className;
-		System.out.println("Ship name ('exit' to finish): " + shipName);
-		while (!shipName.equals("exit")) {
-			String launched = askUser("Ship launch year");
-			String query = "INSERT INTO ships (name, class, launched) VALUES ('" + shipName + "', '" + className + "', " + launched + ")";
-			Statement statement = null;
-			try {
-				statement = conn.createStatement();
-				statement.executeUpdate(query);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			} finally {
-				try {
-					if (statement != null) {
-						statement.close();
-					}
-				} catch (SQLException e) {
-					e.printStackTrace();
-			}
-			shipName = askUser("Ship name ('exit' to finish)");
-		}
 		}
 	}
 }

@@ -48,6 +48,7 @@ public class Problem3 {
 		System.out.println("Patent count: " + patentList.size());
 		for (String patentString : patentList) {
 			insertPatent(patentString);
+			break;
 		}
 		try {
 			conn.close();
@@ -120,6 +121,30 @@ public class Problem3 {
 		String summary = getColumn(patentString, "summary");
 		String description = getColumn(patentString, "description");
 
+		String claimString = getSubObject(patentString, "claims");
+		ArrayList<String> claims = new ArrayList<>();
+		String claimTemp = null;
+		int claimTempIndex = 1;
+		do {
+			claimTemp = getColumn(claimString, "claim" + claimTempIndex++);
+			if (claimTemp != null) {
+				claims.add(claimTemp);
+			}
+		} while (claimTemp != null);
+		
+		String refString = getSubObject(patentString, "references");
+		ArrayList<String> refs = new ArrayList<>();
+		String refTemp = null;
+		int refTempIndex = 1;
+		do {
+			refTemp= getColumn(refString, "ref" + refTempIndex++);
+			if (refTemp != null) {
+				refs.add(refTemp);
+			}
+		} while (refTemp != null);
+
+		if (true) return;
+
 		String query = "INSERT INTO patent (number, dateIssued, title, abstract, assignee, familyId, appNum, dateFiled, docId, pubDate, usClass, examiner, legalFirm, summary, description) VALUES (" + patentNumber + ", " + issueDate + ", '" + title + "', '" + patentAbstract + "', " + assigneeId + ", " + familyId + ", '" + appNum + "', " + dateFiled + ", '" + docId + "', " + pubDate + ", '" + usClass + "', " + examinerId + ", " + legalFirmId + ", '" + summary + "', '" + description + "')";
 		Statement statement = null;
 		try {
@@ -163,12 +188,25 @@ public class Problem3 {
 				return result.replaceAll("'", "''");
 			}
 		}
-		System.out.println("Column not found: " + column);
 		return null;
 	}
 
-	private String getSubObject(String patentString, String name) {
-		// TODO
+	private String getSubObject(String patentString, String column) {
+		String columnStr = "\""+column+"\":{";
+	        int startIndex = patentString.indexOf(columnStr);
+	        if (startIndex != -1) {
+	        	String columnData = patentString.substring(startIndex + columnStr.length());
+	        	String endStr = "}";
+	        	int endIndex = columnData.indexOf(endStr);
+			if (endIndex != -1) {
+	        		String result = columnData.substring(0, endIndex-1);
+				if (result.equals("")) {
+					return null;
+				}
+				return result.replaceAll("'", "''");
+			}
+		}
+		return null;
 	}
 
 	SimpleDateFormat jsonFormat = new SimpleDateFormat("MMM dd, yyyy");

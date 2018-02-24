@@ -1,6 +1,7 @@
 import java.sql.*;
 import java.util.*;
 import java.io.*;
+import java.text.SimpleDateFormat;
 
 public class Problem3 {
 	Connection conn = null;
@@ -24,7 +25,7 @@ public class Problem3 {
 			return;
 		}
 		try {
-			conn = DriverManager.getConnection("jdbc:mysql://database2.cs.tamu.edu/jonjanzen-shipsdb?user=" + username + "&password=" + password);
+			conn = DriverManager.getConnection("jdbc:mysql://database2.cs.tamu.edu/jonjanzen-patentdb?user=" + username + "&password=" + password);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return;
@@ -32,7 +33,10 @@ public class Problem3 {
 		scanner = new Scanner(System.in);
 		String fileName = "";
 		while (patentList == null && !fileName.equals("quit")) {
-			fileName = askUser("JSON file name");
+			fileName = askUser("JSON file name (default: patent1-1000JSON.ser)");
+			if (fileName.equals("")) {
+				fileName = "patent1-1000JSON.ser";
+			}
 			try {
 				FileInputStream fis = new FileInputStream(fileName);
 				ObjectInputStream ois = new ObjectInputStream(fis);
@@ -42,7 +46,9 @@ public class Problem3 {
 			}
 		}
 		System.out.println("Patent count: " + patentList.size());
-		// READ DATA HERE
+		for (String patentString : patentList) {
+			insertPatent(patentString);
+		}
 		try {
 			conn.close();
 		} catch (SQLException e) {
@@ -55,13 +61,28 @@ public class Problem3 {
 		return scanner.nextLine();
 	}
 
-	private void newShips() {
-		String shipName = className;
-		String query = "INSERT INTO ships (name, class, launched) VALUES ()";
+	private Integer getOrCreatePerson(String name) {
+		if (name == null ) {
+			return null;
+		}
+		if (name.length() > 100) {
+			name = name.substring(0,100);
+		}
+		name = name.replaceAll("'", "");
+		String getQuery = "SELECT id FROM person WHERE name='" + name + "'";
+		String create = "INSERT INTO person (name, location) VALUES ('" + name + "', NULL)";
 		Statement statement = null;
 		try {
 			statement = conn.createStatement();
-			statement.executeUpdate(query);
+			ResultSet rs = statement.executeQuery(getQuery);
+			if (rs.next()) {
+				return rs.getInt("id");
+			}
+			statement.executeUpdate(create);
+			rs = statement.executeQuery(getQuery);
+			if (rs.next()) {
+				return rs.getInt("id");
+			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
@@ -72,6 +93,92 @@ public class Problem3 {
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
+		}
+		return null;
+	}
+
+	private void insertPatent(String patentString) {
+		String assigneeString = getColumn(patentString, "assignee");
+		Integer assigneeId = getOrCreatePerson(assigneeString);
+
+		String examinerString = getColumn(patentString, "examiner");
+		Integer examinerId = getOrCreatePerson(examinerString);
+
+		String legalFirmString = getColumn(patentString, "legalfirm");
+		Integer legalFirmId = getOrCreatePerson(legalFirmString);
+
+		String patentNumber = getColumn(patentString, "patNum");
+		String issueDate = getSqlDate(getColumn(patentString, "iDate"));
+		String title = getColumn(patentString, "title");
+		String patentAbstract = getColumn(patentString, "abstract");
+		String familyId = getColumn(patentString, "familyID");
+		String appNum = getColumn(patentString, "applNum");
+		String dateFiled = getSqlDate(getColumn(patentString, "dateFiled"));
+		String docId = getColumn(patentString, "docID");
+		String pubDate = getSqlDate(getColumn(patentString, "pubDate"));
+		String usClass = getColumn(patentString, "USclass");
+		String summary = getColumn(patentString, "summary");
+		String description = getColumn(patentString, "description");
+
+		String query = "INSERT INTO patent (number, dateIssued, title, abstract, assignee, familyId, appNum, dateFiled, docId, pubDate, usClass, examiner, legalFirm, summary, description) VALUES (" + patentNumber + ", " + issueDate + ", '" + title + "', '" + patentAbstract + "', " + assigneeId + ", " + familyId + ", '" + appNum + "', " + dateFiled + ", '" + docId + "', " + pubDate + ", '" + usClass + "', " + examinerId + ", " + legalFirmId + ", '" + summary + "', '" + description + "')";
+		Statement statement = null;
+		try {
+			statement = conn.createStatement();
+			statement.executeUpdate(query);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.err.println(query);
+		} finally {
+			try {
+				if (statement != null) {
+					statement.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	private String getColumn(String patentString, String column) {
+		String columnStr = "\""+column+"\":\"";
+	        int startIndex = patentString.indexOf(columnStr);
+	        if (startIndex != -1) {
+	        	String columnData = patentString.substring(startIndex + columnStr.length());
+	        	String endStr = "\",\"";
+	        	int endIndex = columnData.indexOf(endStr);
+			if (endIndex != -1) {
+	        		String result = columnData.substring(0, endIndex);
+				if (result.equals("")) {
+					return null;
+				}
+				return result.replaceAll("'", "''");
+			}
+	        	String endAltStr = "\"}";
+	        	int endAltIndex = columnData.indexOf(endAltStr);
+			if (endAltIndex != -1) {
+	        		String result = columnData.substring(0, endAltIndex);
+				if (result.equals("")) {
+					return null;
+				}
+				return result.replaceAll("'", "''");
+			}
+		}
+		System.out.println("Column not found: " + column);
+		return null;
+	}
+
+	private String getSubObject(String patentString, String name) {
+		// TODO
+	}
+
+	SimpleDateFormat jsonFormat = new SimpleDateFormat("MMM dd, yyyy");
+	SimpleDateFormat sqlFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+	private String getSqlDate(String date) {
+		try {
+			return "'" + sqlFormat.format(jsonFormat.parse(date)) + "'";
+		} catch (Exception e) {
+			return null;
 		}
 	}
 }

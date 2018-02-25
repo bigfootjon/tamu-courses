@@ -1,7 +1,7 @@
 MYSQL_USER=jonjanzen
 MYSQL_PASS=dbpass
 
-run: run3
+run: run4
 
 %.class: %.java
 	javac $<
@@ -14,6 +14,10 @@ run2: Problem2.class
 
 run3: Problem3.class
 	java -cp ".:./mysql.jar" Problem3 ${MYSQL_USER} ${MYSQL_PASS}
+
+run4: ClassifyPatents.class Classifier.class
+	java -cp ".:./mysql.jar" ClassifyPatents ${MYSQL_USER} ${MYSQL_PASS}
+	
 
 clean:
 	rm -f *.class

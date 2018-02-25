@@ -20,7 +20,7 @@ public class Classifier {
 	HashSet<String> hset = new HashSet<String>();
 	HashMap<String, DocWord> dict = new HashMap<String, DocWord>();//dictionary from training set
 	
-	public Classifier(PatentData pdf) throws IOException{
+	public Classifier(PatentData pdf) throws Exception {
 		try {
 			BufferedReader in = new BufferedReader(new FileReader("stopwords.txt"));
 			String str;

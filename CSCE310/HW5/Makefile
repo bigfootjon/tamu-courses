@@ -17,7 +17,6 @@ run3: Problem3.class
 
 run4: ClassifyPatents.class Classifier.class
 	java -cp ".:./mysql.jar" ClassifyPatents ${MYSQL_USER} ${MYSQL_PASS}
-	
 
 clean:
 	rm -f *.class

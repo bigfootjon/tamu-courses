@@ -48,7 +48,6 @@ public class Problem3 {
 		System.out.println("Patent count: " + patentList.size());
 		for (String patentString : patentList) {
 			insertPatent(patentString);
-			break;
 		}
 		try {
 			conn.close();
@@ -71,7 +70,7 @@ public class Problem3 {
 		}
 		name = name.replaceAll("'", "");
 		String getQuery = "SELECT id FROM person WHERE name='" + name + "'";
-		String create = "INSERT INTO person (name, location) VALUES ('" + name + "', NULL)";
+		String create = "INSERT INTO person (name) VALUES ('" + name + "')";
 		Statement statement = null;
 		try {
 			statement = conn.createStatement();
@@ -121,30 +120,6 @@ public class Problem3 {
 		String summary = getColumn(patentString, "summary");
 		String description = getColumn(patentString, "description");
 
-		String claimString = getSubObject(patentString, "claims");
-		ArrayList<String> claims = new ArrayList<>();
-		String claimTemp = null;
-		int claimTempIndex = 1;
-		do {
-			claimTemp = getColumn(claimString, "claim" + claimTempIndex++);
-			if (claimTemp != null) {
-				claims.add(claimTemp);
-			}
-		} while (claimTemp != null);
-		
-		String refString = getSubObject(patentString, "references");
-		ArrayList<String> refs = new ArrayList<>();
-		String refTemp = null;
-		int refTempIndex = 1;
-		do {
-			refTemp= getColumn(refString, "ref" + refTempIndex++);
-			if (refTemp != null) {
-				refs.add(refTemp);
-			}
-		} while (refTemp != null);
-
-		if (true) return;
-
 		String query = "INSERT INTO patent (number, dateIssued, title, abstract, assignee, familyId, appNum, dateFiled, docId, pubDate, usClass, examiner, legalFirm, summary, description) VALUES (" + patentNumber + ", " + issueDate + ", '" + title + "', '" + patentAbstract + "', " + assigneeId + ", " + familyId + ", '" + appNum + "', " + dateFiled + ", '" + docId + "', " + pubDate + ", '" + usClass + "', " + examinerId + ", " + legalFirmId + ", '" + summary + "', '" + description + "')";
 		Statement statement = null;
 		try {
@@ -160,6 +135,42 @@ public class Problem3 {
 				}
 			} catch (SQLException e) {
 				e.printStackTrace();
+			}
+		}
+
+		String claimString = getSubObject(patentString, "claims");
+		String claimTemp = null;
+		int claimTempIndex = 0;
+		while (claimString != null) {
+			claimTemp = getColumn(claimString, "claim" + ++claimTempIndex);
+			if (claimTemp != null) {
+				insertClaim(patentNumber, claimTempIndex, claimTemp);
+			} else {
+				break;
+			}
+		}
+		
+		String refString = getSubObject(patentString, "references");
+		String refTemp = null;
+		int refTempIndex = 0;
+		while (refString != null) {
+			refTemp = getColumn(refString, "ref" + ++refTempIndex);
+			if (refTemp != null) {
+				insertRef(patentNumber, refTempIndex, refTemp);
+			} else {
+				break;
+			}
+		}
+
+		String[] inventorString = getColumn(patentString, "inventors").split("\\), ");
+		for (int i = 0; i < inventorString.length; i++) {
+			String inventor = inventorString[i];
+			if (i + 1 < inventorString.length) {
+				inventor += ")";
+			}
+			Integer inventorId = getOrCreatePerson(inventor);
+			if (inventorId != null) {
+				insertInventorPerson(patentNumber, inventorId);
 			}
 		}
 	}
@@ -217,6 +228,66 @@ public class Problem3 {
 			return "'" + sqlFormat.format(jsonFormat.parse(date)) + "'";
 		} catch (Exception e) {
 			return null;
+		}
+	}
+
+	private void insertClaim(String patentNumber, int index, String content) {
+		String query = "INSERT INTO claim (patentNum, num, content) VALUES (" + patentNumber + ", " + index + ", '" + content + "')";
+		Statement statement = null;
+		try {
+			statement = conn.createStatement();
+			statement.executeUpdate(query);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.err.println(query);
+		} finally {
+			try {
+				if (statement != null) {
+					statement.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	private void insertRef(String patentNumber, int index, String content) {
+		String query = "INSERT INTO reference (patentNum, num, content) VALUES (" + patentNumber + ", " + index + ", '" + content + "')";
+		Statement statement = null;
+		try {
+			statement = conn.createStatement();
+			statement.executeUpdate(query);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.err.println(query);
+		} finally {
+			try {
+				if (statement != null) {
+					statement.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	private void insertInventorPerson(String patentNumber, Integer personId) {
+		String query = "INSERT INTO inventor_person (patentNum, personId) VALUES (" + patentNumber + ", " + personId + ")";
+		Statement statement = null;
+		try {
+			statement = conn.createStatement();
+			statement.executeUpdate(query);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.err.println(query);
+		} finally {
+			try {
+				if (statement != null) {
+					statement.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 }

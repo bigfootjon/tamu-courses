@@ -56,6 +56,7 @@ public class Classifier {
 			dict.replace(k, entry);
 		}
 
+		// BEGIN MODIFICATIONS
 		ArrayList<DocWord> words = new ArrayList<DocWord>(dict.values());
 		Collections.sort(words, new Comparator<DocWord>() {
 			@Override
@@ -63,11 +64,12 @@ public class Classifier {
 				return (int)(left.yesProb - right.yesProb);
 			}
 		});
-		words = (ArrayList<DocWord>)words.subList(0, 5);
+		words = new ArrayList<DocWord>(words.subList(0, 5));
 		dict.clear();
 		for (DocWord elem : words) {
 			dict.put(elem.word, elem);
 		}
+		// END MODIFICATIONS
 
 	}
 	public void train(String title, boolean DBinvention) throws IOException{

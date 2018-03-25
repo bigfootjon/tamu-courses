@@ -1,4 +1,3 @@
-package mongodb;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -21,7 +20,7 @@ public class CreatePatentCollection {
 			ObjectInputStream objectinputstream = null;
 			ArrayList<String> patentList = null;
 
-			System.out.println("Enter patent input file name: ");
+			System.out.print("Enter patent input file name: ");
             Scanner input = new Scanner(System.in);
             String inputFile = input.nextLine().toLowerCase();
             int i = inputFile.indexOf(".ser");

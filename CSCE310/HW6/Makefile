@@ -2,7 +2,7 @@ MYSQL_USER=jonjanzen
 MYSQL_PASS=dbpass
 PR4_DIR=patentClassifier
 
-run: runC
+run: run4
 
 %.class: %.java
 	javac -cp ".:./bson-3.0.4.jar:./mongodb-driver-3.0.4.jar:./mongodb-driver-core-3.0.4.jar" $<

@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.Comparator;
+import java.util.Collections;
 
 public class Classifier {
 	int[] knownDByes = {2,3,4,5,6,7,8,12,13,14,17,18,19,20,21,23,24,27,28,29,30,31,34,36,37,38,39,41,46,50};
@@ -53,6 +55,20 @@ public class Classifier {
 			
 			dict.replace(k, entry);
 		}
+
+		ArrayList<DocWord> words = new ArrayList<DocWord>(dict.values());
+		Collections.sort(words, new Comparator<DocWord>() {
+			@Override
+			public int compare(DocWord left, DocWord right) {
+				return (int)(left.yesProb - right.yesProb);
+			}
+		});
+		words = (ArrayList<DocWord>)words.subList(0, 5);
+		dict.clear();
+		for (DocWord elem : words) {
+			dict.put(elem.word, elem);
+		}
+
 	}
 	public void train(String title, boolean DBinvention) throws IOException{
 		String[] tokens = splitPatent(title);

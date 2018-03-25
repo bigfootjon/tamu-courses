@@ -30,21 +30,21 @@ public class ClassifyPatents {
 		//train classifier
 		Classifier c = new Classifier(pdf);
 		
+		int relatedCount = 0;
+		int unrelatedCount = 0;
+		
 		//read index of desired start patent	
-		while(true){
-			System.out.print("Enter patent start number: ");
-			Scanner input = new Scanner(System.in);
-			String inputLine = input.nextLine();
-			int pn = Integer.parseInt(inputLine.trim());
-			
-			for (int i = pn; i < 1000; i++){
-				String title = pdf.getPatentField(i, "title");
-				double pr = c.classify(title);
-				System.out.println("Patent index:"+i+"\t"+"Class: "+pr+"\t"+title);
-				inputLine = input.nextLine();
-				if(inputLine.toLowerCase().contains("exit"))
-					break;
+		for (int i = 0; i < 1000; i++){
+			String title = pdf.getPatentField(i, "title");
+			double pr = c.classify(title);
+			if (pr > 0.5) {
+				relatedCount++;
+			} else {
+
+				unrelatedCount++;
 			}
 		}
+		System.out.println("Related to DB: " + relatedCount);
+		System.out.println("Not related to DB: " + unrelatedCount);
 	}
 }

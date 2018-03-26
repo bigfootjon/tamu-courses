@@ -5,6 +5,9 @@ import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Projections;
+import java.util.logging.Logger;
+import java.util.logging.Level;
+import java.util.HashMap;
 //helpful code examples: https://www.programcreek.com/java-api-examples/?api=com.mongodb.client.FindIterable
 //
 //This program illustrates processing fields in a patent document stored in a MongoDB collection.
@@ -18,38 +21,54 @@ import com.mongodb.client.model.Projections;
 //Author: Ronnie Ward
 //
 public class AnalyzePatentDates {
-
+	static {
+		Logger mongoLogger = Logger.getLogger("org.mongodb.driver");
+		mongoLogger.setLevel(Level.SEVERE);
+	}
+	
 	public static void main(String[] args) throws Exception {
 		try {
 			MongoClient mongoClient = new MongoClient( "localhost" , 27017 );
-
 			MongoCollection<Document> coll = null;
 			MongoDatabase database = mongoClient.getDatabase("patentdb");
-			if(database!=null) {
-				
-				System.out.println("Connect to Database Successful");
-				coll = database.getCollection("patent1000");
-		        if(coll!=null)
-		        	System.out.println("Select Collection Successful");
-		        else System.out.println("Collection NOT found!");
+
+			if(database == null) {
+				System.out.println("Database NOT found!");
+				return;
 			}
-			else System.out.println("Database NOT found!");
+			System.out.println("Connect to Database Successful");
+
+			coll = database.getCollection("patents");
+			if(coll == null) {
+				System.out.println("Collection NOT found!");
+				return;
+			}
+			System.out.println("Select Collection Successful");
 
 			FindIterable<Document> docs = coll.find().projection(Projections.include("indx", "dateFiled"));
-			if(docs != null) {
-				System.out.println("Index\tdateFiled");
-				for (Document doc : docs) {
-					int indx = doc.getInteger("indx");
-		            String df = doc.getString("dateFiled");
-		            System.out.println(indx+"\t"+df);
-		        }
+			if(docs == null) {
+				System.out.println("Documents NOT found");
+				return;
 			}
- 	    	else System.out.println("First document NOT found");
- 	    		    	
+			
+			HashMap<String, Integer> yearMap = new HashMap<>();
+
+			for (Document doc : docs) {
+				int indx = doc.getInteger("indx");
+				String df = doc.getString("dateFiled");
+				df = df.substring(df.length() - 4);
+				if (yearMap.containsKey(df)) {
+					yearMap.put(df, yearMap.get(df) + 1);
+				} else {
+					yearMap.put(df, 1);
+				}
+			}
+
+			for (HashMap.Entry<String, Integer> entry : yearMap.entrySet()) {
+				System.out.println(entry.getKey() + " " + entry.getValue());
+			}
 		} catch (MongoException e) {
 			e.printStackTrace();
- 		} finally {
- 			
- 		}
+		}
 	}
 }

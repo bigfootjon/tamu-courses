@@ -22,13 +22,9 @@ import java.util.*;
  * @author Edward Sciore
  */
 public class FileMgr {
-	public static final String FILE_MODE = "rws";//"rw"; //rws flushes writes to the disk to keep it in sync, rw does not
    private File dbDirectory;
    private boolean isNew;
    private Map<String,FileChannel> openFiles = new HashMap<String,FileChannel>();
-   //Homework 6 spring 2017
-   private long block_reads;  //rgw HW6, problem 8
-   private long block_writes; //rgw HW6, problem 8
 
    /**
     * Creates a file manager for the specified database.
@@ -40,9 +36,6 @@ public class FileMgr {
     * @param dbname the name of the directory that holds the database
     */
    public FileMgr(String dbname) {
-	  block_reads = 0; //rgw HW6, problem 8
-	  block_writes = 0;//rgw HW6, problem 8
-
       String homedir = System.getProperty("user.home");
       dbDirectory = new File(homedir, dbname);
       isNew = !dbDirectory.exists();
@@ -67,7 +60,6 @@ public class FileMgr {
          bb.clear();
          FileChannel fc = getFile(blk.fileName());
          fc.read(bb, blk.number() * BLOCK_SIZE);
-         block_reads++;//rgw, HW6, problem 8
       }
       catch (IOException e) {
          throw new RuntimeException("cannot read block " + blk);
@@ -84,7 +76,6 @@ public class FileMgr {
          bb.rewind();
          FileChannel fc = getFile(blk.fileName());
          fc.write(bb, blk.number() * BLOCK_SIZE);
-         block_writes++;//rgw, HW6, problem 8
       }
       catch (IOException e) {
          throw new RuntimeException("cannot write block" + blk);
@@ -142,34 +133,10 @@ public class FileMgr {
       FileChannel fc = openFiles.get(filename);
       if (fc == null) {
          File dbTable = new File(dbDirectory, filename);
-         RandomAccessFile f = new RandomAccessFile(dbTable, /*"rws"*/ FILE_MODE);
+         RandomAccessFile f = new RandomAccessFile(dbTable, "rws");
          fc = f.getChannel();
          openFiles.put(filename, fc);
       }
       return fc;
    }
-   
-	/**
-	 * Returns the number of blocks read.
-	 * @return the block_reads
-	 */
-	public long blockreads() { //rgw, HW6, problem 8
-		return block_reads;
-	}
-	/**
-	 * Returns the number of blocks written.
-	 * @return the block_writes
-	 */
-	public long blockwrites() { //rgw, HW6, problem 8
-		return block_writes;
-	}
-	/**
-	 * Reset the number of blocks read and written.
-	 * @return void
-	 */
-	public void resetCounts() { //rgw, HW6, problem 8
-		block_reads = block_writes = 0;
-		return;
-	}
-
 }

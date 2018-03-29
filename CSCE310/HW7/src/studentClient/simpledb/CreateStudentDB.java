@@ -1,13 +1,14 @@
+package studentClient.simpledb;
+
 import java.sql.*;
-import org.apache.derby.jdbc.ClientDriver;
+import simpledb.remote.SimpleDriver;
 
 public class CreateStudentDB {
     public static void main(String[] args) {
 		Connection conn = null;
 		try {
-			Driver d = new ClientDriver();
-			String url = "jdbc:derby://localhost/studentdb;create=true";
-			conn = d.connect(url, null);
+			Driver d = new SimpleDriver();
+			conn = d.connect("jdbc:simpledb://localhost", null);
 			Statement stmt = conn.createStatement();
 
 			String s = "create table STUDENT(SId int, SName varchar(10), MajorId int, GradYear int)";

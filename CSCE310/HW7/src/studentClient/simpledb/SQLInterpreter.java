@@ -1,5 +1,7 @@
+package studentClient.simpledb;
+
 import java.sql.*;
-import org.apache.derby.jdbc.ClientDriver;
+import simpledb.remote.SimpleDriver;
 import java.io.*;
 
 public class SQLInterpreter {
@@ -7,9 +9,8 @@ public class SQLInterpreter {
 
     public static void main(String[] args) {
 	   try {
- 		    Driver d = new ClientDriver();
-			String url = "jdbc:derby://localhost/studentdb";
-			conn = d.connect(url, null);
+			Driver d = new SimpleDriver();
+			conn = d.connect("jdbc:simpledb://localhost", null);
 
 			Reader rdr = new InputStreamReader(System.in);
 			BufferedReader br = new BufferedReader(rdr);

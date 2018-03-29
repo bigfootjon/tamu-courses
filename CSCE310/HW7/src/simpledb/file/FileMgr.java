@@ -36,7 +36,7 @@ public class FileMgr {
     * @param dbname the name of the directory that holds the database
     */
    public FileMgr(String dbname) {
-      String homedir = System.getProperty("user.home");
+      String homedir = System.getProperty("user.dir");
       dbDirectory = new File(homedir, dbname);
       isNew = !dbDirectory.exists();
 

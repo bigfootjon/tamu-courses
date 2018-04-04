@@ -1,5 +1,7 @@
 package simpledb.remote;
 
+import simpledb.file.FileMgr;
+import simpledb.server.SimpleDB;
 import simpledb.tx.Transaction;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
@@ -56,6 +58,12 @@ class RemoteConnectionImpl extends UnicastRemoteObject implements RemoteConnecti
    void commit() {
       tx.commit();
       tx = new Transaction();
+      FileMgr fileMgr = SimpleDB.fileMgr();
+      System.out.println("*** COMMIT ***");
+      System.out.println("Block reads: " + fileMgr.blockreads());
+      System.out.println("Block writes: " + fileMgr.blockwrites());
+      System.out.println("*** END COMMIT ***");
+      fileMgr.resetCounts();
    }
    
    /**
@@ -65,6 +73,12 @@ class RemoteConnectionImpl extends UnicastRemoteObject implements RemoteConnecti
    void rollback() {
       tx.rollback();
       tx = new Transaction();
+      FileMgr fileMgr = SimpleDB.fileMgr();
+      System.out.println("*** ROLLBACK ***");
+      System.out.println("Block reads: " + fileMgr.blockreads());
+      System.out.println("Block writes: " + fileMgr.blockwrites());
+      System.out.println("*** END ROLLBACK ***");
+      fileMgr.resetCounts();
    }
 }
 

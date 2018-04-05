@@ -59,8 +59,12 @@ public class LogMgr implements Iterable<BasicLogRecord> {
     * @param lsn the LSN of a log record
     */
    public void flush(int lsn) {
-      if (lsn >= currentLSN())
+      if (lsn > currentLSN()) {
+         System.out.println("FLUSHING LOG WITH LSN " + lsn);
          flush();
+      } else {
+         System.out.println("FLUSHING LOG WITH LSN " + lsn + " (SKIPPED!)");
+      }
    }
 
    /**
@@ -130,7 +134,11 @@ public class LogMgr implements Iterable<BasicLogRecord> {
     * @return the LSN of the most recent log record
     */
    private int currentLSN() {
-      return currentblk.number();
+      // OLD METHOD:
+      //return currentblk.number();
+
+      // NEW METHOD:
+      return currentblk.number() * BLOCK_SIZE + currentpos;
    }
 
    /**

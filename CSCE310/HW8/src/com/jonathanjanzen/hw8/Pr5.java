@@ -12,6 +12,8 @@ import java.util.ArrayList;
 public class Pr5 {
     public static void main(String[] args) {
 
+        //TODO WRONG WRONG WRONG SEE SLIDE 10 of QUERY PLANNING
+
         // QUERY:
         //   SELECT sname, dname, grade
         //   FROM STUDENT, DEPT, ENROLL, SECTION

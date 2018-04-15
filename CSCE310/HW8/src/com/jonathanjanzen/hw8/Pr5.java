@@ -1,9 +1,6 @@
 package com.jonathanjanzen.hw8;
 
-import simpledb.parse.QueryData;
-import simpledb.query.FieldNameExpression;
-import simpledb.query.Predicate;
-import simpledb.query.Term;
+import simpledb.query.*;
 import simpledb.server.SimpleDB;
 import simpledb.tx.Transaction;
 
@@ -11,8 +8,6 @@ import java.util.ArrayList;
 
 public class Pr5 {
     public static void main(String[] args) {
-
-        //TODO WRONG WRONG WRONG SEE SLIDE 10 of QUERY PLANNING
 
         // QUERY:
         //   SELECT sname, dname, grade
@@ -24,30 +19,43 @@ public class Pr5 {
         SimpleDB.init("studentdb");
         Transaction tx = new Transaction();
 
-        // --- SELECT CLAUSE ---
+        // --- FROM Clause ---
+        Plan tableStudent = new TablePlan("student", tx);
+        Plan tableDept = new TablePlan("dept", tx);
+        Plan tableEnroll = new TablePlan("enroll", tx);
+        Plan tableSection = new TablePlan("section", tx);
+
+        Plan p = new ProductPlan(tableStudent, tableDept);
+        p = new ProductPlan(p, tableEnroll);
+        p = new ProductPlan(p, tableSection);
+        // --- End FROM Clause ---
+
+        // --- WHERE Clause ---
+        Predicate predicateStudent = new Predicate(new Term(new FieldNameExpression("sid"), new FieldNameExpression("studentid")));
+        Predicate predicateSection = new Predicate(new Term(new FieldNameExpression("sectid"), new FieldNameExpression("sectionid")));
+        Predicate predicateMajor = new Predicate(new Term(new FieldNameExpression("did"), new FieldNameExpression("majorid")));
+
+        p = new SelectPlan(p, predicateStudent);
+        p = new SelectPlan(p, predicateSection);
+        p = new SelectPlan(p, predicateMajor);
+        // --- End WHERE Clause ---
+
+        // --- SELECT Clause ---
         ArrayList<String> fields = new ArrayList<>();
         fields.add("sname");
         fields.add("dname");
         fields.add("grade");
-        // --- END SELECT CLAUSE ---
 
-        // --- FROM CLAUSE ---
-        ArrayList<String> tables = new ArrayList<>();
-        tables.add("STUDENT");
-        tables.add("DEPT");
-        tables.add("ENROLL");
-        tables.add("SECTION");
-        // --- END FROM CLAUSE ---
+        p = new ProjectPlan(p, fields);
+        // --- End SELECT Clause ---
 
-        // --- WHERE CLAUSE ---
-        Predicate predicate = new Predicate(new Term(new FieldNameExpression("SId"), new FieldNameExpression("StudentId")));
-        Predicate predicateSection = new Predicate(new Term(new FieldNameExpression("SectId"), new FieldNameExpression("SectionId")));
-        Predicate predicateMajor = new Predicate(new Term(new FieldNameExpression("DId"), new FieldNameExpression("MajorId")));
-
-        predicate.conjoinWith(predicateSection);
-        predicate.conjoinWith(predicateMajor);
-        // --- END WHERE CLAUSE ---
-
-        QueryData query = new QueryData(fields, tables, predicate);
+        Scan s = p.open();
+        System.out.println("sname\tdname\tgrade");
+        while (s.next()) {
+            String sname = s.getString("sname");
+            String dname = s.getString("dname");
+            String grade = s.getString("grade");
+            System.out.println(sname + "\t\t" + dname + "\t" + grade);
+        }
     }
 }

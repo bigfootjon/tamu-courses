@@ -18,17 +18,17 @@ public class IntersectPlan implements Plan {
     * @param p1 the left-hand subquery
     * @param p2 the right-hand subquery
     */
-   public IntersectPlan(Plan p1, Plan p2) {
+   public IntersectPlan(Plan p1, Plan p2) throws Exception {
 	  //make sure the subqueries are union compatible -- rgw
 	  Collection<String> c1 = p1.schema().fields();	
 	  Collection<String> c2 = p2.schema().fields();
 	  if(c1.size() != c2.size())						//same number of elements?
-		  throw new BadSemanticsException();
+		  throw new Exception();
 	  Iterator<String> i2 = c2.iterator();
 	  for(String str1: c1){
 		  String str2 = i2.next();						//I assume there is an order to the elements
 		  if(p1.schema().type(str1) != p2.schema().type(str2)) //same type of element
-			  throw new BadSemanticsException();
+			  throw new Exception();
 	  }
       this.p1 = p1;
       this.p2 = p2;

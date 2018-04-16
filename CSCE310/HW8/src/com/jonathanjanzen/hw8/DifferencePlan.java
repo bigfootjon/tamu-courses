@@ -12,7 +12,7 @@ public class DifferencePlan implements Plan {
     private final Plan p2;
     private Schema schema;
 
-    public DifferencePlan(Plan p1, Plan p2) throws Exception {
+    DifferencePlan(Plan p1, Plan p2) throws Exception {
         // begin input validation
         Schema s1 = p1.schema();
         Collection<String> s1f = s1.fields();

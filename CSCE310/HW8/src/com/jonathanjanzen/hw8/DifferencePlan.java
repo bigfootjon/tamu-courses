@@ -44,12 +44,12 @@ public class DifferencePlan implements Plan {
 
     @Override
     public int recordsOutput() {
-        return Math.max(p1.recordsOutput(), p2.recordsOutput());
+        return Math.min(p1.recordsOutput(), p2.recordsOutput());
     }
 
     @Override
     public int distinctValues(String fldname) {
-        return Math.max(p1.distinctValues(fldname), p2.distinctValues(fldname));
+        return Math.min(p1.distinctValues(fldname), p2.distinctValues(fldname));
     }
 
     @Override

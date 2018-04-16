@@ -11,8 +11,8 @@ public class Pr5 {
 
         // QUERY:
         //   SELECT sname, dname, grade
-        //   FROM STUDENT, DEPT, ENROLL, SECTION
-        //   WHERE SId = StudentId AND SectId = SectionId and DId = MajorId;
+        //   FROM student, dept, enroll, section
+        //   WHERE sid = studentid AND sectid = sectionid and did = majorid;
 
         // Slides from Query Processing, Use SimpleDb.{Plan, Scan}
 

@@ -77,6 +77,7 @@ public class Lexer {
     * @param d a character denoting the delimiter
     */
    public void eatDelim(char d) {
+      System.out.println("eatDelim()");
       if (!matchDelim(d))
          throw new BadSyntaxException();
       nextToken();
@@ -89,6 +90,7 @@ public class Lexer {
     * @return the integer value of the current token
     */
    public int eatIntConstant() {
+      System.out.println("eatIntConstant()");
       if (!matchIntConstant())
          throw new BadSyntaxException();
       int i = (int) tok.nval;
@@ -103,6 +105,7 @@ public class Lexer {
     * @return the string value of the current token
     */
    public String eatStringConstant() {
+      System.out.println("eatStringConstant()");
       if (!matchStringConstant())
          throw new BadSyntaxException();
       String s = tok.sval; //constants are not converted to lower case
@@ -117,6 +120,7 @@ public class Lexer {
     * @param w the keyword string
     */
    public void eatKeyword(String w) {
+      System.out.println("eatKeyword()");
       if (!matchKeyword(w))
          throw new BadSyntaxException();
       nextToken();
@@ -130,6 +134,7 @@ public class Lexer {
     * @return the string value of the current token
     */
    public String eatId() {
+      System.out.println("eatId()");
       if (!matchId())
          throw new BadSyntaxException();
       String s = tok.sval;

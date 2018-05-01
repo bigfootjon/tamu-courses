@@ -1,6 +1,2 @@
-Mac Uninstall:
-* Eclipse
-* Derby
-
-Mac Config:
+* Remove RVM
 * clean .bash_profile/rc

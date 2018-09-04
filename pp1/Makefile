@@ -23,7 +23,7 @@ JUNK =  *.o lex.yy.c dpp.yy.c y.tab.c y.tab.h *.core core $(COMPILER).purify pur
 # Define the tools we are going to use
 CC= g++
 LD = g++
-LEX = ~/flex/flex-2.6.4/src/flex
+LEX = flex #~/flex/flex-2.6.4/src/flex
 YACC = bison
 
 # Set up the necessary flags for the tools
@@ -44,7 +44,7 @@ LEXFLAGS = -d
 YACCFLAGS = -dvty
 
 # Link with standard c library, math library, and lex library
-LIBS = -lc -lm -L ~/flex/flex-2.6.4/src/.libs/libfl.a ~/flex/flex-2.6.4/src/.libs/libyywrap.o
+LIBS = -lc -lm -ll #-L ~/flex/flex-2.6.4/src/.libs/libfl.a ~/flex/flex-2.6.4/src/.libs/libyywrap.o
 
 # Rules for various parts of the target
 

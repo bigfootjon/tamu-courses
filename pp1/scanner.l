@@ -33,6 +33,9 @@ YYSTYPE yylval;  // manually declared for pp1, later Yacc provides
  */
 struct yyltype yylloc; // manually dclared for pp1, later Yacc provides
 
+// source: https://stackoverflow.com/questions/656703/how-does-flex-support-bison-location-exactly
+int yycolumn = 1;
+
 /* Macro: YY_USER_ACTION 
  * ---------------------
  * This flex built-in macro can be defined to provide an action which is
@@ -48,6 +51,8 @@ static void DoBeforeEachAction();
 
 %}
 
+%option yylineno
+
  /* The section before the first %% is the Definitions section of the lex
   * input file. Here is where you set options for the scanner, define lex
   * states, and can set up definitions to give names to regular expressions
@@ -56,39 +61,101 @@ static void DoBeforeEachAction();
   */
 
 DIGIT           [0-9]
-Identifier      [a-zA-Z][a-zA-Z0-9_]{0,30}
+Identifier      [a-zA-Z][a-zA-Z0-9_]*
 Quote           ["]
 HEX             0X|0x
 HEX_DIGIT       [0-9]|[a-fA-F]
 
 %%
 
-true|false      printf( "A boolean constant: %s", yytext ); 
+true	{
+	yylval.boolConstant = true;
+	return T_BoolConstant;
+}
 
-void|int|double|bool|string|class|interface|null|this|extends|implements|for|while|if|else|return|break|New|NewArray    {
-        printf( "A keyword: %s\n", yytext); 
-        }
+false	{
+	yylval.boolConstant = false;
+	return T_BoolConstant;
+}
 
-{Identifier}    printf( "An identifier: %s\n", yytext );
+void		return T_Void;
+int		return T_Int;
+double		return T_Double;
+bool		return T_Bool;
+string		return T_String;
+class		return T_Class;
+interface	return T_Interface;
+null		return T_Null;
+this		return T_This;
+extends		return T_Extends;
+implements	return T_Implements;
+for		return T_For;
+while		return T_While;
+if		return T_If;
+else		return T_Else;
+return		return T_Return; // heh
+break		return T_Break;
+New		return T_New;
+NewArray	return T_NewArray;
 
-"+"|"-"|"*"|"/"|"%"|"<"|"<="|">"|">="|"="|"=="|"!="|"&&"|"||"|"!"|";"|","|"."|"["|"]"|"("|")"|"{"|"}"   {
-                printf( "An operator: %s\n", yytext );
-                }
+{Identifier}    {
+	if (strlen(yytext) > MaxIdentLen) {
+		ReportError::LongIdentifier(&yylloc, yytext);
+	}
+	strcpy(yylval.identifier, yytext);
+	return T_Identifier;
+}
 
-{DIGIT}+        printf( "An integer: %s ", yytext );
+"+"|"-"|"*"|"/"|"%"|"<"|">"|"="|"!"|";"|","|"."|"["|"]"|"("|")"|"{"|"}"		return yytext[0];
 
-{DIGIT}+"."{DIGIT}*     printf( "A double constant: %s\n", yytext);
+"<="		return T_LessEqual;
+">="		return T_GreaterEqual;
+"=="		return T_Equal;
+"!="		return T_NotEqual;
+"&&"		return T_And;
+"||"		return T_Or;
 
-{DIGIT}+"."{DIGIT}*[eE]"+"{DIGIT}+      printf( "A double constant %s\n", yytext);
+{DIGIT}+        {
+	yylval.integerConstant = atoi(yytext);
+	return T_IntConstant;
+}
 
-{Quote}.+{Quote}                printf( "A string constant: %s\n", yytext );
+{DIGIT}+"."{DIGIT}*     {
+	yylval.doubleConstant = atof(yytext);
+	return T_DoubleConstant;
+}
 
-{HEX}{HEX_DIGIT}+               printf( "A Hex number: %s\n", yytext );
+{DIGIT}+"."{DIGIT}*[eE]"+"{DIGIT}+      {
+	yylval.doubleConstant = atof(yytext);
+	return T_DoubleConstant;
+}
+
+{Quote}[^"\n]*\n {
+	ReportError::UntermString(&yylloc, yytext);
+}
+
+{Quote}[^"\n]*{Quote} {
+	yylval.stringConstant = yytext;
+	return T_StringConstant;
+}
+
+{HEX}{HEX_DIGIT}+               {
+	yylval.integerConstant= (int)strtol(yytext, NULL, 0);
+	return T_IntConstant;
+}
              /* BEGIN RULES SECTION */
  /* All patterns and actions should be placed between the start and stop
   * %% markers which delimit the Rules section. 
   */ 
+"\n"	{
+	yycolumn = 1;
+}
 
+" "	{}
+
+. {
+	ReportError::UnrecogChar(&yylloc, yytext[0]);
+}
 %%
 /* The closing %% above marks the end of the Rules section and the beginning
  * of the User Subroutines section. All text from here to the end of the
@@ -123,4 +190,8 @@ void InitScanner()
  */
 static void DoBeforeEachAction()
 {
+    // source: https://stackoverflow.com/questions/656703/how-does-flex-support-bison-location-exactly
+    yylloc.first_line = yylloc.last_line = yylineno;
+    yylloc.first_column = yycolumn; yylloc.last_column = yycolumn + yyleng - 1;
+    yycolumn += yyleng;
 }

@@ -33,6 +33,8 @@ CHARS			[a-zA-Z0-9]*
 	return P_None;
 }
 
+\r {}
+
 \n {
 	preout = yytext;
 	return P_Output;
@@ -52,7 +54,7 @@ CHARS			[a-zA-Z0-9]*
 	return P_None;
 }
 
-{OCTOTHORP}define.* {
+{OCTOTHORP}define[^\r]* {
 	char* define_keyword = strtok(yytext, " ");
 	char* name = strtok(NULL, " ");
 	for (int i = 0; i < strlen(name); ++i) {

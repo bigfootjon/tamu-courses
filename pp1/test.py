@@ -16,7 +16,7 @@ def run_test(name):
     print("TEST: " + name)
     with open('samples/' + name + '.frag', 'r') as compile_in:
         p = subprocess.Popen(['./dcc'], stdin=compile_in, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-    compiled = p.communicate()[0].decode("utf-8")
+    compiled = p.communicate()[0].decode("utf-8").replace("\r", "")
     return_code = p.returncode
     if return_code == 0:
         print("  Compile: SUCCESS")
@@ -30,7 +30,7 @@ def run_test(name):
             reason = "Unknown"
         print("    Return code: " + str(return_code) + " (" + reason + ")")
     with open('samples/' + name + '.out', 'r') as given_out:
-        given = given_out.read()
+        given = given_out.read().replace("\r", "")
         if given == compiled:
             print("  Compare: SUCCESS")
             did_pass = True

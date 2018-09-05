@@ -149,11 +149,11 @@ NewArray	return T_NewArray;
  /* All patterns and actions should be placed between the start and stop
   * %% markers which delimit the Rules section. 
   */ 
-"\n"	{
+[\n\r]*	{
 	yycolumn = 1;
 }
 
-" "	{}
+\ 	{}
 
 . {
 	ReportError::UnrecogChar(&yylloc, yytext[0]);

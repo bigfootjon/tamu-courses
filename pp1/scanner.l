@@ -103,6 +103,8 @@ NewArray	return T_NewArray;
 		ReportError::LongIdentifier(&yylloc, yytext);
 	}
 	strcpy(yylval.identifier, yytext);
+	yylloc.first_line = yylloc.last_line = yylineno;
+	yylval.identifier[MaxIdentLen] = '\0';
 	return T_Identifier;
 }
 
@@ -130,7 +132,7 @@ NewArray	return T_NewArray;
 	return T_DoubleConstant;
 }
 
-{Quote}[^"\n]*\n {
+{Quote}[^"\n]*$ {
 	ReportError::UntermString(&yylloc, yytext);
 }
 

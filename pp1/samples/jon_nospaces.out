@@ -1,0 +1,4 @@
+if           line 1 cols 1-2 is T_If 
+(            line 1 cols 3-3 is '(' 
+23           line 1 cols 4-5 is T_IntConstant (value = 23)
+this         line 1 cols 6-9 is T_This 

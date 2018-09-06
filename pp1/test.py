@@ -48,17 +48,28 @@ class TestCase:
             else:
                 reason = "Unknown"
             print("    Return code: " + str(return_code) + " (" + reason + ")")
-        with open(os.path.join(TEST_DIR, self._out_file), 'r') as given_out:
-            given = given_out.read().replace("\r", "")
-            if given == compiled:
-                print("  Compare: SUCCESS")
+        if os.path.isfile(os.path.join(TEST_DIR, self._out_file)):
+            with open(os.path.join(TEST_DIR, self._out_file), 'r') as given_out:
+                given = given_out.read().replace("\r", "")
+                if given == compiled:
+                    print("  Compare: SUCCESS")
+                    did_pass = True
+                else:
+                    print("  Compare: FAIL!")
+                    print("    Expected output:")
+                    print(given)
+                    print("    Compiler output:")
+                    print(compiled)
+        else:
+            print("  Compare: SKIPPED!")
+            print("    Compiler output:")
+            print(compiled)
+            should_save = raw_input("    Save this output as correct output? [Y/n]: ")
+            if len(should_save) == 0 or should_save[0] != 'n':
                 did_pass = True
-            else:
-                print("  Compare: FAIL!")
-                print("    Given output:")
-                print(given)
-                print("    Compiler output:")
-                print(compiled)
+                with open(os.path.join(TEST_DIR, self._out_file), 'w') as out_file:
+                    out_file.write(compiled)
+                print("    Successfully saved " + self._out_file + "!")
         print()
         return did_pass
 

@@ -1,0 +1,16 @@
+Usage:
+
+ 1. run `make` to build dcc and dpp
+ 2. (optional) run `dpp <$FILE` will run the preprocessor on $FILE
+ 3. run `dcc <$FILE` will preprocess (invokes dpp) and print the lexed input from $FILE
+
+Extended Functionality:
+ - I ended up with CRLF sample files so I went ahead and made the compiler compatible with DOS-style CRLF line endings
+ - I included a python script I wrote (test.py) that can be used to automatically test the compiler
+   - Run `python test.py` to lex every file that matches either samples/*.frag or samples/*.decaf
+     - The output from the compiler will be compared to the given .out file with the same name
+   - There is also the option to run specific tests: `python test.py $TEST1 $TEST2`
+     - $FILE1 and $FILE2 are the name of the files without their extensions (e.g. TEST1=badident; TEST2=number)
+ - I also wrote several tests beyond those included in the samples directory.
+   - They all match the glob "jon_*.frag"
+   - Mostly they just use examples from the instructions or fill in details mentioned in the specifications

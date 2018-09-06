@@ -22,6 +22,7 @@ MULTI_COMMENT_BEGIN	\/\*
 MULTI_COMMENT_END	\*\/
 OCTOTHORP		#
 CHARS			[a-zA-Z0-9]*
+QUOTE			\"
 %%
 
 {SINGLE_COMMENT}[^\n]* {}
@@ -77,4 +78,8 @@ CHARS			[a-zA-Z0-9]*
 	if (!multicomment) {
 		printf("%s", yytext);
 	}
+}
+
+{QUOTE}.*{QUOTE} {
+	printf("%s", yytext);
 }

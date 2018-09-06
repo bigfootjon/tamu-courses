@@ -11,12 +11,7 @@
 #include "errors.h"
 
 bool multicomment = false;
-char* preout = 0;
 std::map<std::string, std::string> definemap;
-
-typedef enum {
-	P_Done, P_Output, P_None
-} PreTypes;
 
 %}
 
@@ -29,61 +24,57 @@ OCTOTHORP		#
 CHARS			[a-zA-Z0-9]*
 %%
 
-{SINGLE_COMMENT}[^\n]* {
-	return P_None;
-}
+{SINGLE_COMMENT}[^\n]* {}
 
 \r {}
 
 \n {
-	preout = yytext;
-	return P_Output;
+	printf("%s", yytext);
 }
 
 {MULTI_COMMENT_BEGIN} {
 	multicomment = true;
-	return P_None;
 }
 
 {MULTI_COMMENT_END} {
 	if (multicomment == false) {
-		preout = yytext;
-		return P_Output;
+		printf("%s", yytext);
+	} else {
+		multicomment = false;
 	}
-	multicomment = false;
-	return P_None;
 }
 
-{OCTOTHORP}define[^\r]* {
+{OCTOTHORP}define.*$ {
 	char* define_keyword = strtok(yytext, " ");
 	char* name = strtok(NULL, " ");
+	char* replacement = strtok(NULL, "\0");
+
+	bool error = false;
 	for (int i = 0; i < strlen(name); ++i) {
 		if (!isalpha(name[i]) || islower(name[i])) {
 			ReportError::InvalidDirective(yylineno);
-			return P_None;
+			error = true;
+			break;
 		}
 	}
-	char* replacement = strtok(NULL, "\0");
-	definemap.insert(std::make_pair(std::string(name), std::string(replacement)));
+
+	if (!error) {
+		definemap.insert(std::make_pair(std::string(name), std::string(replacement)));
+	}
 }
 
 {OCTOTHORP}{CHARS} {
 	char* name = yytext + 1;
 	try {
 		std::string out = definemap.at(std::string(name));
-		preout = (char*)out.c_str();
-		return P_Output;
+		printf("%s", out.c_str());
 	} catch (...) {
 		ReportError::InvalidDirective(yylineno);
-		return P_None;
 	}
 }
 
 . {
-	if (multicomment) {
-		return P_None;
-	} else {
-		preout = yytext;
-		return P_Output;
+	if (!multicomment) {
+		printf("%s", yytext);
 	}
 }

@@ -7,12 +7,6 @@
 #include "scanner.h"
 #include <stdio.h>
 
-extern char* preout;
-
-typedef enum {
-	P_Done, P_Output, P_None
-} PreTypes;
-
 /* Function: main()
  * ----------------
  * Entry point to the preprocessor.
@@ -25,10 +19,6 @@ typedef enum {
  */
 int main(int argc, char *argv[])
 {
-  int ch;
-  while ((ch = yylex()) != P_Done)
-    if (ch == P_Output) {
-      printf("%s", preout);
-    }
+  yylex();
   return 0;
 }

@@ -48,7 +48,7 @@ QUOTE			\"
 {OCTOTHORP}define.*$ {
 	char* define_keyword = strtok(yytext, " ");
 	char* name = strtok(NULL, " ");
-	char* replacement = strtok(NULL, "\0");
+	char* replacement = strtok(NULL, "\r\0");
 
 	bool error = false;
 	for (int i = 0; i < strlen(name); ++i) {

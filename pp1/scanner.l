@@ -153,7 +153,7 @@ NewArray	return T_NewArray;
 	yycolumn = 1;
 }
 
-\ 	{}
+[\t ] {}
 
 . {
 	ReportError::UnrecogChar(&yylloc, yytext[0]);

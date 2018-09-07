@@ -11,25 +11,25 @@ except NameError:
     pass
 
 TEST_DIR = "samples"
+TEST_EXTS = ['frag', 'decaf']
 
 class TestCase:
     @staticmethod
     def get_all():
         os.chdir(TEST_DIR)
         tests = []
-        for ext in ['frag', 'decaf']:
+        for ext in TEST_EXTS:
             tests.extend([TestCase(file) for file in glob.glob("*." + ext)])
         os.chdir("..")
         return tests
 
     @staticmethod
     def get_by_name(name):
-        if os.path.isfile(os.path.join(TEST_DIR, name + '.frag')):
-            return TestCase(name + '.frag')
-        elif os.path.isfile(os.path.join(TEST_DIR, name + '.decaf')):
-            return TestCase(name + '.decaf')
-        else:
-            raise Exception("No test case found in '" + TEST_DIR + "' with name '" + name + "' :(")
+        for ext in TEST_EXTS:
+            filename = name + '.' + ext
+            if os.path.isfile(os.path.join(TEST_DIR, filename)):
+               return TestCase(filename)
+        raise Exception("No test case found in '" + TEST_DIR + "' with name '" + name + "' :(")
 
     def __init__(self, in_file):
         self.name = in_file.split(".")[0]
@@ -116,4 +116,4 @@ if __name__ == '__main__':
         if len(failed_names) > 0:
             print("  Failed tests: " + ", ".join(failed_names))
     except Exception as e:
-        print(e.message)
+        print(e)

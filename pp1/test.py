@@ -5,7 +5,10 @@ from __future__ import print_function
 import glob, os, sys, subprocess
 
 # compat for py3
-raw_input = input
+try:
+    input = raw_input
+except NameError:
+    pass
 
 TEST_DIR = "samples"
 
@@ -67,7 +70,7 @@ class TestCase:
             print("  Compare: SKIPPED!")
             print("    Compiler output:")
             print(compiled)
-            should_save = raw_input("    Save this output as correct output? [Y/n]: ")
+            should_save = input("    Save this output as correct output? [Y/n]: ")
             if len(should_save) == 0 or should_save[0] != 'n':
                 did_pass = True
                 with open(os.path.join(TEST_DIR, self._out_file), 'w') as out_file:
@@ -93,7 +96,7 @@ if __name__ == '__main__':
     try:
         if not os.path.isfile('dcc'):
             print("Compiler missing!")
-            should_make = raw_input("Run `make`? [Y/n]: ")
+            should_make = input("Run `make`? [Y/n]: ")
             if len(should_make) > 0 and should_make[0] == 'n':
                 exit(1)
             p = subprocess.Popen(['make'])

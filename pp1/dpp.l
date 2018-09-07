@@ -80,6 +80,6 @@ QUOTE			\"
 	}
 }
 
-{QUOTE}.*{QUOTE} {
+{QUOTE}[^"\n]*{QUOTE} {
 	printf("%s", yytext);
 }

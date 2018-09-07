@@ -1,0 +1,8 @@
+"part1"      line 4 cols 1-7 is T_StringConstant (value = "part1")
++            line 4 cols 9-9 is '+' 
+"part2"      line 4 cols 11-17 is T_StringConstant (value = "part2")
+"also"       line 5 cols 1-6 is T_StringConstant (value = "also")
++            line 5 cols 8-8 is '+' 
+test         line 5 cols 10-13 is T_Identifier 
++            line 5 cols 15-15 is '+' 
+"#DEFINES"   line 5 cols 17-26 is T_StringConstant (value = "#DEFINES")

@@ -4,6 +4,9 @@ from __future__ import print_function
 
 import glob, os, sys, subprocess
 
+# compat for py3
+raw_input = input
+
 TEST_DIR = "samples"
 
 class TestCase:
@@ -89,9 +92,9 @@ def run_list(tests):
 if __name__ == '__main__':
     try:
         if not os.path.isfile('dcc'):
-	    print("Compiler missing!")
+            print("Compiler missing!")
             should_make = raw_input("Run `make`? [Y/n]: ")
-	    if len(should_make) > 0 and should_make[0] == 'n':
+            if len(should_make) > 0 and should_make[0] == 'n':
                 exit(1)
             p = subprocess.Popen(['make'])
             p.communicate()

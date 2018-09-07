@@ -87,24 +87,27 @@ def run_list(tests):
 
 
 if __name__ == '__main__':
-    if not os.path.isfile('dcc'):
-	print("Compiler missing!")
-        should_make = raw_input("Run `make`? [Y/n]: ")
-	if len(should_make) > 0 and should_make[0] == 'n':
-            exit(1)
-        p = subprocess.Popen(['make'])
-        p.communicate()
-        if p.returncode != 0:
-            print("Make failed!")
-            exit(1)
+    try:
+        if not os.path.isfile('dcc'):
+	    print("Compiler missing!")
+            should_make = raw_input("Run `make`? [Y/n]: ")
+	    if len(should_make) > 0 and should_make[0] == 'n':
+                exit(1)
+            p = subprocess.Popen(['make'])
+            p.communicate()
+            if p.returncode != 0:
+                print("Make failed!")
+                exit(1)
 
-    if len(sys.argv) > 1:
-        tests = [TestCase.get_by_name(name) for name in sys.argv[1:]]
-    else:
-        tests = TestCase.get_all()
-    total = len(tests)
-    passed, failed_names = run_list(tests)
+        if len(sys.argv) > 1:
+            tests = [TestCase.get_by_name(name) for name in sys.argv[1:]]
+        else:
+            tests = TestCase.get_all()
+        total = len(tests)
+        passed, failed_names = run_list(tests)
 
-    print("TOTAL: " + str(passed) + "/" + str(total) + " passed")
-    if len(failed_names) > 0:
-        print("  Failed tests: " + ", ".join(failed_names))
+        print("TOTAL: " + str(passed) + "/" + str(total) + " passed")
+        if len(failed_names) > 0:
+            print("  Failed tests: " + ", ".join(failed_names))
+    except Exception as e:
+        print(e.message)

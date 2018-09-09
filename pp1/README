@@ -2,7 +2,7 @@ Usage:
 
  1. run `make` to build dcc and dpp
  2. (optional) run `dpp <$FILE` will run the preprocessor on $FILE
- 3. run `dcc <$FILE` will preprocess (invokes dpp) and print the lexed input from $FILE
+ 3. run `dcc <$FILE` to preprocess (invokes dpp) and then lex $FILE
 
 Extended Functionality:
  - I ended up with CRLF sample files so I went ahead and made the compiler compatible with DOS-style CRLF line endings

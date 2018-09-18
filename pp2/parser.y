@@ -46,6 +46,8 @@ void yyerror(const char *msg); // standard error-handling routine
     char identifier[MaxIdentLen+1]; // +1 for terminating null
     Decl *decl;
     List<Decl*> *declList;
+    Type *type;
+    VarDecl *vardecl;
 }
 
 
@@ -81,6 +83,9 @@ void yyerror(const char *msg); // standard error-handling routine
  */
 %type <declList>  DeclList 
 %type <decl>      Decl
+%type <type>      Type
+%type <identifier> T_Int
+%type <vardecl> Variable
 
 %%
 /* Rules
@@ -90,7 +95,7 @@ void yyerror(const char *msg); // standard error-handling routine
 	 
  */
 Program   :    DeclList            { 
-                                      @1; 
+                                      //@1; 
                                       /* pp2: The @1 is needed to convince 
                                        * yacc to set up yylloc. You can remove 
                                        * it once you have other uses of @n*/
@@ -105,8 +110,17 @@ DeclList  :    DeclList Decl        { ($$=$1)->Append($2); }
           |    Decl                 { ($$ = new List<Decl*>)->Append($1); }
           ;
 
-Decl      :    T_Void               { /* pp2: replace with correct rules  */ } 
+Decl      :    VariableDecl         {} 
           ;
+
+VariableDecl : Variable {}
+             ;
+
+Variable : Type T_Identifier { $$ = new VarDecl(new Identifier(@1, $2), $1); }
+         ;
+
+Type : T_Int { $$ = new Type($1); }
+     ;
           
 
 

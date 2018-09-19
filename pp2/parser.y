@@ -49,12 +49,11 @@ void yyerror(const char *msg); // standard error-handling routine
     Type *type;
     VarDecl *vardecl;
     List<VarDecl*> *varlist;
-    FnDecl *fndecl;
     Identifier *ident;
-    ClassDecl *classdecl;
     NamedType *namedtype;
     List<NamedType*> *implements;
-    InterfaceDecl *interfacedecl;
+    Stmt *stmt;
+    List<Stmt*> *stmtlist;
 }
 
 
@@ -90,16 +89,15 @@ void yyerror(const char *msg); // standard error-handling routine
  * pp2: You'll need to add many of these of your own.
  */
 %type <declList> DeclList FieldList PrototypeList
-%type <decl> Decl Field
-%type <type> Type
-%type <vardecl> Variable
-%type <varlist> VariableList
-%type <fndecl> FunctionDecl Prototype
+%type <decl> Decl FunctionDecl ClassDecl InterfaceDecl Field Prototype
+%type <type> Type 
+%type <vardecl> Variable VariableDecl
+%type <varlist> VariableList VariableDeclList
 %type <ident> Ident
-%type <classdecl> ClassDecl
 %type <namedtype> MaybeExtends
 %type <implements> ImplementsList
-%type <interfacedecl> InterfaceDecl
+%type <stmt> StmtBlock Stmt
+%type <stmtlist> StmtList
 
 %%
 /* Rules
@@ -119,7 +117,7 @@ DeclList  :    DeclList Decl        { ($$=$1)->Append($2); }
           |    Decl                 { ($$ = new List<Decl*>)->Append($1); }
           ;
 
-Decl : VariableDecl
+Decl : VariableDecl { $$ = $1; }
      | FunctionDecl
      | ClassDecl
      | InterfaceDecl
@@ -147,8 +145,8 @@ Type : T_Int { $$ = Type::intType; }
      | Type T_Dims { $$ = new ArrayType(@1, $1); }
      ;
           
-FunctionDecl : Type Ident '(' VariableList ')' StmtBlock { $$ = new FnDecl($2, $1, $4); }
-             | T_Void Ident '(' VariableList ')' StmtBlock { $$ = new FnDecl($2, Type::voidType, $4); }
+FunctionDecl : Type Ident '(' VariableList ')' StmtBlock { FnDecl *fn = new FnDecl($2, $1, $4); fn->SetFunctionBody($6); $$ = fn; }
+             | T_Void Ident '(' VariableList ')' StmtBlock { FnDecl *fn = new FnDecl($2, Type::voidType, $4); fn->SetFunctionBody($6); $$ = fn; }
              ;
 
 ClassDecl : T_Class Ident MaybeExtends ImplementsList '{' FieldList '}' { $$ = new ClassDecl($2, $3, $4, $6); }
@@ -167,7 +165,7 @@ FieldList : /* empty */ { $$ = new List<Decl*>; }
           | Field { ($$=new List<Decl*>)->Append($1); }
           ;
 
-Field : VariableDecl
+Field : VariableDecl { $$ = $1; }
       | FunctionDecl
       ;
 
@@ -182,17 +180,17 @@ Prototype : Type Ident '(' VariableList ')' ';' { $$ = new FnDecl($2, $1, $4); }
           | T_Void Ident '(' VariableList ')' ';' { $$ = new FnDecl($2, Type::voidType, $4); }
           ;
 
-StmtBlock : '{' VariableDeclList StmtList '}'
+StmtBlock : '{' VariableDeclList StmtList '}' { $$ = new StmtBlock($2, $3); }
           ;
 
-VariableDeclList : /* empty */
-                 | VariableDeclList VariableDecl
-                 | VariableDecl
+VariableDeclList : /* empty */ { $$ = new List<VarDecl*>; }
+                 | VariableDeclList VariableDecl { ($$=$1)->Append($2); }
+                 | VariableDecl { ($$=new List<VarDecl*>)->Append($1); }
                  ;
 
-StmtList : /* empty */
-         | StmtList Stmt
-         | Stmt
+StmtList : /* empty */ { $$ = new List<Stmt*>; }
+         | StmtList Stmt { ($$=$1)->Append($2); }
+         | Stmt { ($$=new List<Stmt*>)->Append($1); }
          ;
 
 Stmt : ';' {}

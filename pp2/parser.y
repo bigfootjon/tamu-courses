@@ -62,6 +62,7 @@ void yyerror(const char *msg); // standard error-handling routine
 %token   T_And T_Or T_Null T_Extends T_This T_Interface T_Implements
 %token   T_While T_For T_If T_Else T_Return T_Break
 %token   T_New T_NewArray T_Print T_ReadInteger T_ReadLine
+%token   T_PostIncr T_PostDecr T_Switch T_Case T_Default
 
 %token   <identifier> T_Identifier
 %token   <stringConstant> T_StringConstant 
@@ -85,6 +86,9 @@ void yyerror(const char *msg); // standard error-handling routine
 %type <decl>      Decl
 %type <type>      Type
 %type <identifier> T_Int
+%type <identifier> T_Double
+%type <identifier> T_Bool
+%type <identifier> T_String
 %type <vardecl> Variable
 
 %%
@@ -95,12 +99,7 @@ void yyerror(const char *msg); // standard error-handling routine
 	 
  */
 Program   :    DeclList            { 
-                                      //@1; 
-                                      /* pp2: The @1 is needed to convince 
-                                       * yacc to set up yylloc. You can remove 
-                                       * it once you have other uses of @n*/
                                       Program *program = new Program($1);
-                                      // if no errors, advance to next phase
                                       if (ReportError::NumErrors() == 0) 
                                           program->Print(0);
                                     }
@@ -110,19 +109,170 @@ DeclList  :    DeclList Decl        { ($$=$1)->Append($2); }
           |    Decl                 { ($$ = new List<Decl*>)->Append($1); }
           ;
 
-Decl      :    VariableDecl         {} 
-          ;
+Decl : VariableDecl {} 
+     | FunctionDecl {}
+     | ClassDecl {}
+     | InterfaceDecl {}
+     ;
 
-VariableDecl : Variable {}
+VariableDecl : Variable ';' {}
+             ;
+
+VariableList : /* empty */ {}
+             | VariableList ',' Variable {}
+             | Variable {}
              ;
 
 Variable : Type T_Identifier { $$ = new VarDecl(new Identifier(@1, $2), $1); }
          ;
 
 Type : T_Int { $$ = new Type($1); }
+     | T_Double { $$ = new Type($1); }
+     | T_Bool { $$ = new Type($1); }
+     | T_String { $$ = new Type($1); }
+     | T_Identifier { $$ = new Type($1); }
+     | Type T_Dims {}
      ;
           
+FunctionDecl : Type T_Identifier '(' Formals ')' StmtBlock {}
+             | T_Void T_Identifier '(' Formals ')' StmtBlock {}
+             ;
 
+Formals : VariableList
+        ;
+
+ClassDecl : T_Class T_Identifier MaybeExtends ImplementsList '{' FieldList '}' {}
+          ;
+
+MaybeExtends : /* empty */ {}
+             | T_Extends T_Identifier {}
+             ;
+
+ImplementsList : /* empty */ {}
+               | T_Implements T_Identifier {}
+               ;
+
+FieldList : /* empty */ {}
+          | FieldList Field {}
+          | Field {}
+          ;
+
+Field : VariableDecl {}
+      | FunctionDecl {}
+      ;
+
+InterfaceDecl : T_Interface T_Identifier '{' PrototypeList '}' {}
+
+PrototypeList : /* empty */ {}
+              | PrototypeList Prototype {}
+              | Prototype {}
+              ;
+
+Prototype : Type T_Identifier '(' Formals ')' ';' {}
+          | T_Void T_Identifier '(' Formals ')' ';' {}
+          ;
+
+StmtBlock : '{' VariableDeclList StmtList '}' {}
+          ;
+
+VariableDeclList : /* empty */ {}
+                 | VariableDeclList VariableDecl {}
+                 | VariableDecl {}
+                 ;
+
+StmtList : /* empty */ {}
+         | StmtList Stmt {}
+         | Stmt {}
+         ;
+
+Stmt : ';' {}
+     | Expr ';' {}
+     | IfStmt {}
+     | WhileStmt {}
+     | ForStmt {}
+     | BreakStmt {}
+     | ReturnStmt {}
+     | PrintStmt {}
+     | SwitchStmt {}
+     | StmtBlock {}
+     ;
+
+IfStmt : T_If '(' Expr ')' Stmt MaybeElse {}
+       ;
+
+MaybeElse : /* empty */ {}
+          | T_Else Stmt {}
+          ;
+
+WhileStmt : T_While '(' Expr ')' Stmt {}
+          ;
+
+ForStmt : T_For '(' MaybeExpr ';' Expr ';' MaybeExpr ')' {}
+        ;
+
+ReturnStmt : T_Return ';' {}
+           | T_Return Expr ';' {}
+           ;
+
+BreakStmt : T_Break ';' {}
+          ;
+
+PrintStmt : T_Print '(' ExprList ')' ';' {}
+          ;
+
+ExprList : ExprList ',' Expr {}
+         | Expr {}
+         ;
+
+SwitchStmt : T_Switch '(' Expr ')' '{' CaseList '}' {}
+           ;
+
+CaseList : /* empty */ {}
+         | CaseList Case {}
+         | Case {}
+
+Case : T_Case T_IntConstant ':' Stmt {}
+     | T_Default {}
+     ;
+
+Call : T_Identifier '(' Actuals ')' {}
+     | Expr '.' T_Identifier '(' Actuals ')' {}
+     ;
+
+Actuals : /* empty */ {}
+        | ExprList {}
+        ; 
+
+Constant : T_IntConstant {}
+         | T_DoubleConstant {}
+         | T_BoolConstant {}
+         | T_StringConstant {}
+         | T_Null {}
+         ;
+
+MaybeExpr : /* empty */ {}
+          | Expr {}
+          ;
+
+Expr : LValue '=' Expr {}
+     | Constant {}
+     | LValue {}
+     | T_This {}
+     | Call {}
+     | '(' Expr ')' {}
+     | '!' Expr {}
+     | T_ReadInteger '(' ')' {}
+     | T_ReadLine '(' ')' {}
+     | T_New '(' T_Identifier ')' {}
+     | T_NewArray '(' Expr ',' Type ')' {}
+     | Expr '+' '+' {}
+     | Expr '-' '-' {}
+     ;
+
+LValue : T_Identifier {}
+       | Expr '.' T_Identifier {}
+       | Expr '[' Expr ']' {}
+       ;
 
 %%
 

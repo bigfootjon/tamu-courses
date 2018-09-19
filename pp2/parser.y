@@ -134,7 +134,6 @@ Type : T_Int { $$ = new Type($1); }
      | Type T_Dims {}
      ;
           
-<<<<<<< Updated upstream
 FunctionDecl : Type T_Identifier '(' Formals ')' StmtBlock {}
              | T_Void T_Identifier '(' Formals ')' StmtBlock {}
              ;

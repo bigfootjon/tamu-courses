@@ -134,6 +134,7 @@ Type : T_Int { $$ = new Type($1); }
      | Type T_Dims {}
      ;
           
+<<<<<<< Updated upstream
 FunctionDecl : Type T_Identifier '(' Formals ')' StmtBlock {}
              | T_Void T_Identifier '(' Formals ')' StmtBlock {}
              ;
@@ -269,6 +270,182 @@ Expr : LValue '=' Expr {}
      | Expr '-' '-' {}
      ;
 
+FunctionDecl : Type T_Identifier '(' Formals ')' StmtBlock {}
+             | T_Void T_Identifier '(' Formals ')' StmtBlock {}
+             ;
+
+Formals : VariableList
+        ;
+
+ClassDecl : T_Class T_Identifier MaybeExtends ImplementsList '{' FieldList '}' {}
+          ;
+
+MaybeExtends : /* empty */ {}
+             | T_Extends T_Identifier {}
+             ;
+
+ImplementsList : /* empty */ {}
+               | T_Implements T_Identifier {}
+               ;
+
+FieldList : /* empty */ {}
+          | FieldList Field {}
+          | Field {}
+          ;
+
+Field : VariableDecl {}
+      | FunctionDecl {}
+      ;
+
+InterfaceDecl : T_Interface T_Identifier '{' PrototypeList '}' {}
+
+PrototypeList : /* empty */ {}
+              | PrototypeList Prototype {}
+              | Prototype {}
+              ;
+
+Prototype : Type T_Identifier '(' Formals ')' ';' {}
+          | T_Void T_Identifier '(' Formals ')' ';' {}
+          ;
+
+StmtBlock : '{' VariableDeclList StmtList '}' {}
+          ;
+
+VariableDeclList : /* empty */ {}
+                 | VariableDeclList VariableDecl {}
+                 | VariableDecl {}
+                 ;
+
+StmtList : /* empty */ {}
+         | StmtList Stmt {}
+         | Stmt {}
+         ;
+
+Stmt : ';' {}
+     | Expr ';' {}
+     | IfStmt {}
+     | WhileStmt {}
+     | ForStmt {}
+     | BreakStmt {}
+     | ReturnStmt {}
+     | PrintStmt {}
+     | SwitchStmt {}
+     | StmtBlock {}
+     ;
+
+IfStmt : T_If '(' Expr ')' Stmt MaybeElse {}
+       ;
+
+MaybeElse : /* empty */ {}
+          | T_Else Stmt {}
+          ;
+
+WhileStmt : T_While '(' Expr ')' Stmt {}
+          ;
+
+ForStmt : T_For '(' MaybeExpr ';' Expr ';' MaybeExpr ')' {}
+        ;
+
+ReturnStmt : T_Return ';' {}
+           | T_Return Expr ';' {}
+           ;
+
+BreakStmt : T_Break ';' {}
+          ;
+
+PrintStmt : T_Print '(' ExprList ')' ';' {}
+          ;
+
+ExprList : ExprList ',' Expr {}
+         | Expr {}
+         ;
+
+SwitchStmt : T_Switch '(' Expr ')' '{' CaseList '}' {}
+           ;
+
+CaseList : /* empty */ {}
+         | CaseList Case {}
+         | Case {}
+
+Case : T_Case T_IntConstant ':' Stmt {}
+     | T_Default {}
+     ;
+
+Call : T_Identifier '(' Actuals ')' {}
+     | Expr '.' T_Identifier '(' Actuals ')' {}
+     ;
+
+Actuals : /* empty */ {}
+        | ExprList {}
+        ; 
+
+Constant : T_IntConstant {}
+         | T_DoubleConstant {}
+         | T_BoolConstant {}
+         | T_StringConstant {}
+         | T_Null {}
+         ;
+
+MaybeExpr : /* empty */ {}
+          | Expr {}
+          ;
+
+Expr : Constant {}
+     | LValue {}
+     | T_This {}
+     | Call {}
+     | '(' Expr ')' {}
+     | T_ReadInteger '(' ')' {}
+     | T_ReadLine '(' ')' {}
+     | T_New '(' T_Identifier ')' {}
+     | T_NewArray '(' Expr ',' Type ')' {}
+     | Prec1 {}
+     ;
+
+Prec1 : Prec1 '.' T_Identifier {}
+      | Prec1 '[' Expr ']' {}
+      | Prec2 {}
+      ;
+
+Prec2 : '!' Prec2 {}
+      | '-' Prec2 {}
+      | Prec3 {}
+      ;
+
+Prec3 : Prec3 '*' Prec4 {}
+      | Prec3 '/' Prec4 {}
+      | Prec3 '%' Prec4 {}
+      | Prec4 {}
+      ;
+
+Prec4 : Prec4 '+' Prec5 {}
+      | Prec4 '-' Prec5 {}
+      | Prec5 {}
+      ;
+
+Prec5 : Prec5 '<' Prec6 {}
+      | Prec5 T_LessEqual Prec6 {}
+      | Prec5 '>' Prec6 {}
+      | Prec5 T_GreaterEqual Prec6 {}
+      | Prec6 {}
+      ;
+
+Prec6 : Prec6 T_Equal Prec7 {}
+      | Prec6 T_NotEqual Prec7 {}
+      | Prec7 {}
+      ;
+
+Prec7 : Prec7 T_And Prec8 {}
+      | Prec8 {}
+      ;
+
+Prec8 : Prec8 T_Or Prec9 {}
+      | Prec9 {}
+
+Prec9 : Prec9 '=' Expr {}
+      | LValue {}
+
+>>>>>>> Stashed changes
 LValue : T_Identifier {}
        | Expr '.' T_Identifier {}
        | Expr '[' Expr ']' {}

@@ -123,15 +123,15 @@ VariableList : /* empty */ {}
              | Variable {}
              ;
 
-Variable : Type T_Identifier { $$ = new VarDecl(new Identifier(@1, $2), $1); }
+Variable : Type T_Identifier { $$ = new VarDecl(new Identifier(@2, $2), $1); }
          ;
 
-Type : T_Int { $$ = new Type($1); }
-     | T_Double { $$ = new Type($1); }
-     | T_Bool { $$ = new Type($1); }
-     | T_String { $$ = new Type($1); }
-     | T_Identifier { $$ = new Type($1); }
-     | Type T_Dims {}
+Type : T_Int { $$ = Type::intType; }
+     | T_Double { $$ = Type::doubleType; }
+     | T_Bool { $$ = Type::boolType; }
+     | T_String { $$ = Type::stringType; }
+     | T_Identifier { $$ = new NamedType(new Identifier(@1, $1)); }
+     | Type T_Dims { $$ = new ArrayType(@1, $1); }
      ;
           
 FunctionDecl : Type T_Identifier '(' Formals ')' StmtBlock {}

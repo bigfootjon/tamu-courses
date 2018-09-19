@@ -1,1 +1,7 @@
-int test;
+int itest;
+double dtest;
+bool btest;
+string stest;
+Howdy idtest;
+int[] atest;
+Howdy[][] aidtest;

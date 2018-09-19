@@ -1,0 +1,14 @@
+class trivial {}
+
+class child extends trivial {}
+
+class descendent extends child implements privelege {}
+
+class data implements lore {
+    int index;
+    string infinite_tape;
+    void startup() {
+         int a;
+         Cow boy;
+    }
+}

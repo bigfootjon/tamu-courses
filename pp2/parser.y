@@ -51,6 +51,10 @@ void yyerror(const char *msg); // standard error-handling routine
     List<VarDecl*> *varlist;
     FnDecl *fndecl;
     Identifier *ident;
+    ClassDecl *classdecl;
+    NamedType *namedtype;
+    List<NamedType*> *implements;
+    InterfaceDecl *interfacedecl;
 }
 
 
@@ -85,13 +89,17 @@ void yyerror(const char *msg); // standard error-handling routine
  * of the union named "declList" which is of type List<Decl*>.
  * pp2: You'll need to add many of these of your own.
  */
-%type <declList> DeclList 
-%type <decl> Decl
+%type <declList> DeclList FieldList PrototypeList
+%type <decl> Decl Field
 %type <type> Type
 %type <vardecl> Variable
 %type <varlist> VariableList
-%type <fndecl> FunctionDecl
+%type <fndecl> FunctionDecl Prototype
 %type <ident> Ident
+%type <classdecl> ClassDecl
+%type <namedtype> MaybeExtends
+%type <implements> ImplementsList
+%type <interfacedecl> InterfaceDecl
 
 %%
 /* Rules
@@ -111,13 +119,13 @@ DeclList  :    DeclList Decl        { ($$=$1)->Append($2); }
           |    Decl                 { ($$ = new List<Decl*>)->Append($1); }
           ;
 
-Decl : VariableDecl {} 
-     | FunctionDecl {}
-     | ClassDecl {}
-     | InterfaceDecl {}
+Decl : VariableDecl
+     | FunctionDecl
+     | ClassDecl
+     | InterfaceDecl
      ;
 
-VariableDecl : Variable ';' {}
+VariableDecl : Variable ';'
              ;
 
 VariableList : /* empty */ { $$ = new List<VarDecl*>; }
@@ -143,48 +151,48 @@ FunctionDecl : Type Ident '(' VariableList ')' StmtBlock { $$ = new FnDecl($2, $
              | T_Void Ident '(' VariableList ')' StmtBlock { $$ = new FnDecl($2, Type::voidType, $4); }
              ;
 
-ClassDecl : T_Class Ident MaybeExtends ImplementsList '{' FieldList '}' {}
+ClassDecl : T_Class Ident MaybeExtends ImplementsList '{' FieldList '}' { $$ = new ClassDecl($2, $3, $4, $6); }
           ;
 
-MaybeExtends : /* empty */ {}
-             | T_Extends Ident {}
+MaybeExtends : /* empty */ { $$ = 0; }
+             | T_Extends Ident { $$ = new NamedType($2); }
              ;
 
-ImplementsList : /* empty */ {}
-               | T_Implements Ident {}
+ImplementsList : /* empty */ { $$ = new List<NamedType*>; }
+               | T_Implements Ident { ($$ = new List<NamedType*>)->Append(new NamedType($2)); }
                ;
 
-FieldList : /* empty */ {}
-          | FieldList Field {}
-          | Field {}
+FieldList : /* empty */ { $$ = new List<Decl*>; }
+          | FieldList Field { ($$=$1)->Append($2); }
+          | Field { ($$=new List<Decl*>)->Append($1); }
           ;
 
-Field : VariableDecl {}
-      | FunctionDecl {}
+Field : VariableDecl
+      | FunctionDecl
       ;
 
-InterfaceDecl : T_Interface Ident '{' PrototypeList '}' {}
+InterfaceDecl : T_Interface Ident '{' PrototypeList '}' { $$ = new InterfaceDecl($2, $4); }
 
-PrototypeList : /* empty */ {}
-              | PrototypeList Prototype {}
-              | Prototype {}
+PrototypeList : /* empty */ { $$ = new List<Decl*>; }
+              | PrototypeList Prototype { ($$=$1)->Append($2); }
+              | Prototype { ($$=new List<Decl*>)->Append($1); }
               ;
 
-Prototype : Type Ident '(' VariableList ')' ';' {}
-          | T_Void Ident '(' VariableList ')' ';' {}
+Prototype : Type Ident '(' VariableList ')' ';' { $$ = new FnDecl($2, $1, $4); }
+          | T_Void Ident '(' VariableList ')' ';' { $$ = new FnDecl($2, Type::voidType, $4); }
           ;
 
-StmtBlock : '{' VariableDeclList StmtList '}' {}
+StmtBlock : '{' VariableDeclList StmtList '}'
           ;
 
-VariableDeclList : /* empty */ {}
-                 | VariableDeclList VariableDecl {}
-                 | VariableDecl {}
+VariableDeclList : /* empty */
+                 | VariableDeclList VariableDecl
+                 | VariableDecl
                  ;
 
-StmtList : /* empty */ {}
-         | StmtList Stmt {}
-         | Stmt {}
+StmtList : /* empty */
+         | StmtList Stmt
+         | Stmt
          ;
 
 Stmt : ';' {}

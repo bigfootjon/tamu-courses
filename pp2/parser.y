@@ -54,6 +54,8 @@ void yyerror(const char *msg); // standard error-handling routine
     List<NamedType*> *implements;
     Stmt *stmt;
     List<Stmt*> *stmtlist;
+    Expr *expr;
+    List<Expr*> *exprlist;
 }
 
 
@@ -96,8 +98,10 @@ void yyerror(const char *msg); // standard error-handling routine
 %type <ident> Ident
 %type <namedtype> MaybeExtends
 %type <implements> ImplementsList
-%type <stmt> StmtBlock Stmt
+%type <stmt> StmtBlock Stmt MaybeElse
 %type <stmtlist> StmtList
+%type <expr> Expr MaybeExpr Call Constant LValue Prec1 Prec2 Prec3 Prec4 Prec5 Prec6 Prec7 Prec8 Prec9
+%type <exprlist> ExprList Actuals
 
 %%
 /* Rules
@@ -117,8 +121,7 @@ DeclList  :    DeclList Decl        { ($$=$1)->Append($2); }
           |    Decl                 { ($$ = new List<Decl*>)->Append($1); }
           ;
 
-Decl : VariableDecl { $$ = $1; }
-     | FunctionDecl
+Decl : Field { $$ = $1; }
      | ClassDecl
      | InterfaceDecl
      ;
@@ -193,49 +196,28 @@ StmtList : /* empty */ { $$ = new List<Stmt*>; }
          | Stmt { ($$=new List<Stmt*>)->Append($1); }
          ;
 
-Stmt : ';' {}
-     | Expr ';' {}
-     | IfStmt {}
-     | WhileStmt {}
-     | ForStmt {}
-     | BreakStmt {}
-     | ReturnStmt {}
-     | PrintStmt {}
-     | SwitchStmt {}
-     | StmtBlock {}
+Stmt : ';' { $$ = 0; }
+     | Expr ';' { $$ = 0; }
+     | T_If '(' Expr ')' Stmt MaybeElse { $$ = new IfStmt($3, $5, $6); }
+     | T_While '(' Expr ')' Stmt { $$ = new WhileStmt($3, $5); }
+     | T_For '(' MaybeExpr ';' Expr ';' MaybeExpr ')' Stmt { $$ = new ForStmt($3, $5, $7, $9); }
+     | T_Break ';' { $$ = new BreakStmt(@1); }
+     | T_Return ';' { $$ = new ReturnStmt(@0, 0); }
+     | T_Return Expr ';' { $$ = new ReturnStmt(@0, $2); }
+     | T_Print '(' ExprList ')' ';' { $$ = new PrintStmt($3); }
+     | T_Switch '(' Expr ')' '{' CaseList '}' { /* TODO */ }
+     | StmtBlock
      ;
 
-IfStmt : T_If '(' Expr ')' Stmt MaybeElse {}
-       ;
-
-MaybeElse : /* empty */ {}
-          | T_Else Stmt {}
+MaybeElse : /* empty */ { $$ = 0; }
+          | T_Else Stmt { $$ = $2; }
           ;
 
-WhileStmt : T_While '(' Expr ')' Stmt {}
-          ;
-
-ForStmt : T_For '(' MaybeExpr ';' Expr ';' MaybeExpr ')' {}
-        ;
-
-ReturnStmt : T_Return ';' {}
-           | T_Return Expr ';' {}
-           ;
-
-BreakStmt : T_Break ';' {}
-          ;
-
-PrintStmt : T_Print '(' ExprList ')' ';' {}
-          ;
-
-ExprList : ExprList ',' Expr {}
-         | Expr {}
+ExprList : ExprList ',' Expr { ($$=$1)->Append($3); }
+         | Expr { ($$=new List<Expr*>)->Append($1); }
          ;
 
-SwitchStmt : T_Switch '(' Expr ')' '{' CaseList '}' {}
-           ;
-
-CaseList : /* empty */ {}
+CaseList : /* empty */ { /* TODO */ }
          | CaseList Case {}
          | Case {}
 
@@ -243,83 +225,84 @@ Case : T_Case T_IntConstant ':' Stmt {}
      | T_Default {}
      ;
 
-Call : Ident '(' Actuals ')' {}
-     | Expr '.' Ident '(' Actuals ')' {}
+Call : Ident '(' Actuals ')' { $$ = new Call(@0, 0, $1, $3); }
+     | Expr '.' Ident '(' Actuals ')' { $$ = new Call(@0, $1, $3, $5); }
      ;
 
-Actuals : /* empty */ {}
-        | ExprList {}
+Actuals : /* empty */ { $$ = 0; }
+        | ExprList
         ; 
 
-Constant : T_IntConstant {}
-         | T_DoubleConstant {}
-         | T_BoolConstant {}
-         | T_StringConstant {}
-         | T_Null {}
+Constant : T_IntConstant { $$ = new IntConstant(@0, $1); }
+         | T_DoubleConstant { $$ = new DoubleConstant(@0, $1); }
+         | T_BoolConstant { $$ = new BoolConstant(@0, $1); }
+         | T_StringConstant { $$ = new StringConstant(@0, $1); }
+         | T_Null { $$ = new NullConstant(@0); }
          ;
 
-MaybeExpr : /* empty */ {}
-          | Expr {}
+MaybeExpr : /* empty */ { $$ = 0; }
+          | Expr
           ;
 
-Expr : Constant {}
-     | LValue {}
-     | T_This {}
-     | Call {}
-     | '(' Expr ')' {}
-     | T_ReadInteger '(' ')' {}
-     | T_ReadLine '(' ')' {}
-     | T_New '(' Ident ')' {}
-     | T_NewArray '(' Expr ',' Type ')' {}
-     | Prec1 {}
+Expr : Constant
+     | LValue
+     | T_This { $$ = new This(@0); }
+     | Call
+     | '(' Expr ')' { $$ = $2; }
+     | T_ReadInteger '(' ')' { $$ = new ReadIntegerExpr(@0); }
+     | T_ReadLine '(' ')' { $$ = new ReadLineExpr(@0); }
+     | T_New '(' Ident ')' { $$ = new NewExpr(@0, new NamedType($3)); }
+     | T_NewArray '(' Expr ',' Type ')' { $$ = new NewArrayExpr(@0, $3, $5); }
+     | Prec1
      ;
 
-Prec1 : Prec1 '.' Ident {}
-      | Prec1 '[' Expr ']' {}
-      | Prec2 {}
+Prec1 : Prec1 '.' Ident
+      | Prec1 '[' Expr ']'
+      | Prec2
       ;
 
-Prec2 : '!' Prec2 {}
-      | '-' Prec2 {}
-      | Prec3 {}
+Prec2 : '!' Prec2 { $$ = new ArithmeticExpr(new Operator(@1, "!"), $2); }
+      | '-' Prec2 { $$ = new ArithmeticExpr(new Operator(@1, "-"), $2); }
+      | Prec3
       ;
 
-Prec3 : Prec3 '*' Prec4 {}
-      | Prec3 '/' Prec4 {}
-      | Prec3 '%' Prec4 {}
-      | Prec4 {}
+Prec3 : Prec3 '*' Prec4 { $$ = new ArithmeticExpr($1, new Operator(@2, "*"), $3); }
+      | Prec3 '/' Prec4 { $$ = new ArithmeticExpr($1, new Operator(@2, "/"), $3); }
+      | Prec3 '%' Prec4 { $$ = new ArithmeticExpr($1, new Operator(@2, "%"), $3); }
+      | Prec4
       ;
 
-Prec4 : Prec4 '+' Prec5 {}
-      | Prec4 '-' Prec5 {}
-      | Prec5 {}
+Prec4 : Prec4 '+' Prec5 { $$ = new ArithmeticExpr($1, new Operator(@2, "+"), $3); }
+      | Prec4 '-' Prec5 { $$ = new ArithmeticExpr($1, new Operator(@2, "-"), $3); }
+      | Prec5
       ;
 
-Prec5 : Prec5 '<' Prec6 {}
-      | Prec5 T_LessEqual Prec6 {}
-      | Prec5 '>' Prec6 {}
-      | Prec5 T_GreaterEqual Prec6 {}
-      | Prec6 {}
+Prec5 : Prec5 '<' Prec6 { $$ = new RelationalExpr($1, new Operator(@2, "<"), $3); }
+      | Prec5 T_LessEqual Prec6 { $$ = new RelationalExpr($1, new Operator(@2, "<="), $3); }
+      | Prec5 '>' Prec6 { $$ = new RelationalExpr($1, new Operator(@2, ">"), $3); }
+      | Prec5 T_GreaterEqual Prec6 { $$ = new RelationalExpr($1, new Operator(@2, ">="), $3); }
+      | Prec6
       ;
 
-Prec6 : Prec6 T_Equal Prec7 {}
-      | Prec6 T_NotEqual Prec7 {}
-      | Prec7 {}
+Prec6 : Prec6 T_Equal Prec7 { $$ = new EqualityExpr($1, new Operator(@2, "=="), $3); }
+      | Prec6 T_NotEqual Prec7 { $$ = new EqualityExpr($1, new Operator(@2, "!="), $3); }
+      | Prec7
       ;
 
-Prec7 : Prec7 T_And Prec8 {}
-      | Prec8 {}
+Prec7 : Prec7 T_And Prec8 { $$ = new LogicalExpr($1, new Operator(@2, "&&"), $3); }
+      | Prec8
       ;
 
-Prec8 : Prec8 T_Or Prec9 {}
-      | Prec9 {}
+Prec8 : Prec8 T_Or Prec9 { $$ = new LogicalExpr($1, new Operator(@2, "||"), $3); }
+      | Prec9
+      ;
 
-Prec9 : Prec9 '=' Expr {}
-      | LValue {}
+Prec9 : LValue '=' Expr { $$ = new AssignExpr($1, new Operator(@2, "0"), $3); }
+      ;
 
-LValue : Ident {}
-       | Expr '.' Ident {}
-       | Expr '[' Expr ']' {}
+LValue : Ident { $$ = new FieldAccess(0, $1); }
+       | Expr '.' Ident { $$ = new FieldAccess($1, $3); }
+       | Expr '[' Expr ']' { $$ = new ArrayAccess(@0, $1, $3); }
        ;
 
 %%
@@ -346,5 +329,5 @@ LValue : Ident {}
 void InitParser()
 {
    PrintDebug("parser", "Initializing parser");
-   yydebug = false;
+   yydebug = true;
 }

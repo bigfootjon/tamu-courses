@@ -1,0 +1,7 @@
+void main() {
+  int test;
+  bool on;
+  on = false;
+  howdy = 10 + test;
+  on = on || howdy > 10 + 15;
+}

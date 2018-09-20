@@ -197,7 +197,7 @@ StmtList : /* empty */ { $$ = new List<Stmt*>; }
          ;
 
 Stmt : ';' { $$ = 0; }
-     | Expr ';' { $$ = 0; }
+     | Expr ';' { $$ = $1; }
      | T_If '(' Expr ')' Stmt MaybeElse { $$ = new IfStmt($3, $5, $6); }
      | T_While '(' Expr ')' Stmt { $$ = new WhileStmt($3, $5); }
      | T_For '(' MaybeExpr ';' Expr ';' MaybeExpr ')' Stmt { $$ = new ForStmt($3, $5, $7, $9); }
@@ -298,6 +298,7 @@ Prec8 : Prec8 T_Or Prec9 { $$ = new LogicalExpr($1, new Operator(@2, "||"), $3);
       ;
 
 Prec9 : LValue '=' Expr { $$ = new AssignExpr($1, new Operator(@2, "0"), $3); }
+      | Expr
       ;
 
 LValue : Ident { $$ = new FieldAccess(0, $1); }
@@ -329,5 +330,5 @@ LValue : Ident { $$ = new FieldAccess(0, $1); }
 void InitParser()
 {
    PrintDebug("parser", "Initializing parser");
-   yydebug = true;
+   yydebug = false;
 }

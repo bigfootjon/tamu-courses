@@ -101,7 +101,7 @@ void yyerror(const char *msg); // standard error-handling routine
 %type <varlist> VariableList VariableDeclList
 %type <ident> Ident
 %type <namedtype> MaybeExtends
-%type <implements> ImplementsList
+%type <implements> ImplementsList ImplementsListActual
 %type <stmt> StmtBlock Stmt MaybeElse
 %type <stmtlist> StmtList MaybeStmtList
 %type <expr> Expr MaybeExpr Call Constant LValue
@@ -179,8 +179,12 @@ MaybeExtends : /* empty */ { $$ = 0; }
              ;
 
 ImplementsList : /* empty */ { $$ = new List<NamedType*>; }
-               | T_Implements Ident { ($$ = new List<NamedType*>)->Append(new NamedType($2)); }
+               | T_Implements ImplementsListActual { $$ = $2; }
                ;
+
+ImplementsListActual : ImplementsListActual ',' Ident { ($$=$1)->Append(new NamedType($3)); }
+                     | Ident { ($$=new List<NamedType*>)->Append(new NamedType($1)); }
+		     ;
 
 FieldList : /* empty */ { $$ = new List<Decl*>; }
           | FieldList Field { ($$=$1)->Append($2); }

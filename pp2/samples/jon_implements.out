@@ -1,0 +1,43 @@
+
+   Program: 
+  1   InterfaceDecl: 
+  1      Identifier: IOne
+  2      FnDecl: 
+            (return type) Type: int
+  2         Identifier: getOne
+  5   InterfaceDecl: 
+  5      Identifier: ITwo
+  6      FnDecl: 
+            (return type) Type: int
+  6         Identifier: getTwo
+  9   InterfaceDecl: 
+  9      Identifier: IThree
+ 10      FnDecl: 
+            (return type) Type: int
+ 10         Identifier: getThree
+ 13   ClassDecl: 
+ 13      Identifier: TheCount
+ 13      (implements) NamedType: 
+ 13         Identifier: IOne
+ 13      (implements) NamedType: 
+ 13         Identifier: ITwo
+ 13      (implements) NamedType: 
+ 13         Identifier: IThree
+ 14      FnDecl: 
+            (return type) Type: int
+ 14         Identifier: getOne
+            (body) StmtBlock: 
+ 15            ReturnStmt: 
+ 15               IntConstant: 1
+ 18      FnDecl: 
+            (return type) Type: int
+ 18         Identifier: getTwo
+            (body) StmtBlock: 
+ 19            ReturnStmt: 
+ 19               IntConstant: 2
+ 22      FnDecl: 
+            (return type) Type: int
+ 22         Identifier: getThree
+            (body) StmtBlock: 
+ 23            ReturnStmt: 
+ 23               IntConstant: 3

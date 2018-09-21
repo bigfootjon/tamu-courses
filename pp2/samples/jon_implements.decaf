@@ -1,0 +1,25 @@
+interface IOne {
+  int getOne();
+}
+
+interface ITwo {
+  int getTwo();
+}
+
+interface IThree {
+  int getThree();
+}
+
+class TheCount implements IOne, ITwo, IThree {
+  int getOne() {
+    return 1;
+  }
+
+  int getTwo() {
+    return 2;
+  }
+
+  int getThree() {
+    return 3;
+  }
+}

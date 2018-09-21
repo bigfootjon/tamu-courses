@@ -1,0 +1,23 @@
+Usage:
+ 1. run `make` to build dcc
+ 3. run `./dcc <$FILE` to parse $FILE and output the AST (in order tree descent)
+
+Other Files Changed:
+  While adding Section 3 of the pp2 pdf I noticed that ast_stmt.h/cc and ast_expr.h/cc were not mentioned as files that should be modified. I ended up changing these files to add in increment/decrement expressions and switch/case statements.
+
+Not Perfect:
+  The last bullet point of Section 4 mentions that "all conflicts and errors should be eliminated [in bison]". My parser.y generates errors.
+  I intend to continue working on it to try and fix it but as of the time of writing it is currently 11:17 on 20 September.
+  The compiler does appear to work equivilently to the reference compiler, `dcc_solution`, so I consider the project done.
+
+Extended Functionality:
+ - I included a python script I wrote for pp1 (test.py) that can be used to automatically test the compiler
+   - Run `python test.py` to parse every file that matches either samples/*.frag (only used for pp1) or samples/*.decaf
+     - The output from the compiler will be compared to the given .out file with the same name
+   - There is also the option to run specific tests: `python test.py $TEST1 $TEST2`
+     - $FILE1 and $FILE2 are the name of the files without their extensions (e.g. TEST1=bad1; TEST2=control)
+   - In order to generate the .out files I created another script (write_solution.sh)
+     - It uses the included `dcc_solution` compiler to create .out files that are known to be correct.
+ - I also wrote several tests beyond those included in the samples directory.
+   - They all match the regex "jon_*.decaf"
+   - Mostly they just use examples from the instructions or fill in details mentioned in the spec

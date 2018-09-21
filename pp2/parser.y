@@ -297,7 +297,7 @@ Prec8 : Prec8 T_Or Prec9 { $$ = new LogicalExpr($1, new Operator(@2, "||"), $3);
       | Prec9
       ;
 
-Prec9 : LValue '=' Expr { $$ = new AssignExpr($1, new Operator(@2, "0"), $3); }
+Prec9 : LValue '=' Expr { $$ = new AssignExpr($1, new Operator(@2, "="), $3); }
       | Expr
       ;
 

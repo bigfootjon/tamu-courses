@@ -260,7 +260,7 @@ MaybeBreak : /* empty */ { $$ = 0; }
            | T_Break ';' { $$ = new BreakStmt(@1); }
 	   ;
 
-Call : Ident '(' Actuals ')' { $$ = new Call(@3, 0, $1, $3); }
+Call : Ident '(' Actuals ')' { $$ = new Call(@1, 0, $1, $3); }
      | Expr '.' Ident '(' Actuals ')' { $$ = new Call(@3, $1, $3, $5); }
      ;
 

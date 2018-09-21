@@ -1,0 +1,13 @@
+void main() {
+  int i;
+  {
+    scope j;
+    i = 10;
+    j = i + i;
+    j = j * true;
+    {
+       double strin;
+       strin = j + i % 20;
+    }
+  }
+}

@@ -1,0 +1,6 @@
+
+*** Error line 3.
+  if (this) call(); if (orthis) call(); else dontcall(); else dontcall();
+                                                         ^^^^
+*** syntax error
+

@@ -1,0 +1,6 @@
+
+*** Error line 3.
+    default: call(); break;
+    ^^^^^^^
+*** syntax error
+

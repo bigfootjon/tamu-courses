@@ -145,6 +145,18 @@ class AssignExpr : public CompoundExpr
     const char *GetPrintNameForNode() { return "AssignExpr"; }
 };
 
+class PostfixExpr : public Expr
+{
+  protected:
+    Expr *left;
+    Operator *op;
+
+  public:
+    PostfixExpr(Expr *lhs, Operator *o) : Expr(*lhs->GetLocation()), left(lhs), op(o) {}
+    const char *GetPrintNameForNode() { return "PostfixExpr"; }
+    void PrintChildren(int indentLevel);
+};
+
 class LValue : public Expr 
 {
   public:

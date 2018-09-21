@@ -56,6 +56,10 @@ void yyerror(const char *msg); // standard error-handling routine
     List<Stmt*> *stmtlist;
     Expr *expr;
     List<Expr*> *exprlist;
+    CaseStmt *kase;
+    List<CaseStmt*> *caselist;
+    DefaultStmt *defaultstmt;
+    BreakStmt *breakstmt;
 }
 
 
@@ -99,9 +103,13 @@ void yyerror(const char *msg); // standard error-handling routine
 %type <namedtype> MaybeExtends
 %type <implements> ImplementsList
 %type <stmt> StmtBlock Stmt MaybeElse
-%type <stmtlist> StmtList
+%type <stmtlist> StmtList MaybeStmtList
 %type <expr> Expr MaybeExpr Call Constant LValue
 %type <exprlist> ExprList Actuals
+%type <kase> Case
+%type <caselist> CaseList
+%type <defaultstmt> MaybeDefault
+%type <breakstmt> MaybeBreak
 
 %left '+' '-'
 %left '*' '/' '%'
@@ -209,7 +217,7 @@ Stmt : ';' { $$ = new EmptyExpr; }
      | T_Return ';' { $$ = new ReturnStmt(@1, new EmptyExpr); }
      | T_Return Expr ';' { $$ = new ReturnStmt(@1, $2); }
      | T_Print '(' ExprList ')' ';' { $$ = new PrintStmt($3); }
-     | T_Switch '(' Expr ')' '{' CaseList '}' { /* TODO */ }
+     | T_Switch '(' Expr ')' '{' CaseList MaybeDefault '}' { $$ = new SwitchStmt($3, $6, $7); }
      | StmtBlock
      ;
 
@@ -221,13 +229,24 @@ ExprList : ExprList ',' Expr { ($$=$1)->Append($3); }
          | Expr { ($$=new List<Expr*>)->Append($1); }
          ;
 
-CaseList : /* empty */ { /* TODO */ }
-         | CaseList Case {}
-         | Case {}
+CaseList : CaseList Case { ($$=$1)->Append($2); }
+         | Case { ($$=new List<CaseStmt*>)->Append($1); }
+	 ;
 
-Case : T_Case T_IntConstant ':' Stmt {}
-     | T_Default {}
+Case : T_Case T_IntConstant ':' MaybeStmtList MaybeBreak { $$ = new CaseStmt(new IntConstant(@2, $2), $4, $5); }
      ;
+
+MaybeDefault : /* empty */ { $$ = 0; }
+             | T_Default ':' MaybeStmtList MaybeBreak { $$ = new DefaultStmt($3, $4); }
+             ;
+
+MaybeStmtList : /* empty */ { $$ = new List<Stmt*>; }
+              | StmtList
+	      ;
+
+MaybeBreak : /* empty */ { $$ = 0; }
+           | T_Break ';' { $$ = new BreakStmt(@1); }
+	   ;
 
 Call : Ident '(' Actuals ')' { $$ = new Call(@3, 0, $1, $3); }
      | Expr '.' Ident '(' Actuals ')' { $$ = new Call(@3, $1, $3, $5); }
@@ -261,8 +280,8 @@ Expr : Constant
      | Expr '[' Expr ']' { $$ = new ArrayAccess(@1, $1, $3); }
      | '!' Expr { $$ = new ArithmeticExpr(new Operator(@1, "!"), $2); }
      | '-' Expr { $$ = new ArithmeticExpr(new Operator(@1, "-"), $2); }
-     | Expr T_PostIncr { /* TODO */ }
-     | Expr T_PostDecr { /* TODO */ }
+     | Expr T_PostIncr { $$ = new PostfixExpr($1, new Operator(@2, "++")); }
+     | Expr T_PostDecr { $$ = new PostfixExpr($1, new Operator(@2, "--")); }
      | Expr '*' Expr { $$ = new ArithmeticExpr($1, new Operator(@2, "*"), $3); }
      | Expr '/' Expr { $$ = new ArithmeticExpr($1, new Operator(@2, "/"), $3); }
      | Expr '%' Expr { $$ = new ArithmeticExpr($1, new Operator(@2, "%"), $3); }

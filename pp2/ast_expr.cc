@@ -68,7 +68,12 @@ void CompoundExpr::PrintChildren(int indentLevel) {
    op->Print(indentLevel+1);
    right->Print(indentLevel+1);
 }
-   
+
+
+void PostfixExpr::PrintChildren(int indentLevel) {
+   if (left) left->Print(indentLevel+1);
+   op->Print(indentLevel+1);
+}
   
 ArrayAccess::ArrayAccess(yyltype loc, Expr *b, Expr *s) : LValue(loc) {
     (base=b)->SetParent(this); 

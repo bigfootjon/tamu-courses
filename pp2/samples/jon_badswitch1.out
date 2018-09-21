@@ -1,0 +1,6 @@
+
+*** Error line 3.
+    case howdy: test; break;
+         ^^^^^
+*** syntax error
+

@@ -1,0 +1,33 @@
+
+   Program: 
+  1   VarDecl: 
+         Type: int
+  1      Identifier: itest
+  2   VarDecl: 
+         Type: double
+  2      Identifier: dtest
+  3   VarDecl: 
+         Type: bool
+  3      Identifier: btest
+  4   VarDecl: 
+         Type: string
+  4      Identifier: stest
+  5   VarDecl: 
+  5      ArrayType: 
+            Type: int
+  5      Identifier: atest
+  6   VarDecl: 
+  6      NamedType: 
+  6         Identifier: Howdy
+  6      Identifier: cl
+  7   VarDecl: 
+  7      ArrayType: 
+  7         NamedType: 
+  7            Identifier: Cow
+  7      Identifier: array
+  8   VarDecl: 
+  8      ArrayType: 
+  8         ArrayType: 
+  8            NamedType: 
+  8               Identifier: Cow
+  8      Identifier: cowtown

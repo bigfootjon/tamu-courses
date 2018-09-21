@@ -111,6 +111,14 @@ void yyerror(const char *msg); // standard error-handling routine
 %type <defaultstmt> MaybeDefault
 %type <breakstmt> MaybeBreak
 
+%nonassoc '='
+%left T_Or
+%left T_And
+%left T_Equal T_NotEqual
+%nonassoc '<'
+%nonassoc '>'
+%nonassoc T_LessEqual
+%nonassoc T_GreaterEqual
 %left '+' '-'
 %left '*' '/' '%'
 
@@ -278,7 +286,7 @@ Expr : Constant
      | T_NewArray '(' Expr ',' Type ')' { $$ = new NewArrayExpr(@1, $3, $5); }
      | Expr '.' Ident { $$ = new FieldAccess($1, $3); }
      | Expr '[' Expr ']' { $$ = new ArrayAccess(@1, $1, $3); }
-     | '!' Expr { $$ = new ArithmeticExpr(new Operator(@1, "!"), $2); }
+     | '!' Expr { $$ = new LogicalExpr(new Operator(@1, "!"), $2); }
      | '-' Expr { $$ = new ArithmeticExpr(new Operator(@1, "-"), $2); }
      | Expr T_PostIncr { $$ = new PostfixExpr($1, new Operator(@2, "++")); }
      | Expr T_PostDecr { $$ = new PostfixExpr($1, new Operator(@2, "--")); }

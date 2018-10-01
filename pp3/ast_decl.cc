@@ -49,7 +49,23 @@ void ClassDecl::Check() {
             ReportError::IdentifierNotDeclared(cur->GetId(), reasonT::LookingForInterface);
 	}
     }
-    CheckTypes(members);
+    for (int i=0; i < members->NumElements(); ++i) {
+        Decl *cur = members->Nth(i);
+        Decl *found = table.Lookup(cur->GetName());
+	if (found != NULL) {
+            ReportError::DeclConflict(cur, found);
+	    continue;
+	}
+	Decl *inherited = extends->LookupType(cur->GetName(), false);
+        if (extends != NULL && inherited != NULL) {
+            ReportError::DeclConflict(cur, inherited);
+	    continue;
+	}
+        table.Enter(cur->GetName(), cur);
+    }
+    for (int i=0; i < members->NumElements(); ++i) {
+        members->Nth(i)->Check();
+    }
 }
 
 

@@ -19,10 +19,13 @@ Node::Node() {
     parent = NULL;
 }
 
-Decl *Node::LookupType(char *name) {
+Decl *Node::LookupType(char *name, bool recursive) {
     Decl *local = table.Lookup(name);
     if (local != NULL) {
         return local;
+    }
+    if (!recursive) {
+        return NULL;
     }
     if (GetParent() == NULL) {
         return NULL;

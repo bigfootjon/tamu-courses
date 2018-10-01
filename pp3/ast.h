@@ -53,7 +53,7 @@ class Node
     Node *GetParent()        { return parent; }
 
     virtual void Check() {}
-    Decl *LookupType(char *name);
+    Decl *LookupType(char *name, bool recursive=true);
     void CheckTypes(List<Decl*> *decls);
 };
    

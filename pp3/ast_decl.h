@@ -31,6 +31,9 @@ class Decl : public Node
     friend std::ostream& operator<<(std::ostream& out, Decl *d) { return out << d->id; }
     char *GetName() { return id->GetName(); }
     void Check();
+    virtual bool IsEquivalentTo(Decl* other) {
+        return strcmp(other->id->GetName(), this->id->GetName()) == 0;
+    }
 };
 
 class VarDecl : public Decl 
@@ -41,6 +44,7 @@ class VarDecl : public Decl
   public:
     VarDecl(Identifier *name, Type *type);
     void Check();
+    bool IsEquivalentTo(Decl* other);
 };
 
 class ClassDecl : public Decl 
@@ -77,6 +81,7 @@ class FnDecl : public Decl
     FnDecl(Identifier *name, Type *returnType, List<VarDecl*> *formals);
     void SetFunctionBody(Stmt *b);
     void Check();
+    bool IsEquivalentTo(Decl* other);
 };
 
 #endif

@@ -26,7 +26,15 @@ void VarDecl::Check() {
     id->Check();
     type->Check();
 }
-  
+
+bool VarDecl::IsEquivalentTo(Decl* o) {
+    VarDecl* other = dynamic_cast<VarDecl*>(o);
+    if (other == NULL) {
+        return false;
+    }
+
+    return this->type->IsEquivalentTo(other->type);
+} 
 
 ClassDecl::ClassDecl(Identifier *n, NamedType *ex, List<NamedType*> *imp, List<Decl*> *m) : Decl(n) {
     // extends can be NULL, impl & mem may be empty lists but cannot be NULL
@@ -56,10 +64,12 @@ void ClassDecl::Check() {
             ReportError::DeclConflict(cur, found);
 	    continue;
 	}
-	Decl *inherited = extends->LookupType(cur->GetName(), false);
-        if (extends != NULL && inherited != NULL) {
-            ReportError::DeclConflict(cur, inherited);
-	    continue;
+	if (extends != NULL) {
+	    Decl *inherited = LookupType(extends->GetId()->GetName())->LookupType(cur->GetName(), false);
+            if (inherited != NULL && (!cur->IsEquivalentTo(inherited) || dynamic_cast<VarDecl*>(cur) != NULL)) {
+                ReportError::DeclConflict(cur, inherited);
+	        continue;
+	    }
 	}
         table.Enter(cur->GetName(), cur);
     }
@@ -94,5 +104,26 @@ void FnDecl::Check() {
     returnType->Check();
     CheckTypes((List<Decl*>*)formals);
     if (body) body->Check();
+}
+
+bool FnDecl::IsEquivalentTo(Decl* o) {
+    FnDecl* other = dynamic_cast<FnDecl*>(o);
+    if (other == NULL) {
+        return false;
+    }
+    if (!this->returnType->IsEquivalentTo(other->returnType)) {
+        return false;
+    }
+    if (this->formals->NumElements() != other->formals->NumElements()) {
+        return false;
+    }
+    for (int i=0;i<this->formals->NumElements();++i) {
+        VarDecl *myFormal = this->formals->Nth(i);
+	VarDecl *otherFormal = other->formals->Nth(i);
+        if (!myFormal->IsEquivalentTo(otherFormal)) {
+            return false;
+	}
+    }
+    return true;
 }
 

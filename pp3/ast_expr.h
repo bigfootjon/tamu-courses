@@ -97,6 +97,7 @@ class CompoundExpr : public Expr
   public:
     CompoundExpr(Expr *lhs, Operator *op, Expr *rhs); // for binary
     CompoundExpr(Operator *op, Expr *rhs);             // for unary
+    void Check();
 };
 
 class ArithmeticExpr : public CompoundExpr 
@@ -140,6 +141,16 @@ class LValue : public Expr
     LValue(yyltype loc) : Expr(loc) {}
 };
 
+class PostfixExpr : public Expr
+{
+  protected:
+    LValue *left;
+    Operator *op;
+
+  public:
+    PostfixExpr(LValue *lhs, Operator *o) : Expr(*lhs->GetLocation()), left(lhs), op(o) {}
+};
+
 class This : public Expr 
 {
   public:
@@ -168,6 +179,7 @@ class FieldAccess : public LValue
     
   public:
     FieldAccess(Expr *base, Identifier *field); //ok to pass NULL base
+    void Check();
 };
 
 /* Like field access, call is used both for qualified base.field()

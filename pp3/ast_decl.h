@@ -29,6 +29,7 @@ class Decl : public Node
   public:
     Decl(Identifier *name);
     friend std::ostream& operator<<(std::ostream& out, Decl *d) { return out << d->id; }
+    char *GetName() { return id->GetName(); }
 };
 
 class VarDecl : public Decl 
@@ -71,6 +72,7 @@ class FnDecl : public Decl
   public:
     FnDecl(Identifier *name, Type *returnType, List<VarDecl*> *formals);
     void SetFunctionBody(Stmt *b);
+    void Check();
 };
 
 #endif

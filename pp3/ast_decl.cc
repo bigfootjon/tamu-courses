@@ -46,5 +46,8 @@ void FnDecl::SetFunctionBody(Stmt *b) {
     (body=b)->SetParent(this);
 }
 
-
+void FnDecl::Check() {
+    CheckTypes((List<Decl*>*)formals);
+    body->Check();
+}
 

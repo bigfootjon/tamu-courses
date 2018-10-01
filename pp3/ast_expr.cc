@@ -6,7 +6,7 @@
 #include "ast_type.h"
 #include "ast_decl.h"
 #include <string.h>
-
+#include "errors.h"
 
 
 IntConstant::IntConstant(yyltype loc, int val) : Expr(loc) {
@@ -45,6 +45,11 @@ CompoundExpr::CompoundExpr(Operator *o, Expr *r)
     (op=o)->SetParent(this);
     (right=r)->SetParent(this);
 }
+
+void CompoundExpr::Check() {
+    if (left) left->Check();
+    if (right) right->Check();
+}
    
   
 ArrayAccess::ArrayAccess(yyltype loc, Expr *b, Expr *s) : LValue(loc) {
@@ -58,6 +63,12 @@ FieldAccess::FieldAccess(Expr *b, Identifier *f)
     base = b; 
     if (base) base->SetParent(this); 
     (field=f)->SetParent(this);
+}
+
+void FieldAccess::Check() {
+    if (LookupType(field->GetName()) == NULL) {
+        ReportError::IdentifierNotDeclared(field, reasonT::LookingForVariable);
+    }
 }
 
 

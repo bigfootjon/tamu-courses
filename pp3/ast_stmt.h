@@ -19,6 +19,7 @@
 class Decl;
 class VarDecl;
 class Expr;
+class IntConstant;
   
 class Program : public Node
 {
@@ -45,6 +46,7 @@ class StmtBlock : public Stmt
     
   public:
     StmtBlock(List<VarDecl*> *variableDeclarations, List<Stmt*> *statements);
+    void Check();
 };
 
   
@@ -113,5 +115,24 @@ class PrintStmt : public Stmt
     PrintStmt(List<Expr*> *arguments);
 };
 
+class Case : public Stmt
+{
+  protected:
+    IntConstant *label;
+    List<Stmt*> *stmts;
+
+  public:
+    Case(IntConstant *i, List<Stmt*> *s) : label(i), stmts(s) {}
+};
+
+class SwitchStmt : public Stmt
+{
+  protected:
+    Expr *value;
+    List<Case*> *cases;
+
+  public:
+    SwitchStmt(Expr *val, List<Case*> *list) : value(val), cases(list) {}
+};
 
 #endif

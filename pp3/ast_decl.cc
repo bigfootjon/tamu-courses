@@ -66,9 +66,15 @@ void ClassDecl::Check() {
 	}
 	if (extends != NULL) {
 	    Decl *inherited = LookupType(extends->GetId()->GetName())->LookupType(cur->GetName(), false);
-            if (inherited != NULL && (!cur->IsEquivalentTo(inherited) || dynamic_cast<VarDecl*>(cur) != NULL)) {
-                ReportError::DeclConflict(cur, inherited);
-	        continue;
+	    if (inherited != NULL) {
+                if (dynamic_cast<VarDecl*>(cur) != NULL) {
+                    ReportError::DeclConflict(cur, inherited);
+	            continue;
+	        }
+		if (!cur->IsEquivalentTo(inherited)) {
+                    ReportError::OverrideMismatch(cur);
+                    continue;
+		}
 	    }
 	}
         table.Enter(cur->GetName(), cur);

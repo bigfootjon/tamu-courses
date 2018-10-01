@@ -52,7 +52,7 @@ class Node
     void SetParent(Node *p)  { parent = p; }
     Node *GetParent()        { return parent; }
 
-    virtual void Check()     {}
+    virtual void Check() {}
     Decl *LookupType(char *name);
     void CheckTypes(List<Decl*> *decls);
 };
@@ -67,6 +67,7 @@ class Identifier : public Node
     Identifier(yyltype loc, const char *name);
     friend std::ostream& operator<<(std::ostream& out, Identifier *id) { return out << id->name; }
     char *GetName() { return name; }
+    void Check() { /* errors will be checked by parent nodes */ }
 };
 
 
@@ -79,6 +80,7 @@ class Error : public Node
 {
   public:
     Error() : Node() {}
+    void Check() {}
 };
 
 

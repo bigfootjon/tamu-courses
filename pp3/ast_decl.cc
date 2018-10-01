@@ -5,17 +5,26 @@
 #include "ast_decl.h"
 #include "ast_type.h"
 #include "ast_stmt.h"
-        
+#include "errors.h"        
          
 Decl::Decl(Identifier *n) : Node(*n->GetLocation()) {
     Assert(n != NULL);
     (id=n)->SetParent(this); 
 }
 
+void Decl::Check() {
+    id->Check();
+}
+
 
 VarDecl::VarDecl(Identifier *n, Type *t) : Decl(n) {
     Assert(n != NULL && t != NULL);
     (type=t)->SetParent(this);
+}
+
+void VarDecl::Check() {
+    id->Check();
+    type->Check();
 }
   
 
@@ -29,6 +38,17 @@ ClassDecl::ClassDecl(Identifier *n, NamedType *ex, List<NamedType*> *imp, List<D
 }
 
 void ClassDecl::Check() {
+    if (extends) {
+        if (LookupType(extends->GetId()->GetName()) == NULL) {
+            ReportError::IdentifierNotDeclared(extends->GetId(), reasonT::LookingForClass);
+        }
+    }
+    for (int i=0;i<implements->NumElements();++i) {
+        NamedType *cur = implements->Nth(i);
+        if (LookupType(cur->GetId()->GetName()) == NULL) {
+            ReportError::IdentifierNotDeclared(cur->GetId(), reasonT::LookingForInterface);
+	}
+    }
     CheckTypes(members);
 }
 
@@ -36,6 +56,10 @@ void ClassDecl::Check() {
 InterfaceDecl::InterfaceDecl(Identifier *n, List<Decl*> *m) : Decl(n) {
     Assert(n != NULL && m != NULL);
     (members=m)->SetParentAll(this);
+}
+
+void InterfaceDecl::Check() {
+    CheckTypes(members);
 }
 
 	
@@ -51,7 +75,8 @@ void FnDecl::SetFunctionBody(Stmt *b) {
 }
 
 void FnDecl::Check() {
+    returnType->Check();
     CheckTypes((List<Decl*>*)formals);
-    body->Check();
+    if (body) body->Check();
 }
 

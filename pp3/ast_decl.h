@@ -30,6 +30,7 @@ class Decl : public Node
     Decl(Identifier *name);
     friend std::ostream& operator<<(std::ostream& out, Decl *d) { return out << d->id; }
     char *GetName() { return id->GetName(); }
+    void Check();
 };
 
 class VarDecl : public Decl 
@@ -39,6 +40,7 @@ class VarDecl : public Decl
     
   public:
     VarDecl(Identifier *name, Type *type);
+    void Check();
 };
 
 class ClassDecl : public Decl 
@@ -61,6 +63,7 @@ class InterfaceDecl : public Decl
     
   public:
     InterfaceDecl(Identifier *name, List<Decl*> *members);
+    void Check();
 };
 
 class FnDecl : public Decl 

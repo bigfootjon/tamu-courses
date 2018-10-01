@@ -34,6 +34,7 @@ class Expr : public Stmt
 class EmptyExpr : public Expr
 {
   public:
+    void Check() {}
 };
 
 class IntConstant : public Expr 
@@ -43,6 +44,7 @@ class IntConstant : public Expr
   
   public:
     IntConstant(yyltype loc, int val);
+    void Check() {}
 };
 
 class DoubleConstant : public Expr 
@@ -52,6 +54,7 @@ class DoubleConstant : public Expr
     
   public:
     DoubleConstant(yyltype loc, double val);
+    void Check() {}
 };
 
 class BoolConstant : public Expr 
@@ -61,6 +64,7 @@ class BoolConstant : public Expr
     
   public:
     BoolConstant(yyltype loc, bool val);
+    void Check() {}
 };
 
 class StringConstant : public Expr 
@@ -70,12 +74,14 @@ class StringConstant : public Expr
     
   public:
     StringConstant(yyltype loc, const char *val);
+    void Check() {}
 };
 
 class NullConstant: public Expr 
 {
   public: 
     NullConstant(yyltype loc) : Expr(loc) {}
+    void Check() {}
 };
 
 class Operator : public Node 
@@ -86,6 +92,7 @@ class Operator : public Node
   public:
     Operator(yyltype loc, const char *tok);
     friend std::ostream& operator<<(std::ostream& out, Operator *o) { return out << o->tokenString; }
+    void Check() {}
  };
  
 class CompoundExpr : public Expr
@@ -139,6 +146,7 @@ class LValue : public Expr
 {
   public:
     LValue(yyltype loc) : Expr(loc) {}
+    void Check() {}
 };
 
 class PostfixExpr : public Expr
@@ -149,12 +157,14 @@ class PostfixExpr : public Expr
 
   public:
     PostfixExpr(LValue *lhs, Operator *o) : Expr(*lhs->GetLocation()), left(lhs), op(o) {}
+    void Check();
 };
 
 class This : public Expr 
 {
   public:
     This(yyltype loc) : Expr(loc) {}
+    void Check();
 };
 
 class ArrayAccess : public LValue 
@@ -164,6 +174,7 @@ class ArrayAccess : public LValue
     
   public:
     ArrayAccess(yyltype loc, Expr *base, Expr *subscript);
+    void Check();
 };
 
 /* Note that field access is used both for qualified names
@@ -195,6 +206,7 @@ class Call : public Expr
     
   public:
     Call(yyltype loc, Expr *base, Identifier *field, List<Expr*> *args);
+    void Check();
 };
 
 class NewExpr : public Expr
@@ -204,6 +216,7 @@ class NewExpr : public Expr
     
   public:
     NewExpr(yyltype loc, NamedType *clsType);
+    void Check();
 };
 
 class NewArrayExpr : public Expr
@@ -214,18 +227,21 @@ class NewArrayExpr : public Expr
     
   public:
     NewArrayExpr(yyltype loc, Expr *sizeExpr, Type *elemType);
+    void Check();
 };
 
 class ReadIntegerExpr : public Expr
 {
   public:
     ReadIntegerExpr(yyltype loc) : Expr(loc) {}
+    void Check() {}
 };
 
 class ReadLineExpr : public Expr
 {
   public:
     ReadLineExpr(yyltype loc) : Expr (loc) {}
+    void Check() {}
 };
 
     

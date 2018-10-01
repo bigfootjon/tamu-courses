@@ -43,6 +43,8 @@ class NamedType : public Type
     NamedType(Identifier *i);
     
     void PrintToStream(std::ostream& out) { out << id; }
+    Identifier *GetId() { return id; }
+    void Check();
 };
 
 class ArrayType : public Type 
@@ -54,6 +56,7 @@ class ArrayType : public Type
     ArrayType(yyltype loc, Type *elemType);
     
     void PrintToStream(std::ostream& out) { out << elemType << "[]"; }
+    void Check();
 };
 
  

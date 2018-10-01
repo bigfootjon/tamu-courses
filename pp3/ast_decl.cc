@@ -28,6 +28,10 @@ ClassDecl::ClassDecl(Identifier *n, NamedType *ex, List<NamedType*> *imp, List<D
     (members=m)->SetParentAll(this);
 }
 
+void ClassDecl::Check() {
+    CheckTypes(members);
+}
+
 
 InterfaceDecl::InterfaceDecl(Identifier *n, List<Decl*> *m) : Decl(n) {
     Assert(n != NULL && m != NULL);

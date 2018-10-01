@@ -16,9 +16,6 @@ Program::Program(List<Decl*> *d) {
 
 void Program::Check() {
     CheckTypes(decls);
-    for (int i = 0; i < decls->NumElements(); ++i) {
-      decls->Nth(i)->Check();
-    }
 }
 
 StmtBlock::StmtBlock(List<VarDecl*> *d, List<Stmt*> *s) {
@@ -29,9 +26,6 @@ StmtBlock::StmtBlock(List<VarDecl*> *d, List<Stmt*> *s) {
 
 void StmtBlock::Check() {
     CheckTypes((List<Decl*>*)decls);
-    for (int i=0; i < stmts->NumElements(); ++i) {
-        stmts->Nth(i)->Check();
-    }
 }
 
 ConditionalStmt::ConditionalStmt(Expr *t, Stmt *b) { 

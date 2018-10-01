@@ -51,6 +51,7 @@ class ClassDecl : public Decl
   public:
     ClassDecl(Identifier *name, NamedType *extends, 
               List<NamedType*> *implements, List<Decl*> *members);
+    void Check();
 };
 
 class InterfaceDecl : public Decl 

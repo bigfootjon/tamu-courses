@@ -37,9 +37,11 @@ void Node::CheckTypes(List<Decl*> *decls) {
 	if (found != NULL) {
             ReportError::DeclConflict(cur, found);
 	} else {
-	    std::cout << cur->GetName() << std::endl;
             table.Enter(cur->GetName(), cur);
 	}
+    }
+    for (int i=0; i < decls->NumElements(); ++i) {
+        decls->Nth(i)->Check();
     }
 }
 	 

@@ -40,6 +40,13 @@ void NamedType::Check() {
     }
 }
 
+bool NamedType::IsEquivalentTo(Type* o) {
+    NamedType *other = dynamic_cast<NamedType*>(o);
+    if (other == NULL) {
+        return false;
+    }
+    return false;
+}
 
 ArrayType::ArrayType(yyltype loc, Type *et) : Type(loc) {
     Assert(et != NULL);
@@ -50,3 +57,11 @@ void ArrayType::Check() {
     elemType->Check();
 }
 
+
+bool ArrayType::IsEquivalentTo(Type* o) {
+    ArrayType *other = dynamic_cast<ArrayType*>(o);
+    if (other == NULL) {
+        return false;
+    }
+    return false;
+}

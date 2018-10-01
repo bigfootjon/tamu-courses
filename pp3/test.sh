@@ -5,5 +5,7 @@ GIVEN=dcc_pp4
 ./$MINE <$1 &>temp.$MINE
 ./$GIVEN <$1 &>temp.$GIVEN
 diff -w temp.$MINE temp.$GIVEN
+result=$?
 
 rm temp.$MINE temp.$GIVEN
+exit $result

@@ -34,7 +34,7 @@ NamedType::NamedType(Identifier *i) : Type(*i->GetLocation()) {
     (id=i)->SetParent(this);
 } 
 
-void NamedType::Check() {
+void NamedType::CheckNode() {
     if (LookupType(id->GetName()) == NULL) {
         ReportError::IdentifierNotDeclared(id, reasonT::LookingForType);
     }
@@ -56,7 +56,7 @@ ArrayType::ArrayType(yyltype loc, Type *et) : Type(loc) {
     (elemType=et)->SetParent(this);
 }
 
-void ArrayType::Check() {
+void ArrayType::CheckNode() {
     elemType->Check();
 }
 

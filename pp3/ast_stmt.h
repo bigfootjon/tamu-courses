@@ -28,7 +28,7 @@ class Program : public Node
      
   public:
      Program(List<Decl*> *declList);
-     void Check();
+     void CheckNode();
 };
 
 class Stmt : public Node
@@ -36,7 +36,6 @@ class Stmt : public Node
   public:
      Stmt() : Node() {}
      Stmt(yyltype loc) : Node(loc) {}
-     void Check() {}
 };
 
 class StmtBlock : public Stmt 
@@ -47,7 +46,7 @@ class StmtBlock : public Stmt
     
   public:
     StmtBlock(List<VarDecl*> *variableDeclarations, List<Stmt*> *statements);
-    void Check();
+    void CheckNode();
 };
 
   
@@ -59,7 +58,7 @@ class ConditionalStmt : public Stmt
   
   public:
     ConditionalStmt(Expr *testExpr, Stmt *body);
-    void Check();
+    void CheckNode();
 };
 
 class LoopStmt : public ConditionalStmt 
@@ -76,7 +75,7 @@ class ForStmt : public LoopStmt
   
   public:
     ForStmt(Expr *init, Expr *test, Expr *step, Stmt *body);
-    void Check();
+    void CheckNode();
 };
 
 class WhileStmt : public LoopStmt 
@@ -92,7 +91,7 @@ class IfStmt : public ConditionalStmt
   
   public:
     IfStmt(Expr *test, Stmt *thenBody, Stmt *elseBody);
-    void Check();
+    void CheckNode();
 };
 
 class BreakStmt : public Stmt 
@@ -108,7 +107,7 @@ class ReturnStmt : public Stmt
   
   public:
     ReturnStmt(yyltype loc, Expr *expr);
-    void Check();
+    void CheckNode();
 };
 
 class PrintStmt : public Stmt
@@ -118,7 +117,7 @@ class PrintStmt : public Stmt
     
   public:
     PrintStmt(List<Expr*> *arguments);
-    void Check();
+    void CheckNode();
 };
 
 class Case : public Stmt
@@ -129,7 +128,7 @@ class Case : public Stmt
 
   public:
     Case(IntConstant *i, List<Stmt*> *s) : label(i), stmts(s) {}
-    void Check();
+    void CheckNode();
 };
 
 class SwitchStmt : public Stmt
@@ -140,7 +139,7 @@ class SwitchStmt : public Stmt
 
   public:
     SwitchStmt(Expr *val, List<Case*> *list) : value(val), cases(list) {}
-    void Check();
+    void CheckNode();
 };
 
 #endif

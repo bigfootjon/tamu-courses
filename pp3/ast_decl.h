@@ -30,7 +30,7 @@ class Decl : public Node
     Decl(Identifier *name);
     friend std::ostream& operator<<(std::ostream& out, Decl *d) { return out << d->id; }
     char *GetName() { return id->GetName(); }
-    void Check();
+    void CheckNode();
     virtual bool IsEquivalentTo(Decl* other) {
         return strcmp(other->id->GetName(), this->id->GetName()) == 0;
     }
@@ -43,7 +43,7 @@ class VarDecl : public Decl
     
   public:
     VarDecl(Identifier *name, Type *type);
-    void Check();
+    void CheckNode();
     bool IsEquivalentTo(Decl* other);
 };
 
@@ -57,7 +57,7 @@ class ClassDecl : public Decl
   public:
     ClassDecl(Identifier *name, NamedType *extends, 
               List<NamedType*> *implements, List<Decl*> *members);
-    void Check();
+    void CheckNode();
 };
 
 class InterfaceDecl : public Decl 
@@ -67,7 +67,7 @@ class InterfaceDecl : public Decl
     
   public:
     InterfaceDecl(Identifier *name, List<Decl*> *members);
-    void Check();
+    void CheckNode();
 };
 
 class FnDecl : public Decl 
@@ -80,7 +80,7 @@ class FnDecl : public Decl
   public:
     FnDecl(Identifier *name, Type *returnType, List<VarDecl*> *formals);
     void SetFunctionBody(Stmt *b);
-    void Check();
+    void CheckNode();
     bool IsEquivalentTo(Decl* other);
 };
 

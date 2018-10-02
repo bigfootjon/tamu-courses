@@ -14,7 +14,7 @@ Program::Program(List<Decl*> *d) {
     (decls=d)->SetParentAll(this);
 }
 
-void Program::Check() {
+void Program::CheckNode() {
     CheckTypes(decls);
 }
 
@@ -24,7 +24,7 @@ StmtBlock::StmtBlock(List<VarDecl*> *d, List<Stmt*> *s) {
     (stmts=s)->SetParentAll(this);
 }
 
-void StmtBlock::Check() {
+void StmtBlock::CheckNode() {
     CheckTypes((List<Decl*>*)decls);
     for (int i=0;i<stmts->NumElements();++i) {
         stmts->Nth(i)->Check();
@@ -37,7 +37,7 @@ ConditionalStmt::ConditionalStmt(Expr *t, Stmt *b) {
     (body=b)->SetParent(this);
 }
 
-void ConditionalStmt::Check() {
+void ConditionalStmt::CheckNode() {
     test->Check();
     body->Check();
 }
@@ -48,8 +48,8 @@ ForStmt::ForStmt(Expr *i, Expr *t, Expr *s, Stmt *b): LoopStmt(t, b) {
     (step=s)->SetParent(this);
 }
 
-void ForStmt::Check() {
-    LoopStmt::Check();
+void ForStmt::CheckNode() {
+    LoopStmt::CheckNode();
     init->Check();
     step->Check();
 }
@@ -60,8 +60,8 @@ IfStmt::IfStmt(Expr *t, Stmt *tb, Stmt *eb): ConditionalStmt(t, tb) {
     if (elseBody) elseBody->SetParent(this);
 }
 
-void IfStmt::Check() {
-    ConditionalStmt::Check();
+void IfStmt::CheckNode() {
+    ConditionalStmt::CheckNode();
     if (elseBody) elseBody->Check();
 }
 
@@ -70,7 +70,7 @@ ReturnStmt::ReturnStmt(yyltype loc, Expr *e) : Stmt(loc) {
     (expr=e)->SetParent(this);
 }
 
-void ReturnStmt::Check() {
+void ReturnStmt::CheckNode() {
     expr->Check();
 }
   
@@ -79,19 +79,19 @@ PrintStmt::PrintStmt(List<Expr*> *a) {
     (args=a)->SetParentAll(this);
 }
 
-void PrintStmt::Check() {
+void PrintStmt::CheckNode() {
     for (int i=0;i<args->NumElements();++i) {
         args->Nth(i)->Check();
     }
 }
 
-void Case::Check() {
+void Case::CheckNode() {
     for (int i=0;i<stmts->NumElements();++i) {
         stmts->Nth(i)->Check();
     }
 }
 
-void SwitchStmt::Check() {
+void SwitchStmt::CheckNode() {
     value->Check();
     for (int i=0;i<cases->NumElements();++i) {
         cases->Nth(i)->Check();

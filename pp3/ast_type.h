@@ -44,7 +44,7 @@ class NamedType : public Type
     
     void PrintToStream(std::ostream& out) { out << id; }
     Identifier *GetId() { return id; }
-    void Check();
+    void CheckNode();
     bool IsEquivalentTo(Type* other);
 };
 
@@ -57,7 +57,7 @@ class ArrayType : public Type
     ArrayType(yyltype loc, Type *elemType);
     
     void PrintToStream(std::ostream& out) { out << elemType << "[]"; }
-    void Check();
+    void CheckNode();
     bool IsEquivalentTo(Type* other);
 };
 

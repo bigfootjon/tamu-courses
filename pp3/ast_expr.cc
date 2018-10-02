@@ -46,18 +46,18 @@ CompoundExpr::CompoundExpr(Operator *o, Expr *r)
     (right=r)->SetParent(this);
 }
 
-void CompoundExpr::Check() {
+void CompoundExpr::CheckNode() {
     if (left) left->Check();
     op->Check();
     right->Check();
 }
 
-void PostfixExpr::Check() {
+void PostfixExpr::CheckNode() {
     left->Check();
     op->Check();
 }
 
-void This::Check() {
+void This::CheckNode() {
     // TODO This can only be within a class!
 }
   
@@ -66,7 +66,7 @@ ArrayAccess::ArrayAccess(yyltype loc, Expr *b, Expr *s) : LValue(loc) {
     (subscript=s)->SetParent(this);
 }
 
-void ArrayAccess::Check() {
+void ArrayAccess::CheckNode() {
     base->Check();
     subscript->Check();
 }
@@ -79,7 +79,7 @@ FieldAccess::FieldAccess(Expr *b, Identifier *f)
     (field=f)->SetParent(this);
 }
 
-void FieldAccess::Check() {
+void FieldAccess::CheckNode() {
     if (base) base->Check();
     if (LookupType(field->GetName()) == NULL) {
         ReportError::IdentifierNotDeclared(field, reasonT::LookingForVariable);
@@ -95,7 +95,7 @@ Call::Call(yyltype loc, Expr *b, Identifier *f, List<Expr*> *a) : Expr(loc)  {
     (actuals=a)->SetParentAll(this);
 }
 
-void Call::Check() {
+void Call::CheckNode() {
     if (base) base->Check();
     for (int i=0;i<actuals->NumElements(); ++i) {
         actuals->Nth(i)->Check();
@@ -107,7 +107,7 @@ NewExpr::NewExpr(yyltype loc, NamedType *c) : Expr(loc) {
   (cType=c)->SetParent(this);
 }
 
-void NewExpr::Check() {
+void NewExpr::CheckNode() {
     cType->Check();
 }
 
@@ -117,7 +117,7 @@ NewArrayExpr::NewArrayExpr(yyltype loc, Expr *sz, Type *et) : Expr(loc) {
     (elemType=et)->SetParent(this);
 }
 
-void NewArrayExpr::Check() {
+void NewArrayExpr::CheckNode() {
     size->Check();
     elemType->Check();
 }

@@ -12,7 +12,7 @@ Decl::Decl(Identifier *n) : Node(*n->GetLocation()) {
     (id=n)->SetParent(this); 
 }
 
-void Decl::Check() {
+void Decl::CheckNode() {
     id->Check();
 }
 
@@ -22,7 +22,7 @@ VarDecl::VarDecl(Identifier *n, Type *t) : Decl(n) {
     (type=t)->SetParent(this);
 }
 
-void VarDecl::Check() {
+void VarDecl::CheckNode() {
     id->Check();
     type->Check();
 }
@@ -45,7 +45,7 @@ ClassDecl::ClassDecl(Identifier *n, NamedType *ex, List<NamedType*> *imp, List<D
     (members=m)->SetParentAll(this);
 }
 
-void ClassDecl::Check() {
+void ClassDecl::CheckNode() {
     if (extends) {
         if (LookupType(extends->GetId()->GetName()) == NULL) {
             ReportError::IdentifierNotDeclared(extends->GetId(), reasonT::LookingForClass);
@@ -65,7 +65,9 @@ void ClassDecl::Check() {
 	    continue;
 	}
 	if (extends != NULL) {
-	    Decl *inherited = LookupType(extends->GetId()->GetName())->LookupType(cur->GetName(), false);
+	    Decl *superclass = LookupType(extends->GetId()->GetName());
+	    superclass->Check();
+	    Decl *inherited = superclass->LookupType(cur->GetName(), false);
 	    if (inherited != NULL) {
                 if (dynamic_cast<VarDecl*>(cur) != NULL) {
                     ReportError::DeclConflict(cur, inherited);
@@ -75,6 +77,15 @@ void ClassDecl::Check() {
                     ReportError::OverrideMismatch(cur);
                     continue;
 		}
+	    }
+	}
+	for (int i=0;i<implements->NumElements();++i) {
+            Decl *interface = LookupType(implements->Nth(i)->GetId()->GetName());
+	    interface->Check();
+	    Decl *inherited = interface->LookupType(cur->GetName(), false);
+	    if (inherited != NULL && !cur->IsEquivalentTo(inherited)) {
+                ReportError::OverrideMismatch(cur);
+		continue;
 	    }
 	}
         table.Enter(cur->GetName(), cur);
@@ -90,7 +101,7 @@ InterfaceDecl::InterfaceDecl(Identifier *n, List<Decl*> *m) : Decl(n) {
     (members=m)->SetParentAll(this);
 }
 
-void InterfaceDecl::Check() {
+void InterfaceDecl::CheckNode() {
     CheckTypes(members);
 }
 
@@ -106,7 +117,7 @@ void FnDecl::SetFunctionBody(Stmt *b) {
     (body=b)->SetParent(this);
 }
 
-void FnDecl::Check() {
+void FnDecl::CheckNode() {
     returnType->Check();
     CheckTypes((List<Decl*>*)formals);
     if (body) body->Check();

@@ -1,6 +1,6 @@
 #!/bin/sh
 MINE=dcc
-GIVEN=dcc_pp3
+GIVEN=dcc_pp4
 
 ./$MINE <$1 &>temp.$MINE
 ./$GIVEN <$1 &>temp.$GIVEN

@@ -58,7 +58,14 @@ void PostfixExpr::CheckNode() {
 }
 
 void This::CheckNode() {
-    // TODO This can only be within a class!
+    Node *super = this;
+    while ((super = super->GetParent()) != NULL) {
+        ClassDecl *as_class = dynamic_cast<ClassDecl*>(super);
+        if (as_class != NULL) {
+            return;
+        }
+    }
+    ReportError::ThisOutsideClassScope(this);
 }
   
 ArrayAccess::ArrayAccess(yyltype loc, Expr *b, Expr *s) : LValue(loc) {

@@ -41,11 +41,14 @@ void NamedType::Check() {
 }
 
 bool NamedType::IsEquivalentTo(Type* o) {
+    if (Type::IsEquivalentTo(o)) {
+        return true;
+    }
     NamedType *other = dynamic_cast<NamedType*>(o);
     if (other == NULL) {
         return false;
     }
-    return false;
+    return strcmp(this->id->GetName(), other->id->GetName()) == 0;
 }
 
 ArrayType::ArrayType(yyltype loc, Type *et) : Type(loc) {
@@ -59,9 +62,12 @@ void ArrayType::Check() {
 
 
 bool ArrayType::IsEquivalentTo(Type* o) {
+    if (Type::IsEquivalentTo(o)) {
+        return true;
+    }
     ArrayType *other = dynamic_cast<ArrayType*>(o);
     if (other == NULL) {
         return false;
     }
-    return false;
+    return this->elemType->IsEquivalentTo(other->elemType);
 }

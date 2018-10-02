@@ -1,0 +1,11 @@
+Usage:
+ 1. run `make` to build dcc
+ 3. run `./dcc <$FILE` to process $FILE and output any semantic errors (assuming lexing and parsing succeeded)
+
+Extended Functionality:
+ - I created 2 scripts to help test this project:
+   - `test.sh $FILE` will compare the output of my compiler with the included solution compiler
+   - `alltests.sh` will run test.sh on every file in the samples directory
+ - I also wrote several tests beyond those included in the samples directory.
+   - They all match the regex "jon_*.decaf"
+   - Mostly they just use examples from the instructions or fill in details mentioned in the spec

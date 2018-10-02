@@ -81,9 +81,9 @@ FieldAccess::FieldAccess(Expr *b, Identifier *f)
 
 void FieldAccess::CheckNode() {
     if (base) base->Check();
-    //if (LookupType(field->GetName()) == NULL) {
-    //    ReportError::IdentifierNotDeclared(field, reasonT::LookingForVariable);
-    //}
+    if (LookupType(field->GetName()) == NULL) {
+        ReportError::IdentifierNotDeclared(field, LookingForVariable);
+    }
 }
 
 

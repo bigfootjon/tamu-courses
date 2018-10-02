@@ -108,7 +108,7 @@ NewExpr::NewExpr(yyltype loc, NamedType *c) : Expr(loc) {
 }
 
 void NewExpr::CheckNode() {
-    cType->Check();
+    //cType->Check();
 }
 
 NewArrayExpr::NewArrayExpr(yyltype loc, Expr *sz, Type *et) : Expr(loc) {

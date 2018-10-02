@@ -47,13 +47,15 @@ ClassDecl::ClassDecl(Identifier *n, NamedType *ex, List<NamedType*> *imp, List<D
 
 void ClassDecl::CheckNode() {
     if (extends) {
-        if (LookupType(extends->GetId()->GetName()) == NULL) {
+        Decl *superclass = LookupType(extends->GetId()->GetName());
+        if (superclass == NULL || dynamic_cast<ClassDecl*>(superclass) == NULL) {
             ReportError::IdentifierNotDeclared(extends->GetId(), reasonT::LookingForClass);
         }
     }
     for (int i=0;i<implements->NumElements();++i) {
         NamedType *cur = implements->Nth(i);
-        if (LookupType(cur->GetId()->GetName()) == NULL) {
+	Decl *interface = LookupType(cur->GetId()->GetName());
+        if (interface == NULL || dynamic_cast<InterfaceDecl*>(interface) == NULL) {
             ReportError::IdentifierNotDeclared(cur->GetId(), reasonT::LookingForInterface);
 	}
     }

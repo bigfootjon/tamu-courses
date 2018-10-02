@@ -1,0 +1,11 @@
+interface inter {
+
+}
+
+class klass {
+
+}
+
+class main extends klass implements inter {
+
+}

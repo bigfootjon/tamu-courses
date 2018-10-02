@@ -1,0 +1,8 @@
+void main() {
+  int[] arr;
+  bool notarr;
+  arr.length();
+  arr[0];
+  notarr.length();
+  notarr[0];
+}

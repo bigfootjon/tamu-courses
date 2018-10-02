@@ -1,0 +1,4 @@
+class b {
+   int a;
+   bool a;
+}

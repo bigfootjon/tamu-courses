@@ -1,0 +1,8 @@
+interface a {
+
+}
+
+void main() {
+    a b;
+    b = New(a);
+}

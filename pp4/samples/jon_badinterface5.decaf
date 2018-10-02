@@ -1,0 +1,16 @@
+interface i {
+
+}
+
+class c implements i {
+
+}
+
+class c2 implements i {
+
+}
+
+void main() {
+  c inst;
+  inst = New(c2);
+}

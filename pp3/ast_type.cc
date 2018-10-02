@@ -36,7 +36,7 @@ NamedType::NamedType(Identifier *i) : Type(*i->GetLocation()) {
 
 void NamedType::CheckNode() {
     if (LookupType(id->GetName()) == NULL) {
-        ReportError::IdentifierNotDeclared(id, reasonT::LookingForType);
+        ReportError::IdentifierNotDeclared(id, LookingForType);
     }
 }
 

@@ -49,14 +49,14 @@ void ClassDecl::CheckNode() {
     if (extends) {
         Decl *superclass = LookupType(extends->GetId()->GetName());
         if (superclass == NULL || dynamic_cast<ClassDecl*>(superclass) == NULL) {
-            ReportError::IdentifierNotDeclared(extends->GetId(), reasonT::LookingForClass);
+            ReportError::IdentifierNotDeclared(extends->GetId(), LookingForClass);
         }
     }
     for (int i=0;i<implements->NumElements();++i) {
         NamedType *cur = implements->Nth(i);
 	Decl *interface = LookupType(cur->GetId()->GetName());
         if (interface == NULL || dynamic_cast<InterfaceDecl*>(interface) == NULL) {
-            ReportError::IdentifierNotDeclared(cur->GetId(), reasonT::LookingForInterface);
+            ReportError::IdentifierNotDeclared(cur->GetId(), LookingForInterface);
 	}
     }
     for (int i=0; i < members->NumElements(); ++i) {

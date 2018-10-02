@@ -40,7 +40,7 @@ class Decl;
 class Node 
 {
   private:
-    bool visited = false;
+    bool visited;
 
   protected:
     yyltype *location;

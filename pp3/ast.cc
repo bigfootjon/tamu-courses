@@ -12,11 +12,13 @@
 Node::Node(yyltype loc) {
     location = new yyltype(loc);
     parent = NULL;
+    visited = false;
 }
 
 Node::Node() {
     location = NULL;
     parent = NULL;
+    visited = false;
 }
 
 Decl *Node::LookupType(char *name, bool recursive) {

@@ -58,6 +58,7 @@ class ArrayType : public Type
     
     void PrintToStream(std::ostream& out) { out << elemType << "[]"; }
     void CheckNode();
+    Type *GetBaseType() { return elemType; }
     bool IsEquivalentTo(Type* other);
 };
 

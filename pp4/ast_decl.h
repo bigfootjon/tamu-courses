@@ -45,6 +45,7 @@ class VarDecl : public Decl
   public:
     VarDecl(Identifier *name, Type *type);
     void CheckNode();
+    Type *GetType() { return type; }
     bool IsEquivalentTo(Decl* other);
 };
 
@@ -68,6 +69,7 @@ class InterfaceDecl : public Decl
     
   public:
     InterfaceDecl(Identifier *name, List<Decl*> *members);
+    List<Decl*> *GetMembers() { return members; }
     void CheckNode();
 };
 
@@ -83,6 +85,7 @@ class FnDecl : public Decl
     void SetFunctionBody(Stmt *b);
     void CheckNode();
     bool IsEquivalentTo(Decl* other);
+    List<VarDecl*> *GetFormals() { return formals; }
     Type *GetType() { return returnType; }
 };
 

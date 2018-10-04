@@ -79,6 +79,9 @@ void CompoundExpr::CheckNode() {
     if (left) left->Check();
     op->Check();
     right->Check();
+    if (Type::voidType->IsEquivalentTo(GetType())) {
+        ReportError::IncompatibleOperands(op, left->GetType(), right->GetType());
+    }
 }
 
 Type *CompoundExpr::GetType() {
@@ -138,7 +141,7 @@ void ArrayAccess::CheckNode() {
 }
 
 Type *ArrayAccess::GetType() {
-    return base->GetType();
+    return ((ArrayType*)base->GetType())->GetBaseType();
 }
      
 FieldAccess::FieldAccess(Expr *b, Identifier *f) 
@@ -164,7 +167,7 @@ Type *FieldAccess::GetType() {
     } else {
         n = base->LookupType(name, false);
     }
-    return dynamic_cast<Expr*>(n)->GetType();
+    return dynamic_cast<VarDecl*>(n)->GetType();
 }
 
 
@@ -181,15 +184,27 @@ void Call::CheckNode() {
     for (int i=0;i<actuals->NumElements(); ++i) {
         actuals->Nth(i)->Check();
     }
-    Node* calling = NULL;
+    FnDecl* calling = NULL;
     if (base) {
         NamedType *type = dynamic_cast<NamedType*>(base->GetType());
-        calling = LookupType(type->GetId()->GetName())->LookupType(field->GetName());
+        calling = dynamic_cast<FnDecl*>(LookupType(type->GetId()->GetName())->LookupType(field->GetName()));
     } else {
-        calling = LookupType(field->GetName());
+        calling = dynamic_cast<FnDecl*>(LookupType(field->GetName()));
     }
     if (calling == NULL) {
         ReportError::IdentifierNotDeclared(field, LookingForFunction);
+    }
+    List<VarDecl*> *formals = calling->GetFormals();
+    if (formals->NumElements() != actuals->NumElements()) {
+        ReportError::NumArgsMismatch(field, formals->NumElements(), actuals->NumElements());
+    } else {
+        for (int i=0; i<formals->NumElements();++i) {
+            Type *expected = formals->Nth(i)->GetType();
+            Type *actual = actuals->Nth(i)->GetType();
+            if (!expected->IsEquivalentTo(actual)) {
+                ReportError::ArgMismatch(actuals->Nth(i), i+1, actual, expected);
+            }
+        }
     }
 }
 
@@ -201,7 +216,7 @@ Type *Call::GetType() {
     } else {
         n = base->LookupType(name, false);
     }
-    return dynamic_cast<Expr*>(n)->GetType();
+    return dynamic_cast<FnDecl*>(n)->GetType();
 }
 
 NewExpr::NewExpr(yyltype loc, NamedType *c) : Expr(loc) { 
@@ -210,14 +225,16 @@ NewExpr::NewExpr(yyltype loc, NamedType *c) : Expr(loc) {
 }
 
 void NewExpr::CheckNode() {
-    cType->Check();
+    if (dynamic_cast<ClassDecl*>(LookupType(cType->GetId()->GetName())) == NULL) {
+        ReportError::IdentifierNotDeclared(cType->GetId(), LookingForClass);
+    }
 }
 
 Type *NewExpr::GetType() {
     return cType;
 }
 
-NewArrayExpr::NewArrayExpr(yyltype loc, Expr *sz, Type *et) : Expr(loc) {
+NewArrayExpr::NewArrayExpr(yyltype loc, Expr *sz, Type *et) : Expr(loc), location(loc) {
     Assert(sz != NULL && et != NULL);
     (size=sz)->SetParent(this); 
     (elemType=et)->SetParent(this);
@@ -229,7 +246,7 @@ void NewArrayExpr::CheckNode() {
 }
 
 Type *NewArrayExpr::GetType() {
-    return elemType;
+    return new ArrayType(location, elemType);
 }
 
 Type *ReadIntegerExpr::GetType() {

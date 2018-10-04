@@ -235,6 +235,7 @@ class NewArrayExpr : public Expr
   protected:
     Expr *size;
     Type *elemType;
+    yyltype location;
     
   public:
     NewArrayExpr(yyltype loc, Expr *sizeExpr, Type *elemType);

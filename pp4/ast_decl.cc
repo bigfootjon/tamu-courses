@@ -92,6 +92,15 @@ void ClassDecl::CheckNode() {
 	}
         table.Enter(cur->GetName(), cur);
     }
+    for (int i=0;i<implements->NumElements();++i) {
+        List<Decl*> *int_members = dynamic_cast<InterfaceDecl*>(LookupType(implements->Nth(i)->GetId()->GetName()))->GetMembers();
+        for (int j=0;j<int_members->NumElements();++j) {
+            FnDecl *member = (FnDecl*)int_members->Nth(j);
+            if (LookupType(member->GetId()->GetName(), false) == NULL) {
+                ReportError::InterfaceNotImplemented(this, implements->Nth(i));
+            }
+        }
+    }
     for (int i=0; i < members->NumElements(); ++i) {
         members->Nth(i)->Check();
     }

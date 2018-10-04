@@ -40,6 +40,9 @@ ConditionalStmt::ConditionalStmt(Expr *t, Stmt *b) {
 void ConditionalStmt::CheckNode() {
     test->Check();
     body->Check();
+    if (!test->GetType()->IsEquivalentTo(Type::boolType)) {
+        ReportError::TestNotBoolean(test);
+    }
 }
 
 ForStmt::ForStmt(Expr *i, Expr *t, Expr *s, Stmt *b): LoopStmt(t, b) { 
@@ -72,6 +75,23 @@ ReturnStmt::ReturnStmt(yyltype loc, Expr *e) : Stmt(loc) {
 
 void ReturnStmt::CheckNode() {
     expr->Check();
+    Type *type = expr->GetType();
+    Node *super = this;
+    FnDecl *as_func = NULL;
+    while ((super = super->GetParent())) {
+        if (super == NULL) {
+            break;
+        }
+        as_func = dynamic_cast<FnDecl*>(super);
+        if (as_func != NULL) {
+            break;
+        }
+    }
+    if (as_func) {
+        if (!type->IsEquivalentTo(as_func->GetType())) {
+            ReportError::ReturnMismatch(this, type, as_func->GetType());
+        }
+    }
 }
   
 PrintStmt::PrintStmt(List<Expr*> *a) {    

@@ -19,13 +19,14 @@
 
 class NamedType; // for new
 class Type; // for NewArray
-
+class ClassDecl;
 
 class Expr : public Stmt 
 {
   public:
     Expr(yyltype loc) : Stmt(loc) {}
     Expr() : Stmt() {}
+    virtual Type *GetType() { return NULL; }
 };
 
 /* This node type is used for those places where an expression is optional.
@@ -34,6 +35,7 @@ class Expr : public Stmt
 class EmptyExpr : public Expr
 {
   public:
+    Type *GetType();
 };
 
 class IntConstant : public Expr 
@@ -43,6 +45,7 @@ class IntConstant : public Expr
   
   public:
     IntConstant(yyltype loc, int val);
+    Type *GetType();
 };
 
 class DoubleConstant : public Expr 
@@ -52,6 +55,7 @@ class DoubleConstant : public Expr
     
   public:
     DoubleConstant(yyltype loc, double val);
+    Type *GetType();
 };
 
 class BoolConstant : public Expr 
@@ -61,6 +65,7 @@ class BoolConstant : public Expr
     
   public:
     BoolConstant(yyltype loc, bool val);
+    Type *GetType();
 };
 
 class StringConstant : public Expr 
@@ -70,12 +75,14 @@ class StringConstant : public Expr
     
   public:
     StringConstant(yyltype loc, const char *val);
+    Type *GetType();
 };
 
 class NullConstant: public Expr 
 {
   public: 
     NullConstant(yyltype loc) : Expr(loc) {}
+    Type *GetType();
 };
 
 class Operator : public Node 
@@ -86,6 +93,7 @@ class Operator : public Node
   public:
     Operator(yyltype loc, const char *tok);
     friend std::ostream& operator<<(std::ostream& out, Operator *o) { return out << o->tokenString; }
+    Type *GetType();
  };
  
 class CompoundExpr : public Expr
@@ -98,6 +106,7 @@ class CompoundExpr : public Expr
     CompoundExpr(Expr *lhs, Operator *op, Expr *rhs); // for binary
     CompoundExpr(Operator *op, Expr *rhs);             // for unary
     void CheckNode();
+    Type *GetType();
 };
 
 class ArithmeticExpr : public CompoundExpr 
@@ -139,6 +148,7 @@ class LValue : public Expr
 {
   public:
     LValue(yyltype loc) : Expr(loc) {}
+    Type *GetType();
 };
 
 class PostfixExpr : public Expr
@@ -150,13 +160,18 @@ class PostfixExpr : public Expr
   public:
     PostfixExpr(LValue *lhs, Operator *o) : Expr(*lhs->GetLocation()), left(lhs), op(o) {}
     void CheckNode();
+    Type *GetType();
 };
 
 class This : public Expr 
 {
+  private:
+    ClassDecl *GetClass();
+
   public:
     This(yyltype loc) : Expr(loc) {}
     void CheckNode();
+    Type *GetType();
 };
 
 class ArrayAccess : public LValue 
@@ -167,6 +182,7 @@ class ArrayAccess : public LValue
   public:
     ArrayAccess(yyltype loc, Expr *base, Expr *subscript);
     void CheckNode();
+    Type *GetType();
 };
 
 /* Note that field access is used both for qualified names
@@ -183,6 +199,7 @@ class FieldAccess : public LValue
   public:
     FieldAccess(Expr *base, Identifier *field); //ok to pass NULL base
     void CheckNode();
+    Type *GetType();
 };
 
 /* Like field access, call is used both for qualified base.field()
@@ -199,6 +216,7 @@ class Call : public Expr
   public:
     Call(yyltype loc, Expr *base, Identifier *field, List<Expr*> *args);
     void CheckNode();
+    Type *GetType();
 };
 
 class NewExpr : public Expr
@@ -209,6 +227,7 @@ class NewExpr : public Expr
   public:
     NewExpr(yyltype loc, NamedType *clsType);
     void CheckNode();
+    Type *GetType();
 };
 
 class NewArrayExpr : public Expr
@@ -220,6 +239,7 @@ class NewArrayExpr : public Expr
   public:
     NewArrayExpr(yyltype loc, Expr *sizeExpr, Type *elemType);
     void CheckNode();
+    Type *GetType();
 };
 
 class ReadIntegerExpr : public Expr
@@ -227,6 +247,7 @@ class ReadIntegerExpr : public Expr
   public:
     ReadIntegerExpr(yyltype loc) : Expr(loc) {}
     void CheckNode() {}
+    Type *GetType();
 };
 
 class ReadLineExpr : public Expr
@@ -234,6 +255,7 @@ class ReadLineExpr : public Expr
   public:
     ReadLineExpr(yyltype loc) : Expr (loc) {}
     void CheckNode() {}
+    Type *GetType();
 };
 
     

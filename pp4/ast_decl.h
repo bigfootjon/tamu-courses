@@ -29,6 +29,7 @@ class Decl : public Node
   public:
     Decl(Identifier *name);
     friend std::ostream& operator<<(std::ostream& out, Decl *d) { return out << d->id; }
+    Identifier *GetId() { return id; }
     char *GetName() { return id->GetName(); }
     void CheckNode();
     virtual bool IsEquivalentTo(Decl* other) {
@@ -82,6 +83,7 @@ class FnDecl : public Decl
     void SetFunctionBody(Stmt *b);
     void CheckNode();
     bool IsEquivalentTo(Decl* other);
+    Type *GetType() { return returnType; }
 };
 
 #endif

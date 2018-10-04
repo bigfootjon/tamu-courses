@@ -9,16 +9,32 @@
 #include "errors.h"
 
 
+Type *EmptyExpr::GetType() {
+    return Type::voidType;
+}
+
 IntConstant::IntConstant(yyltype loc, int val) : Expr(loc) {
     value = val;
+}
+
+Type *IntConstant::GetType() {
+    return Type::intType;
 }
 
 DoubleConstant::DoubleConstant(yyltype loc, double val) : Expr(loc) {
     value = val;
 }
 
+Type *DoubleConstant::GetType() {
+    return Type::doubleType;
+}
+
 BoolConstant::BoolConstant(yyltype loc, bool val) : Expr(loc) {
     value = val;
+}
+
+Type *BoolConstant::GetType() {
+    return Type::boolType;
 }
 
 StringConstant::StringConstant(yyltype loc, const char *val) : Expr(loc) {
@@ -26,10 +42,23 @@ StringConstant::StringConstant(yyltype loc, const char *val) : Expr(loc) {
     value = strdup(val);
 }
 
+Type *StringConstant::GetType() {
+    return Type::stringType;
+}
+
+Type *NullConstant::GetType() {
+    return Type::nullType;
+}
+
 Operator::Operator(yyltype loc, const char *tok) : Node(loc) {
     Assert(tok != NULL);
     strncpy(tokenString, tok, sizeof(tokenString));
 }
+
+Type *Operator::GetType() {
+    return Type::voidType;
+}
+
 CompoundExpr::CompoundExpr(Expr *l, Operator *o, Expr *r) 
   : Expr(Join(l->GetLocation(), r->GetLocation())) {
     Assert(l != NULL && o != NULL && r != NULL);
@@ -52,20 +81,50 @@ void CompoundExpr::CheckNode() {
     right->Check();
 }
 
+Type *CompoundExpr::GetType() {
+    Type *rType = right->GetType();
+    if (left == NULL) {
+        return rType;
+    }
+    Type *lType = left->GetType();
+    if (lType->IsEquivalentTo(rType)) {
+        return lType;
+    }
+    return Type::voidType;
+}
+
+Type *LValue::GetType() {
+    return Type::voidType; // Pretty sure this is never called
+}
+
 void PostfixExpr::CheckNode() {
     left->Check();
     op->Check();
 }
 
-void This::CheckNode() {
+Type *PostfixExpr::GetType() {
+    return left->GetType();
+}
+
+ClassDecl *This::GetClass() {
     Node *super = this;
     while ((super = super->GetParent()) != NULL) {
         ClassDecl *as_class = dynamic_cast<ClassDecl*>(super);
         if (as_class != NULL) {
-            return;
+            return as_class;
         }
     }
-    ReportError::ThisOutsideClassScope(this);
+    return NULL;
+}
+
+void This::CheckNode() {
+    if (GetClass() == NULL) {
+        ReportError::ThisOutsideClassScope(this);
+    }
+}
+
+Type *This::GetType() {
+    return new NamedType(GetClass()->GetId());
 }
   
 ArrayAccess::ArrayAccess(yyltype loc, Expr *b, Expr *s) : LValue(loc) {
@@ -76,6 +135,10 @@ ArrayAccess::ArrayAccess(yyltype loc, Expr *b, Expr *s) : LValue(loc) {
 void ArrayAccess::CheckNode() {
     base->Check();
     subscript->Check();
+}
+
+Type *ArrayAccess::GetType() {
+    return base->GetType();
 }
      
 FieldAccess::FieldAccess(Expr *b, Identifier *f) 
@@ -93,6 +156,17 @@ void FieldAccess::CheckNode() {
     }
 }
 
+Type *FieldAccess::GetType() {
+    char *name = field->GetName();
+    Node *n = NULL;
+    if (base == NULL) {
+        n = LookupType(name);
+    } else {
+        n = base->LookupType(name, false);
+    }
+    return dynamic_cast<Expr*>(n)->GetType();
+}
+
 
 Call::Call(yyltype loc, Expr *b, Identifier *f, List<Expr*> *a) : Expr(loc)  {
     Assert(f != NULL && a != NULL); // b can be be NULL (just means no explicit base)
@@ -107,6 +181,27 @@ void Call::CheckNode() {
     for (int i=0;i<actuals->NumElements(); ++i) {
         actuals->Nth(i)->Check();
     }
+    Node* calling = NULL;
+    if (base) {
+        NamedType *type = dynamic_cast<NamedType*>(base->GetType());
+        calling = LookupType(type->GetId()->GetName())->LookupType(field->GetName());
+    } else {
+        calling = LookupType(field->GetName());
+    }
+    if (calling == NULL) {
+        ReportError::IdentifierNotDeclared(field, LookingForFunction);
+    }
+}
+
+Type *Call::GetType() {
+    char *name = field->GetName();
+    Node *n = NULL;
+    if (base == NULL) {
+        n = LookupType(name);
+    } else {
+        n = base->LookupType(name, false);
+    }
+    return dynamic_cast<Expr*>(n)->GetType();
 }
 
 NewExpr::NewExpr(yyltype loc, NamedType *c) : Expr(loc) { 
@@ -118,6 +213,10 @@ void NewExpr::CheckNode() {
     cType->Check();
 }
 
+Type *NewExpr::GetType() {
+    return cType;
+}
+
 NewArrayExpr::NewArrayExpr(yyltype loc, Expr *sz, Type *et) : Expr(loc) {
     Assert(sz != NULL && et != NULL);
     (size=sz)->SetParent(this); 
@@ -127,5 +226,17 @@ NewArrayExpr::NewArrayExpr(yyltype loc, Expr *sz, Type *et) : Expr(loc) {
 void NewArrayExpr::CheckNode() {
     size->Check();
     elemType->Check();
+}
+
+Type *NewArrayExpr::GetType() {
+    return elemType;
+}
+
+Type *ReadIntegerExpr::GetType() {
+    return Type::intType;
+}
+
+Type *ReadLineExpr::GetType() {
+    return Type::stringType;
 }
 

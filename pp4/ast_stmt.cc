@@ -88,7 +88,7 @@ void ReturnStmt::CheckNode() {
         }
     }
     if (as_func) {
-        if (!type->IsEquivalentTo(as_func->GetType())) {
+        if (!as_func->GetType()->IsEquivalentTo(type)) {
             ReportError::ReturnMismatch(this, type, as_func->GetType());
         }
     }

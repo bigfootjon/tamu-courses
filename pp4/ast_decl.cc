@@ -110,6 +110,20 @@ void ClassDecl::CheckNode() {
     }
 }
 
+bool ClassDecl::IsEquivalentTo(Decl *o) {
+    if (Decl::IsEquivalentTo(o)) {
+        return true;
+    }
+    ClassDecl *other = dynamic_cast<ClassDecl*>(o);
+    if (other == NULL) {
+        return false;
+    }
+    if (this->IsEquivalentTo(LookupType(other->extends->GetId()->GetName()))) {
+        return true;
+    }
+    return false;
+}
+
 
 InterfaceDecl::InterfaceDecl(Identifier *n, List<Decl*> *m) : Decl(n) {
     Assert(n != NULL && m != NULL);
@@ -120,6 +134,27 @@ void InterfaceDecl::CheckNode() {
     CheckTypes(members);
 }
 
+bool InterfaceDecl::IsEquivalentTo(Decl *o) {
+    if (Decl::IsEquivalentTo(o)) {
+        return true;
+    }
+    ClassDecl *other = dynamic_cast<ClassDecl*>(o);
+    if (other == NULL) {
+        return false;
+    }
+    while (other != NULL) {
+        for (int i=0;i<other->implements->NumElements();++i) {
+            if (strcmp(other->implements->Nth(i)->GetId()->GetName(), GetName()) == 0) {
+                return true;
+            }
+        }
+        if (other->extends == NULL) {
+            break;
+        }
+        other = dynamic_cast<ClassDecl*>(LookupType(other->extends->GetId()->GetName()));
+    }
+    return false;
+}
 	
 FnDecl::FnDecl(Identifier *n, Type *r, List<VarDecl*> *d) : Decl(n) {
     Assert(n != NULL && r!= NULL && d != NULL);

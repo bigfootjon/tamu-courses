@@ -44,11 +44,22 @@ bool NamedType::IsEquivalentTo(Type* o) {
     if (Type::IsEquivalentTo(o)) {
         return true;
     }
+    if (o == Type::nullType) {
+        return true;
+    }
     NamedType *other = dynamic_cast<NamedType*>(o);
     if (other == NULL) {
         return false;
     }
-    return strcmp(this->id->GetName(), other->id->GetName()) == 0;
+    if (strcmp(this->id->GetName(), other->id->GetName()) == 0) {
+        return true;
+    }
+    Decl *me_decl = LookupType(this->id->GetName());
+    Decl *ot_decl = LookupType(other->id->GetName());
+    if (me_decl == NULL || ot_decl == NULL) {
+        return false;
+    }
+    return me_decl->IsEquivalentTo(ot_decl);
 }
 
 ArrayType::ArrayType(yyltype loc, Type *et) : Type(loc) {

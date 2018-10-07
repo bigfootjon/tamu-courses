@@ -96,6 +96,14 @@ Type *CompoundExpr::GetType() {
     return Type::voidType;
 }
 
+Type *RelationalExpr::GetType() {
+    return Type::boolType;
+}
+
+Type *EqualityExpr::GetType() {
+    return Type::boolType;
+}
+
 Type *LValue::GetType() {
     return Type::voidType; // Pretty sure this is never called
 }
@@ -129,6 +137,13 @@ void This::CheckNode() {
 Type *This::GetType() {
     return new NamedType(GetClass()->GetId());
 }
+
+Decl *This::LookupType(char *name, bool recursive) {
+    if (GetClass() == NULL) {
+        return NULL;
+    }
+    return GetClass()->LookupType(name, recursive);
+}
   
 ArrayAccess::ArrayAccess(yyltype loc, Expr *b, Expr *s) : LValue(loc) {
     (base=b)->SetParent(this); 
@@ -137,6 +152,9 @@ ArrayAccess::ArrayAccess(yyltype loc, Expr *b, Expr *s) : LValue(loc) {
 
 void ArrayAccess::CheckNode() {
     base->Check();
+    if (dynamic_cast<ArrayType*>(base->GetType()) == NULL) {
+        ReportError::BracketsOnNonArray(base);
+    }
     subscript->Check();
 }
 
@@ -170,7 +188,6 @@ Type *FieldAccess::GetType() {
     return dynamic_cast<VarDecl*>(n)->GetType();
 }
 
-
 Call::Call(yyltype loc, Expr *b, Identifier *f, List<Expr*> *a) : Expr(loc)  {
     Assert(f != NULL && a != NULL); // b can be be NULL (just means no explicit base)
     base = b;
@@ -187,12 +204,23 @@ void Call::CheckNode() {
     FnDecl* calling = NULL;
     if (base) {
         NamedType *type = dynamic_cast<NamedType*>(base->GetType());
-        calling = dynamic_cast<FnDecl*>(LookupType(type->GetId()->GetName())->LookupType(field->GetName()));
+        if (type == NULL) {
+            calling = NULL;
+        } else {
+            calling = dynamic_cast<FnDecl*>(LookupType(type->GetId()->GetName())->LookupType(field->GetName()));
+        }
     } else {
         calling = dynamic_cast<FnDecl*>(LookupType(field->GetName()));
     }
     if (calling == NULL) {
-        ReportError::IdentifierNotDeclared(field, LookingForFunction);
+        if (dynamic_cast<ArrayType*>(base->GetType()) == NULL || strcmp(field->GetName(), "length") != 0) {
+            if (base != NULL) {
+                ReportError::FieldNotFoundInBase(field, base->GetType());
+            } else {
+                ReportError::IdentifierNotDeclared(field, LookingForFunction);
+            }
+        }
+        return;
     }
     List<VarDecl*> *formals = calling->GetFormals();
     if (formals->NumElements() != actuals->NumElements()) {
@@ -214,7 +242,11 @@ Type *Call::GetType() {
     if (base == NULL) {
         n = LookupType(name);
     } else {
-        n = base->LookupType(name, false);
+        NamedType *ptype = dynamic_cast<NamedType*>(base->GetType());
+        if (ptype == NULL) {
+            return Type::voidType;
+        }
+        n = LookupType(ptype->GetId()->GetName())->LookupType(name, false);
     }
     return dynamic_cast<FnDecl*>(n)->GetType();
 }

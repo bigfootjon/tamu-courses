@@ -120,6 +120,7 @@ class RelationalExpr : public CompoundExpr
 {
   public:
     RelationalExpr(Expr *lhs, Operator *op, Expr *rhs) : CompoundExpr(lhs,op,rhs) {}
+    Type *GetType();
 };
 
 class EqualityExpr : public CompoundExpr 
@@ -127,6 +128,7 @@ class EqualityExpr : public CompoundExpr
   public:
     EqualityExpr(Expr *lhs, Operator *op, Expr *rhs) : CompoundExpr(lhs,op,rhs) {}
     const char *GetPrintNameForNode() { return "EqualityExpr"; }
+    Type *GetType();
 };
 
 class LogicalExpr : public CompoundExpr 
@@ -172,6 +174,7 @@ class This : public Expr
     This(yyltype loc) : Expr(loc) {}
     void CheckNode();
     Type *GetType();
+    Decl *LookupType(char *name, bool recursive=true);
 };
 
 class ArrayAccess : public LValue 

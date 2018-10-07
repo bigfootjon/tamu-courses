@@ -57,7 +57,7 @@ class Node
 
     void Check() { if (!visited) CheckNode(); visited = true; }
     virtual void CheckNode() {}
-    Decl *LookupType(char *name, bool recursive=true);
+    virtual Decl *LookupType(char *name, bool recursive=true);
     void CheckTypes(List<Decl*> *decls);
 };
    

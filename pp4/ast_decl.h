@@ -53,13 +53,15 @@ class ClassDecl : public Decl
 {
   protected:
     List<Decl*> *members;
+
+  public:
     NamedType *extends;
     List<NamedType*> *implements;
 
-  public:
     ClassDecl(Identifier *name, NamedType *extends, 
               List<NamedType*> *implements, List<Decl*> *members);
     void CheckNode();
+    bool IsEquivalentTo(Decl *o);
 };
 
 class InterfaceDecl : public Decl 
@@ -71,6 +73,7 @@ class InterfaceDecl : public Decl
     InterfaceDecl(Identifier *name, List<Decl*> *members);
     List<Decl*> *GetMembers() { return members; }
     void CheckNode();
+    bool IsEquivalentTo(Decl *o);
 };
 
 class FnDecl : public Decl 

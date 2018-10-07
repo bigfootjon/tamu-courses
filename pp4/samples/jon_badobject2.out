@@ -1,0 +1,6 @@
+
+*** Error line 7.
+    b = New(a);
+            ^
+*** No declaration found for class 'a'
+

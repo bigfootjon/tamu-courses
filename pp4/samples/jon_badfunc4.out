@@ -1,0 +1,6 @@
+
+*** Error line 2.
+    test();
+    ^^^^
+*** Function 'test' expects 1 argument but 0 given
+

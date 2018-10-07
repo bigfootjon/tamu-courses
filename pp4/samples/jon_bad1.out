@@ -1,0 +1,6 @@
+
+*** Error line 6.
+    c = b + a;
+    ^
+*** No declaration found for variable 'c'
+

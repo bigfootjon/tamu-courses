@@ -1,0 +1,6 @@
+
+*** Error line 8.
+    i = j;
+        ^
+*** No declaration found for variable 'j'
+

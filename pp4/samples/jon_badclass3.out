@@ -1,0 +1,6 @@
+
+*** Error line 3.
+   bool a;
+        ^
+*** Declaration of 'a' here conflicts with declaration on line 2
+

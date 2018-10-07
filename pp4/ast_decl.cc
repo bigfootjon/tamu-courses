@@ -71,7 +71,7 @@ void ClassDecl::CheckNode() {
 	    superclass->Check();
 	    Decl *inherited = superclass->LookupType(cur->GetName(), false);
 	    if (inherited != NULL) {
-                if (dynamic_cast<VarDecl*>(cur) != NULL) {
+                if (dynamic_cast<VarDecl*>(cur) != NULL || dynamic_cast<VarDecl*>(inherited) != NULL) {
                     ReportError::DeclConflict(cur, inherited);
 	            continue;
 	        }
@@ -93,7 +93,11 @@ void ClassDecl::CheckNode() {
         table.Enter(cur->GetName(), cur);
     }
     for (int i=0;i<implements->NumElements();++i) {
-        List<Decl*> *int_members = dynamic_cast<InterfaceDecl*>(LookupType(implements->Nth(i)->GetId()->GetName()))->GetMembers();
+        InterfaceDecl *interface = dynamic_cast<InterfaceDecl*>(LookupType(implements->Nth(i)->GetId()->GetName()));
+        if (interface == NULL) {
+            continue;
+        }
+        List<Decl*> *int_members = interface->GetMembers();
         for (int j=0;j<int_members->NumElements();++j) {
             FnDecl *member = (FnDecl*)int_members->Nth(j);
             if (LookupType(member->GetId()->GetName(), false) == NULL) {

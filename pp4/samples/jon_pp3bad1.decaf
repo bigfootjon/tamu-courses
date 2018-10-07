@@ -1,0 +1,21 @@
+class howdy extends gigem {
+
+}
+
+class howdy2 implements gigem {
+
+}
+
+class howdy3 extends main {
+
+}
+
+class howdy4 implements main {
+
+}
+
+int gigem;
+
+void main() {
+
+}

@@ -1,0 +1,31 @@
+int main() {
+    // Declarations
+    int i0;
+    int i1;
+    bool b0;
+    bool b1;
+    double d0;
+    double d1;
+    string s0;
+    string s1;
+    
+    -i1;
+    -b1;
+    -d1;
+    -s1;
+    
+    !i1;
+    !b1;
+    !d1;
+    !s1;
+    
+    i1++;
+    b1++;
+    d1++;
+    s1++;
+    
+    i1--;
+    b1--;
+    d1--;
+    s1--;
+}

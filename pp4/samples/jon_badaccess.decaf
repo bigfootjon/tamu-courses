@@ -1,0 +1,16 @@
+class test {
+    int noaccess;
+    int get_noaccess() { return noaccess; }
+}
+
+class child extends test {
+    int get_parent() { return noaccess; }
+}
+
+void main() {
+    test a;
+    child b;
+    a = New(test);
+    b = New(child);
+    Print(noaccess, a.noaccess, a.get_noaccess(), b.noaccess, b.get_noaccess(), b.get_parent());
+}

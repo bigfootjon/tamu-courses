@@ -1,0 +1,14 @@
+class p {
+
+}
+
+class c extends p {
+
+}
+
+void main() {
+     c[] a0;
+     p[] a1;
+     a1 = a0;
+     a0 = a1;
+}

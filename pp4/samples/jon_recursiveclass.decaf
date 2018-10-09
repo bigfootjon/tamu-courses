@@ -1,0 +1,3 @@
+class a {
+    a test() {return this;}
+}

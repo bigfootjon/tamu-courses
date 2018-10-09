@@ -100,10 +100,11 @@ void ClassDecl::CheckNode() {
         List<Decl*> *int_members = interface->GetMembers();
         for (int j=0;j<int_members->NumElements();++j) {
             FnDecl *member = (FnDecl*)int_members->Nth(j);
-            if (LookupType(member->GetId()->GetName(), false) == NULL) {
+	    Decl *found = LookupType(member->GetId()->GetName(), false);
+            if (found == NULL || !member->IsEquivalentTo(found)) {
                 ReportError::InterfaceNotImplemented(this, implements->Nth(i));
             }
-        }
+	}
     }
     for (int i=0; i < members->NumElements(); ++i) {
         members->Nth(i)->Check();
@@ -118,12 +119,41 @@ bool ClassDecl::IsEquivalentTo(Decl *o) {
     if (other == NULL) {
         return false;
     }
-    if (this->IsEquivalentTo(LookupType(other->extends->GetId()->GetName()))) {
+    if (other->extends && this->IsEquivalentTo(LookupType(other->extends->GetId()->GetName()))) {
         return true;
     }
     return false;
 }
 
+Type *ClassDecl::GetType() {
+    return new NamedType(GetId());
+}
+
+Decl *ClassDecl::LookupType(char *name, bool recursive) {
+    Decl *superclass = Decl::LookupType(name, recursive);
+    if (superclass != NULL) {
+        return superclass;
+    }
+    if (!recursive) {
+        return NULL;
+    }
+    if (extends && Decl::LookupType(extends->GetId()->GetName()) != NULL) {
+        Decl *parent = Decl::LookupType(extends->GetId()->GetName())->LookupType(name, recursive);
+	if (parent) {
+            return parent;
+	}
+    }
+    for (int i=0;i<implements->NumElements();++i) {
+        InterfaceDecl *interface = dynamic_cast<InterfaceDecl*>(Decl::LookupType(implements->Nth(i)->GetId()->GetName()));
+	if (interface) {
+	    Decl *ininterface = interface->LookupType(name, recursive);
+            if (ininterface) {
+                return ininterface;
+	    }
+	}
+    }
+    return NULL;
+}
 
 InterfaceDecl::InterfaceDecl(Identifier *n, List<Decl*> *m) : Decl(n) {
     Assert(n != NULL && m != NULL);

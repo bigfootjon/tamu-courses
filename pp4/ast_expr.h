@@ -195,6 +195,9 @@ class ArrayAccess : public LValue
  * and sort it out later. */
 class FieldAccess : public LValue 
 {
+  private:
+    Node *Get();
+
   protected:
     Expr *base;	// will be NULL if no explicit base
     Identifier *field;

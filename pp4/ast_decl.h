@@ -62,6 +62,8 @@ class ClassDecl : public Decl
               List<NamedType*> *implements, List<Decl*> *members);
     void CheckNode();
     bool IsEquivalentTo(Decl *o);
+    Type *GetType();
+    Decl *LookupType(char *name, bool recursive=true);
 };
 
 class InterfaceDecl : public Decl 

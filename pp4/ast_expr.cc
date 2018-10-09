@@ -56,7 +56,7 @@ Operator::Operator(yyltype loc, const char *tok) : Node(loc) {
 }
 
 Type *Operator::GetType() {
-    return Type::voidType;
+    return Type::errorType;
 }
 
 CompoundExpr::CompoundExpr(Expr *l, Operator *o, Expr *r) 
@@ -79,7 +79,7 @@ void CompoundExpr::CheckNode() {
     if (left) left->Check();
     op->Check();
     right->Check();
-    if (Type::voidType->IsEquivalentTo(GetType())) {
+    if (GetType() == NULL) {
         ReportError::IncompatibleOperands(op, left->GetType(), right->GetType());
     }
 }
@@ -93,7 +93,10 @@ Type *CompoundExpr::GetType() {
     if (lType->IsEquivalentTo(rType)) {
         return lType;
     }
-    return Type::voidType;
+    if (Type::errorType->IsEquivalentTo(lType) || Type::errorType->IsEquivalentTo(rType)) {
+        return Type::errorType;
+    }
+    return NULL;
 }
 
 Type *RelationalExpr::GetType() {
@@ -105,7 +108,7 @@ Type *EqualityExpr::GetType() {
 }
 
 Type *LValue::GetType() {
-    return Type::voidType; // Pretty sure this is never called
+    return Type::errorType; // Pretty sure this is never called
 }
 
 void PostfixExpr::CheckNode() {
@@ -170,14 +173,7 @@ FieldAccess::FieldAccess(Expr *b, Identifier *f)
     (field=f)->SetParent(this);
 }
 
-void FieldAccess::CheckNode() {
-    if (base) base->Check();
-    if (LookupType(field->GetName()) == NULL) {
-        ReportError::IdentifierNotDeclared(field, LookingForVariable);
-    }
-}
-
-Type *FieldAccess::GetType() {
+Node *FieldAccess::Get() {
     char *name = field->GetName();
     Node *n = NULL;
     if (base == NULL) {
@@ -185,7 +181,27 @@ Type *FieldAccess::GetType() {
     } else {
         n = base->LookupType(name, false);
     }
-    return dynamic_cast<VarDecl*>(n)->GetType();
+    return n;
+}
+
+void FieldAccess::CheckNode() {
+    if (base) base->Check();
+    Node *got = Get();
+    if (got == NULL || dynamic_cast<VarDecl*>(got) == NULL || dynamic_cast<ClassDecl*>(got) == NULL) {
+        ReportError::IdentifierNotDeclared(field, LookingForVariable);
+    }
+}
+
+Type *FieldAccess::GetType() {
+    VarDecl *vd = dynamic_cast<VarDecl*>(Get());
+    if (vd != NULL) {
+        return vd->GetType();
+    }
+    ClassDecl *cd = dynamic_cast<ClassDecl*>(Get());
+    if (cd != NULL) {
+        return cd->GetType();
+    }
+    return Type::errorType;
 }
 
 Call::Call(yyltype loc, Expr *b, Identifier *f, List<Expr*> *a) : Expr(loc)  {
@@ -203,6 +219,9 @@ void Call::CheckNode() {
     }
     FnDecl* calling = NULL;
     if (base) {
+        if (base->GetType() == Type::errorType) {
+            return;
+	}
         NamedType *type = dynamic_cast<NamedType*>(base->GetType());
         if (type == NULL) {
             calling = NULL;
@@ -213,7 +232,7 @@ void Call::CheckNode() {
         calling = dynamic_cast<FnDecl*>(LookupType(field->GetName()));
     }
     if (calling == NULL) {
-        if (dynamic_cast<ArrayType*>(base->GetType()) == NULL || strcmp(field->GetName(), "length") != 0) {
+        if ((base && dynamic_cast<ArrayType*>(base->GetType()) == NULL) || strcmp(field->GetName(), "length") != 0) {
             if (base != NULL) {
                 ReportError::FieldNotFoundInBase(field, base->GetType());
             } else {
@@ -242,6 +261,9 @@ Type *Call::GetType() {
     if (base == NULL) {
         n = LookupType(name);
     } else {
+        if (base->GetType() == Type::errorType) {
+            return Type::errorType;
+	}
         NamedType *ptype = dynamic_cast<NamedType*>(base->GetType());
         if (ptype == NULL) {
             return Type::voidType;

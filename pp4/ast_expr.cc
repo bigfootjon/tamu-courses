@@ -174,12 +174,19 @@ FieldAccess::FieldAccess(Expr *b, Identifier *f)
 }
 
 Node *FieldAccess::Get() {
-    char *name = field->GetName();
-    Node *n = NULL;
-    if (base == NULL) {
-        n = LookupType(name);
+    Node* n = NULL;
+    if (base) {
+        if (base->GetType() == Type::errorType) {
+            return NULL;
+	}
+        NamedType *type = dynamic_cast<NamedType*>(base->GetType());
+        if (type == NULL) {
+            n = NULL;
+        } else {
+            n = LookupType(type->GetId()->GetName())->LookupType(field->GetName());
+        }
     } else {
-        n = base->LookupType(name, false);
+        n = LookupType(field->GetName());
     }
     return n;
 }
@@ -187,7 +194,7 @@ Node *FieldAccess::Get() {
 void FieldAccess::CheckNode() {
     if (base) base->Check();
     Node *got = Get();
-    if (got == NULL || dynamic_cast<VarDecl*>(got) == NULL || dynamic_cast<ClassDecl*>(got) == NULL) {
+    if (got == NULL || dynamic_cast<VarDecl*>(got) == NULL) {
         ReportError::IdentifierNotDeclared(field, LookingForVariable);
     }
 }

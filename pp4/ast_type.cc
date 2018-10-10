@@ -80,5 +80,13 @@ bool ArrayType::IsEquivalentTo(Type* o) {
     if (other == NULL) {
         return false;
     }
-    return this->elemType->IsEquivalentTo(other->elemType);
+    NamedType *myType = dynamic_cast<NamedType*>(this->elemType);
+    NamedType *oType = dynamic_cast<NamedType*>(other->elemType);
+    if (myType != NULL && oType != NULL) {
+        return strcmp(myType->GetId()->GetName(), oType->GetId()->GetName()) == 0;
+    }
+    if (myType != NULL || oType != NULL) {
+        return false;
+    }
+    return myType == oType;
 }

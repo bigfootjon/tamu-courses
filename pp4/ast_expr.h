@@ -101,12 +101,13 @@ class CompoundExpr : public Expr
   protected:
     Operator *op;
     Expr *left, *right; // left will be NULL if unary
+    Type *_GetType();
     
   public:
     CompoundExpr(Expr *lhs, Operator *op, Expr *rhs); // for binary
     CompoundExpr(Operator *op, Expr *rhs);             // for unary
-    void CheckNode();
-    Type *GetType();
+    virtual void CheckNode();
+    Type *GetType() { return _GetType(); }
 };
 
 class ArithmeticExpr : public CompoundExpr 
@@ -114,12 +115,14 @@ class ArithmeticExpr : public CompoundExpr
   public:
     ArithmeticExpr(Expr *lhs, Operator *op, Expr *rhs) : CompoundExpr(lhs,op,rhs) {}
     ArithmeticExpr(Operator *op, Expr *rhs) : CompoundExpr(op,rhs) {}
+    void CheckNode();
 };
 
 class RelationalExpr : public CompoundExpr 
 {
   public:
     RelationalExpr(Expr *lhs, Operator *op, Expr *rhs) : CompoundExpr(lhs,op,rhs) {}
+    void CheckNode();
     Type *GetType();
 };
 
@@ -137,6 +140,8 @@ class LogicalExpr : public CompoundExpr
     LogicalExpr(Expr *lhs, Operator *op, Expr *rhs) : CompoundExpr(lhs,op,rhs) {}
     LogicalExpr(Operator *op, Expr *rhs) : CompoundExpr(op,rhs) {}
     const char *GetPrintNameForNode() { return "LogicalExpr"; }
+    void CheckNode();
+    Type *GetType();
 };
 
 class AssignExpr : public CompoundExpr 

@@ -79,12 +79,21 @@ void CompoundExpr::CheckNode() {
     if (left) left->Check();
     op->Check();
     right->Check();
-    if (GetType() == NULL) {
-        ReportError::IncompatibleOperands(op, left->GetType(), right->GetType());
+    if (_GetType() != NULL) {
+        return;
     }
+    Type *ltype = left->GetType();
+    Type *rtype = right->GetType();
+    if (ltype == NULL || rtype == NULL) {
+       return;
+    }
+    if (ltype == Type::errorType || rtype == Type::errorType) {
+        return;
+    }
+    ReportError::IncompatibleOperands(op, ltype, rtype);
 }
 
-Type *CompoundExpr::GetType() {
+Type *CompoundExpr::_GetType() {
     Type *rType = right->GetType();
     if (left == NULL) {
         return rType;
@@ -99,11 +108,51 @@ Type *CompoundExpr::GetType() {
     return NULL;
 }
 
+void ArithmeticExpr::CheckNode() {
+    CompoundExpr::CheckNode();
+    Type *type = GetType();
+    if (type == NULL || Type::errorType->IsEquivalentTo(type)) {
+        return;
+    }
+    if (Type::intType->IsEquivalentTo(type) || Type::doubleType->IsEquivalentTo(type)) {
+        return;
+    }
+    ReportError::IncompatibleOperands(op, left->GetType(), right->GetType());
+}
+
+void RelationalExpr::CheckNode() {
+    CompoundExpr::CheckNode();
+    Type *type = CompoundExpr::GetType();
+    if (type == NULL || Type::errorType->IsEquivalentTo(type)) {
+        return;
+    }
+    if (Type::intType->IsEquivalentTo(type) || Type::doubleType->IsEquivalentTo(type)) {
+        return;
+    }
+    ReportError::IncompatibleOperands(op, left->GetType(), right->GetType());
+}
+
 Type *RelationalExpr::GetType() {
     return Type::boolType;
 }
 
 Type *EqualityExpr::GetType() {
+    return Type::boolType;
+}
+
+void LogicalExpr::CheckNode() {
+    CompoundExpr::CheckNode();
+    Type *type = CompoundExpr::GetType();
+    if (type == NULL || Type::errorType->IsEquivalentTo(type)) {
+        return;
+    }
+    if (Type::boolType->IsEquivalentTo(type)) {
+        return;
+    }
+    ReportError::IncompatibleOperands(op, left->GetType(), right->GetType());
+}
+
+Type *LogicalExpr::GetType() {
     return Type::boolType;
 }
 
@@ -159,6 +208,9 @@ void ArrayAccess::CheckNode() {
         ReportError::BracketsOnNonArray(base);
     }
     subscript->Check();
+    if (!Type::intType->IsEquivalentTo(subscript->GetType())) {
+        ReportError::SubscriptNotInteger(subscript);
+    }
 }
 
 Type *ArrayAccess::GetType() {
@@ -304,6 +356,9 @@ NewArrayExpr::NewArrayExpr(yyltype loc, Expr *sz, Type *et) : Expr(loc), locatio
 void NewArrayExpr::CheckNode() {
     size->Check();
     elemType->Check();
+    if (!Type::intType->IsEquivalentTo(size->GetType())) {
+        ReportError::NewArraySizeNotInteger(size);
+    }
 }
 
 Type *NewArrayExpr::GetType() {

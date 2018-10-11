@@ -117,7 +117,11 @@ void ArithmeticExpr::CheckNode() {
     if (Type::intType->IsEquivalentTo(type) || Type::doubleType->IsEquivalentTo(type)) {
         return;
     }
-    ReportError::IncompatibleOperands(op, left->GetType(), right->GetType());
+    if (left) {
+        ReportError::IncompatibleOperands(op, left->GetType(), right->GetType());
+    } else {
+        ReportError::IncompatibleOperand(op, right->GetType());
+    }
 }
 
 void RelationalExpr::CheckNode() {
@@ -149,7 +153,11 @@ void LogicalExpr::CheckNode() {
     if (Type::boolType->IsEquivalentTo(type)) {
         return;
     }
-    ReportError::IncompatibleOperands(op, left->GetType(), right->GetType());
+    if (left) {
+        ReportError::IncompatibleOperands(op, left->GetType(), right->GetType());
+    } else {
+        ReportError::IncompatibleOperand(op, right->GetType());
+    }
 }
 
 Type *LogicalExpr::GetType() {
@@ -228,14 +236,17 @@ FieldAccess::FieldAccess(Expr *b, Identifier *f)
 Node *FieldAccess::Get() {
     Node* n = NULL;
     if (base) {
-        if (base->GetType() == Type::errorType) {
+	Type *base_type = base->GetType();
+        if (Type::errorType->IsEquivalentTo(base_type)) {
             return NULL;
 	}
-        NamedType *type = dynamic_cast<NamedType*>(base->GetType());
-        if (type == NULL) {
+        NamedType *named_base_type = dynamic_cast<NamedType*>(base_type);
+        if (named_base_type == NULL) {
             n = NULL;
         } else {
-            n = LookupType(type->GetId()->GetName())->LookupType(field->GetName());
+	    Node *klass = LookupType(named_base_type->GetId()->GetName());
+	    klass->Check();
+            n = klass->LookupType(field->GetName());
         }
     } else {
         n = LookupType(field->GetName());
@@ -243,15 +254,49 @@ Node *FieldAccess::Get() {
     return n;
 }
 
+bool FieldAccess::HasAccess() {
+    if (!base) {
+        return true;
+    }
+    if (base->GetType() == Type::errorType) {
+        return true;
+    }
+    NamedType *type = dynamic_cast<NamedType*>(base->GetType());
+    if (type == NULL) {
+        return true;
+    }
+    ClassDecl *as_class = dynamic_cast<ClassDecl*>(LookupType(type->GetId()->GetName()));
+    if (as_class) {
+        Node *super = this;
+	do {
+           ClassDecl *parent_class = dynamic_cast<ClassDecl*>(super);
+	   if (parent_class) {
+	       if (parent_class->IsEquivalentTo(as_class)) {
+	           return true;
+	       }
+	   }
+	} while ((super = super->GetParent()));
+	return false;
+    }
+    return true;
+}
+
 void FieldAccess::CheckNode() {
     if (base) base->Check();
     Node *got = Get();
     if (got == NULL || dynamic_cast<VarDecl*>(got) == NULL) {
         ReportError::IdentifierNotDeclared(field, LookingForVariable);
+	return;
+    }
+    if (!HasAccess()) {
+        ReportError::InaccessibleField(field, base->GetType());
     }
 }
 
 Type *FieldAccess::GetType() {
+    if (!HasAccess()) {
+        return Type::errorType;
+    }
     VarDecl *vd = dynamic_cast<VarDecl*>(Get());
     if (vd != NULL) {
         return vd->GetType();
@@ -276,7 +321,7 @@ void Call::CheckNode() {
     for (int i=0;i<actuals->NumElements(); ++i) {
         actuals->Nth(i)->Check();
     }
-    FnDecl* calling = NULL;
+    calling = NULL;
     if (base) {
         if (base->GetType() == Type::errorType) {
             return;
@@ -315,21 +360,14 @@ void Call::CheckNode() {
 }
 
 Type *Call::GetType() {
-    char *name = field->GetName();
-    Node *n = NULL;
-    if (base == NULL) {
-        n = LookupType(name);
-    } else {
-        if (base->GetType() == Type::errorType) {
-            return Type::errorType;
-	}
-        NamedType *ptype = dynamic_cast<NamedType*>(base->GetType());
-        if (ptype == NULL) {
-            return Type::voidType;
-        }
-        n = LookupType(ptype->GetId()->GetName())->LookupType(name, false);
+    Check();
+    if (calling) {
+        return calling->GetType();
     }
-    return dynamic_cast<FnDecl*>(n)->GetType();
+    if (dynamic_cast<ArrayType*>(base->GetType()) != NULL && strcmp(field->GetName(), "length") == 0) {
+        return Type::intType;
+    }
+    return Type::errorType;
 }
 
 NewExpr::NewExpr(yyltype loc, NamedType *c) : Expr(loc) { 

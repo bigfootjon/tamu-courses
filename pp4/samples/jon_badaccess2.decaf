@@ -1,0 +1,11 @@
+class a {
+    b btest;
+}
+
+class b {
+    void t() {}
+}
+
+void main() {
+    New(a).b.t();
+}

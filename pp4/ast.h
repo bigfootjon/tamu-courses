@@ -55,7 +55,7 @@ class Node
     void SetParent(Node *p)  { parent = p; }
     Node *GetParent()        { return parent; }
 
-    void Check() { if (!visited) CheckNode(); visited = true; }
+    void Check() { if (!visited) { visited = true; CheckNode(); } }
     virtual void CheckNode() {}
     virtual Decl *LookupType(char *name, bool recursive=true);
     void CheckTypes(List<Decl*> *decls);

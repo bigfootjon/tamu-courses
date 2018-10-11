@@ -1,31 +1,27 @@
 int main() {
     // Declarations
-    int i0;
-    int i1;
-    bool b0;
-    bool b1;
-    double d0;
-    double d1;
-    string s0;
-    string s1;
+    int i;
+    bool b;
+    double d;
+    string s;
     
-    i0 = -i1;
-    b0 = -b1;
-    d0 = -d1;
-    s0 = -s1;
+    i = -i;
+    b = -b;
+    d = -d;
+    s = -s;
     
-    i0 = !i1;
-    b0 = !b1;
-    d0 = !d1;
-    s0 = !s1;
+    i = !i;
+    b = !b;
+    d = !d;
+    s = !s;
     
-    i0 = i1++;
-    b0 = b1++;
-    d0 = d1++;
-    s0 = s1++;
+    /*i = i++;
+    b = b++;
+    d = d++;
+    s = s++;
     
-    i0 = i1--;
-    b0 = b1--;
-    d0 = d1--;
-    s0 = s1--;
+    i = i--;
+    b = b--;
+    d = d--;
+    s = s--;*/
 }

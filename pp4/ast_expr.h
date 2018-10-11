@@ -20,6 +20,7 @@
 class NamedType; // for new
 class Type; // for NewArray
 class ClassDecl;
+class FnDecl;
 
 class Expr : public Stmt 
 {
@@ -202,6 +203,7 @@ class FieldAccess : public LValue
 {
   private:
     Node *Get();
+    bool HasAccess();
 
   protected:
     Expr *base;	// will be NULL if no explicit base
@@ -219,6 +221,9 @@ class FieldAccess : public LValue
  * and sort it out later. */
 class Call : public Expr 
 {
+  private:
+    FnDecl *calling;
+
   protected:
     Expr *base;	// will be NULL if no explicit base
     Identifier *field;

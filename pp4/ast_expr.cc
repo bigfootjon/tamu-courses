@@ -285,7 +285,11 @@ void FieldAccess::CheckNode() {
     if (base) base->Check();
     Node *got = Get();
     if (got == NULL || dynamic_cast<VarDecl*>(got) == NULL) {
-        ReportError::IdentifierNotDeclared(field, LookingForVariable);
+        if (base) {
+            ReportError::FieldNotFoundInBase(field, base->GetType());
+	} else {
+            ReportError::IdentifierNotDeclared(field, LookingForVariable);
+	}
 	return;
     }
     if (!HasAccess()) {

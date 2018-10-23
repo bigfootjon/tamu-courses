@@ -1,0 +1,7 @@
+*.o
+dcc*
+y.output
+lex.yy.c
+y.tab.*
+tmp.asm
+tmp.errors

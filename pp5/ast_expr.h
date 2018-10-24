@@ -140,6 +140,17 @@ class LValue : public Expr
     LValue(yyltype loc) : Expr(loc) {}
 };
 
+class PostfixExpr : public Expr
+{
+  protected:
+    LValue *left;
+    Operator *op;
+
+  public:
+    PostfixExpr(LValue *lhs, Operator *o) : Expr(*lhs->GetLocation()), left(lhs), op(o) {}
+    Type *GetType();
+};
+
 class This : public Expr 
 {
   public:

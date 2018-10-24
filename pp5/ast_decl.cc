@@ -5,7 +5,9 @@
 #include "ast_decl.h"
 #include "ast_type.h"
 #include "ast_stmt.h"
-        
+#include "codegen.h"
+
+CodeGenerator *cg;
          
 Decl::Decl(Identifier *n) : Node(*n->GetLocation()) {
     Assert(n != NULL);
@@ -46,5 +48,9 @@ void FnDecl::SetFunctionBody(Stmt *b) {
     (body=b)->SetParent(this);
 }
 
-
+void FnDecl::Emit() {
+    // cg->GenBeginFunc();
+    cg->GenBuiltInCall(PrintInt, cg->GenLoadConstant(1));
+    // cg->GenEndFunc();
+}
 

@@ -23,7 +23,6 @@ if [ ! -r $1 ]; then
   exit 1;
 fi
 
-echo "-- $COMPILER <$1 >tmp.asm"
 ./$COMPILER < $1 > tmp.asm 2>tmp.errors
 if [ $? -ne 0 -o -s tmp.errors ]; then
   echo "Run script error: errors reported from $COMPILER compiling '$1'."
@@ -35,10 +34,7 @@ fi
 #append the defs to the end
 cat defs.asm >> tmp.asm
 
-echo "-- spim  -file tmp.asm"
-echo " "
 $SPIM  -trap_file trap.handler -file tmp.asm
 
-echo " "
 echo " "
 exit 0;

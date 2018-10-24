@@ -126,7 +126,14 @@ void PrintStmt::Emit() {
     for (int i=0;i<args->NumElements();++i) {
         Expr *arg = args->Nth(i);
 	arg->Emit();
-	cg->GenBuiltInCall(PrintInt, arg->ResultLocation());
+	Type *arg_type = arg->GetType();
+	if (Type::intType->IsEquivalentTo(arg_type)) {
+	    cg->GenBuiltInCall(PrintInt, arg->ResultLocation());
+	} else if (Type::stringType->IsEquivalentTo(arg_type)) {
+            cg->GenBuiltInCall(PrintString, arg->ResultLocation());
+	} else if (Type::boolType->IsEquivalentTo(arg_type)) {
+	    cg->GenBuiltInCall(PrintBool, arg->ResultLocation());
+	}
     }
 }
 

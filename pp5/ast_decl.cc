@@ -51,7 +51,8 @@ void FnDecl::SetFunctionBody(Stmt *b) {
 void FnDecl::Emit() {
     cg->GenLabel(GetName());
     BeginFunc *func = cg->GenBeginFunc();
-    cg->GenBuiltInCall(PrintInt, cg->GenLoadConstant(1));
+    body->Emit();
+    // cg->GenBuiltInCall(PrintInt, cg->GenLoadConstant(1));
     func->SetFrameSize(4);
     cg->GenEndFunc();
 }

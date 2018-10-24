@@ -47,6 +47,7 @@ class StmtBlock : public Stmt
     
   public:
     StmtBlock(List<VarDecl*> *variableDeclarations, List<Stmt*> *statements);
+    void Emit();
 };
 
   
@@ -113,6 +114,7 @@ class PrintStmt : public Stmt
     
   public:
     PrintStmt(List<Expr*> *arguments);
+    void Emit();
 };
 
 class Case : public Stmt

@@ -33,6 +33,12 @@ StmtBlock::StmtBlock(List<VarDecl*> *d, List<Stmt*> *s) {
     (stmts=s)->SetParentAll(this);
 }
 
+void StmtBlock::Emit() {
+    for (int i=0;i<stmts->NumElements();++i) {
+        stmts->Nth(i)->Emit();
+    }
+}
+
 ConditionalStmt::ConditionalStmt(Expr *t, Stmt *b) { 
     Assert(t != NULL && b != NULL);
     (test=t)->SetParent(this); 
@@ -60,6 +66,10 @@ ReturnStmt::ReturnStmt(yyltype loc, Expr *e) : Stmt(loc) {
 PrintStmt::PrintStmt(List<Expr*> *a) {    
     Assert(a != NULL);
     (args=a)->SetParentAll(this);
+}
+
+void PrintStmt::Emit() {
+    cg->GenBuiltInCall(PrintInt, cg->GenLoadConstant(1));
 }
 
 

@@ -35,9 +35,12 @@ bool VarDecl::IsEquivalentTo(Decl* o) {
     if (other == NULL) {
         return false;
     }
-
     return this->type->IsEquivalentTo(other->type);
-} 
+}
+
+void VarDecl::Emit() {
+    loc = cg->GenTempVar();
+}
 
 ClassDecl::ClassDecl(Identifier *n, NamedType *ex, List<NamedType*> *imp, List<Decl*> *m) : Decl(n) {
     // extends can be NULL, impl & mem may be empty lists but cannot be NULL
@@ -204,7 +207,7 @@ void FnDecl::Emit() {
     cg->GenLabel(GetName());
     BeginFunc *func = cg->GenBeginFunc();
     body->Emit();
-    func->SetFrameSize(4);
+    func->SetFrameSize(24); // TODO FIX CONSTANT
     cg->GenEndFunc();
 }
 

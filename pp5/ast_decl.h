@@ -19,6 +19,7 @@ class Type;
 class NamedType;
 class Identifier;
 class Stmt;
+class Location;
 
 class Decl : public Node 
 {
@@ -40,12 +41,15 @@ class VarDecl : public Decl
 {
   protected:
     Type *type;
+    Location *loc;
     
   public:
     VarDecl(Identifier *name, Type *type);
     void CheckNode();
     Type *GetType() { return type; }
     bool IsEquivalentTo(Decl* other);
+    void Emit();
+    Location *GetLocation() { return loc; }
 };
 
 class ClassDecl : public Decl 

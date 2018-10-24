@@ -1,3 +1,6 @@
 void main() {
-    Print(1, 2, "test", false);
+    int a;
+    Print("Enter an integer: ");
+    a = ReadInteger();
+    Print(a);
 }

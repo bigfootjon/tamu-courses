@@ -160,6 +160,7 @@ class AssignExpr : public CompoundExpr
   public:
     AssignExpr(Expr *lhs, Operator *op, Expr *rhs) : CompoundExpr(lhs,op,rhs) {}
     const char *GetPrintNameForNode() { return "AssignExpr"; }
+    void Emit();
 };
 
 class LValue : public Expr 
@@ -223,6 +224,7 @@ class FieldAccess : public LValue
     FieldAccess(Expr *base, Identifier *field); //ok to pass NULL base
     void CheckNode();
     Type *GetType();
+    void Emit();
 };
 
 /* Like field access, call is used both for qualified base.field()
@@ -275,6 +277,7 @@ class ReadIntegerExpr : public Expr
     ReadIntegerExpr(yyltype loc) : Expr(loc) {}
     void CheckNode() {}
     Type *GetType();
+    void Emit();
 };
 
 class ReadLineExpr : public Expr
@@ -283,6 +286,7 @@ class ReadLineExpr : public Expr
     ReadLineExpr(yyltype loc) : Expr (loc) {}
     void CheckNode() {}
     Type *GetType();
+    void Emit();
 };
 
     

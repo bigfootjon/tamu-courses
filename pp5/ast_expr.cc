@@ -164,6 +164,12 @@ Type *LogicalExpr::GetType() {
     return Type::boolType;
 }
 
+void AssignExpr::Emit() {
+    left->Emit();
+    right->Emit();
+    cg->GenAssign(left->ResultLocation(), right->ResultLocation());
+}
+
 Type *LValue::GetType() {
     return Type::errorType; // Pretty sure this is never called
 }
@@ -312,6 +318,10 @@ Type *FieldAccess::GetType() {
     return Type::errorType;
 }
 
+void FieldAccess::Emit() {
+    SetResult(dynamic_cast<VarDecl*>(Get())->GetLocation());
+}
+
 Call::Call(yyltype loc, Expr *b, Identifier *f, List<Expr*> *a) : Expr(loc)  {
     Assert(f != NULL && a != NULL); // b can be be NULL (just means no explicit base)
     base = b;
@@ -411,7 +421,15 @@ Type *ReadIntegerExpr::GetType() {
     return Type::intType;
 }
 
+void ReadIntegerExpr::Emit() {
+    SetResult(cg->GenBuiltInCall(ReadInteger));
+}
+
 Type *ReadLineExpr::GetType() {
     return Type::stringType;
+}
+
+void ReadLineExpr::Emit() {
+    SetResult(cg->GenBuiltInCall(ReadInteger));
 }
 

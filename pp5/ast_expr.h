@@ -16,6 +16,7 @@
 #include "ast.h"
 #include "ast_stmt.h"
 #include "list.h"
+#include "codegen.h"
 
 class NamedType; // for new
 class Type; // for NewArray
@@ -23,9 +24,14 @@ class Type; // for NewArray
 
 class Expr : public Stmt 
 {
+  private:
+    Location *location;
+
   public:
-    Expr(yyltype loc) : Stmt(loc) {}
-    Expr() : Stmt() {}
+    Expr(yyltype loc) : Stmt(loc), location(0) {}
+    Expr() : Stmt(), location(0) {}
+    void SetResult(Location *loc) { location = loc; }
+    virtual Location *ResultLocation() { return location; }
 };
 
 /* This node type is used for those places where an expression is optional.
@@ -43,6 +49,7 @@ class IntConstant : public Expr
   
   public:
     IntConstant(yyltype loc, int val);
+    void Emit() { SetResult(cg->GenLoadConstant(value)); }
 };
 
 class DoubleConstant : public Expr 
@@ -61,6 +68,7 @@ class BoolConstant : public Expr
     
   public:
     BoolConstant(yyltype loc, bool val);
+    void Emit() { SetResult(cg->GenLoadConstant((int)value)); }
 };
 
 class StringConstant : public Expr 
@@ -70,6 +78,7 @@ class StringConstant : public Expr
     
   public:
     StringConstant(yyltype loc, const char *val);
+    void Emit() { SetResult(cg->GenLoadConstant(value)); }
 };
 
 class NullConstant: public Expr 

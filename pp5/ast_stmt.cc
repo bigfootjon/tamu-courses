@@ -69,7 +69,11 @@ PrintStmt::PrintStmt(List<Expr*> *a) {
 }
 
 void PrintStmt::Emit() {
-    cg->GenBuiltInCall(PrintInt, cg->GenLoadConstant(1));
+    for (int i=0;i<args->NumElements();++i) {
+        Expr *arg = args->Nth(i);
+	arg->Emit();
+        cg->GenBuiltInCall(PrintInt, arg->ResultLocation());
+    }
 }
 
 

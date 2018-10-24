@@ -18,12 +18,12 @@
  * instead we wait until assigning the children into the parent node and then 
  * set up links in both directions. The parent link is typically not used 
  * during parsing, but is more important in later phases.
+ * 
  *
  * Code generation: For pp5 you are adding "Emit" behavior to the ast
  * node classes. Your code generator should do an postorder walk on the
- * parse tree, and when visiting each node, emitting the necessary 
+ * parse tree, and when visiting each node, emitting the necessary
  * instructions for that construct.
-
  */
 
 #ifndef _H_ast
@@ -32,12 +32,20 @@
 #include <stdlib.h>   // for NULL
 #include "location.h"
 #include <iostream>
+#include "hashtable.h"
+#include "list.h"
+
+class Decl;
 
 class Node 
 {
+  private:
+    bool visited;
+
   protected:
     yyltype *location;
     Node *parent;
+    Hashtable<Decl*> table;
 
   public:
     Node(yyltype loc);
@@ -46,6 +54,12 @@ class Node
     yyltype *GetLocation()   { return location; }
     void SetParent(Node *p)  { parent = p; }
     Node *GetParent()        { return parent; }
+
+    void Check() { if (!visited) { visited = true; CheckNode(); } }
+    virtual void CheckNode() {}
+    virtual Decl *LookupType(char *name, bool recursive=true);
+    void CheckTypes(List<Decl*> *decls);
+
     virtual void Emit() {}
 };
    

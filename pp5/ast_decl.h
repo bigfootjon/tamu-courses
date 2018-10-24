@@ -5,7 +5,7 @@
  * specialized for declarations of variables, functions, classes,
  * and interfaces.
  *
- * pp5: You will need to extend the Decl classes to implement 
+ * pp5: You will need to extend the Decl classes to implement
  * code generation for declarations.
  */
 
@@ -28,7 +28,12 @@ class Decl : public Node
   public:
     Decl(Identifier *name);
     friend std::ostream& operator<<(std::ostream& out, Decl *d) { return out << d->id; }
+    Identifier *GetId() { return id; }
     char *GetName() { return id->GetName(); }
+    void CheckNode();
+    virtual bool IsEquivalentTo(Decl* other) {
+        return strcmp(other->id->GetName(), this->id->GetName()) == 0;
+    }
 };
 
 class VarDecl : public Decl 
@@ -38,18 +43,26 @@ class VarDecl : public Decl
     
   public:
     VarDecl(Identifier *name, Type *type);
+    void CheckNode();
+    Type *GetType() { return type; }
+    bool IsEquivalentTo(Decl* other);
 };
 
 class ClassDecl : public Decl 
 {
   protected:
     List<Decl*> *members;
+
+  public:
     NamedType *extends;
     List<NamedType*> *implements;
 
-  public:
     ClassDecl(Identifier *name, NamedType *extends, 
               List<NamedType*> *implements, List<Decl*> *members);
+    void CheckNode();
+    bool IsEquivalentTo(Decl *o);
+    Type *GetType();
+    Decl *LookupType(char *name, bool recursive=true);
 };
 
 class InterfaceDecl : public Decl 
@@ -59,6 +72,9 @@ class InterfaceDecl : public Decl
     
   public:
     InterfaceDecl(Identifier *name, List<Decl*> *members);
+    List<Decl*> *GetMembers() { return members; }
+    void CheckNode();
+    bool IsEquivalentTo(Decl *o);
 };
 
 class FnDecl : public Decl 
@@ -71,6 +87,10 @@ class FnDecl : public Decl
   public:
     FnDecl(Identifier *name, Type *returnType, List<VarDecl*> *formals);
     void SetFunctionBody(Stmt *b);
+    void CheckNode();
+    bool IsEquivalentTo(Decl* other);
+    List<VarDecl*> *GetFormals() { return formals; }
+    Type *GetType() { return returnType; }
     void Emit();
 };
 

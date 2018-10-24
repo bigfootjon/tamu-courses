@@ -6,6 +6,7 @@
 #include "ast_type.h"
 #include "ast_decl.h"
 #include "ast_expr.h"
+#include "errors.h"
 #include "codegen.h"
 
 Program::Program(List<Decl*> *d) {
@@ -13,15 +14,13 @@ Program::Program(List<Decl*> *d) {
     (decls=d)->SetParentAll(this);
 }
 
-void Program::Check() {
-    /* You can use your pp3 semantic analysis or leave it out if
-     * you want to avoid the clutter.  We won't test pp5 against 
-     * semantically-invalid programs.
-     */
+void Program::CheckNode() {
+    CheckTypes(decls);
 }
+
 void Program::Emit() {
     cg = new CodeGenerator();
-    for (int i=0;i<decls->NumElements(); ++i) {
+    for (int i = 0; i < decls->NumElements(); ++i) {
         decls->Nth(i)->Emit();
     }
     cg->DoFinalCodeGen();
@@ -33,7 +32,17 @@ StmtBlock::StmtBlock(List<VarDecl*> *d, List<Stmt*> *s) {
     (stmts=s)->SetParentAll(this);
 }
 
+void StmtBlock::CheckNode() {
+    CheckTypes((List<Decl*>*)decls);
+    for (int i=0;i<stmts->NumElements();++i) {
+        stmts->Nth(i)->Check();
+    }
+}
+
 void StmtBlock::Emit() {
+    for (int i=0;i<decls->NumElements();++i) {
+        decls->Nth(i)->Emit();
+    }
     for (int i=0;i<stmts->NumElements();++i) {
         stmts->Nth(i)->Emit();
     }
@@ -45,10 +54,24 @@ ConditionalStmt::ConditionalStmt(Expr *t, Stmt *b) {
     (body=b)->SetParent(this);
 }
 
+void ConditionalStmt::CheckNode() {
+    test->Check();
+    body->Check();
+    if (!test->GetType()->IsEquivalentTo(Type::boolType)) {
+        ReportError::TestNotBoolean(test);
+    }
+}
+
 ForStmt::ForStmt(Expr *i, Expr *t, Expr *s, Stmt *b): LoopStmt(t, b) { 
     Assert(i != NULL && t != NULL && s != NULL && b != NULL);
     (init=i)->SetParent(this);
     (step=s)->SetParent(this);
+}
+
+void ForStmt::CheckNode() {
+    LoopStmt::CheckNode();
+    init->Check();
+    step->Check();
 }
 
 IfStmt::IfStmt(Expr *t, Stmt *tb, Stmt *eb): ConditionalStmt(t, tb) { 
@@ -57,10 +80,35 @@ IfStmt::IfStmt(Expr *t, Stmt *tb, Stmt *eb): ConditionalStmt(t, tb) {
     if (elseBody) elseBody->SetParent(this);
 }
 
+void IfStmt::CheckNode() {
+    ConditionalStmt::CheckNode();
+    if (elseBody) elseBody->Check();
+}
 
 ReturnStmt::ReturnStmt(yyltype loc, Expr *e) : Stmt(loc) { 
     Assert(e != NULL);
     (expr=e)->SetParent(this);
+}
+
+void ReturnStmt::CheckNode() {
+    expr->Check();
+    Type *type = expr->GetType();
+    Node *super = this;
+    FnDecl *as_func = NULL;
+    while ((super = super->GetParent())) {
+        if (super == NULL) {
+            break;
+        }
+        as_func = dynamic_cast<FnDecl*>(super);
+        if (as_func != NULL) {
+            break;
+        }
+    }
+    if (as_func) {
+        if (!as_func->GetType()->IsEquivalentTo(type)) {
+            ReportError::ReturnMismatch(this, type, as_func->GetType());
+        }
+    }
 }
   
 PrintStmt::PrintStmt(List<Expr*> *a) {    
@@ -68,12 +116,29 @@ PrintStmt::PrintStmt(List<Expr*> *a) {
     (args=a)->SetParentAll(this);
 }
 
+void PrintStmt::CheckNode() {
+    for (int i=0;i<args->NumElements();++i) {
+        args->Nth(i)->Check();
+    }
+}
+
 void PrintStmt::Emit() {
     for (int i=0;i<args->NumElements();++i) {
         Expr *arg = args->Nth(i);
 	arg->Emit();
-        cg->GenBuiltInCall(PrintInt, arg->ResultLocation());
+	cg->GenBuiltInCall(PrintInt, arg->ResultLocation());
     }
 }
 
+void Case::CheckNode() {
+    for (int i=0;i<stmts->NumElements();++i) {
+        stmts->Nth(i)->Check();
+    }
+}
 
+void SwitchStmt::CheckNode() {
+    value->Check();
+    for (int i=0;i<cases->NumElements();++i) {
+        cases->Nth(i)->Check();
+    }
+}

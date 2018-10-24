@@ -5,8 +5,8 @@
  * language (for, if, return, etc.) there is a corresponding
  * node class for that construct. 
  *
- * pp5: You will need to extend the Stmt classes to implement
- * code generation for statements.
+ * pp5: You will need to extend the stmt classes to implement
+ * code generation for statments.
  */
 
 
@@ -28,7 +28,7 @@ class Program : public Node
      
   public:
      Program(List<Decl*> *declList);
-     void Check();
+     void CheckNode();
      void Emit();
 };
 
@@ -47,6 +47,7 @@ class StmtBlock : public Stmt
     
   public:
     StmtBlock(List<VarDecl*> *variableDeclarations, List<Stmt*> *statements);
+    void CheckNode();
     void Emit();
 };
 
@@ -59,6 +60,7 @@ class ConditionalStmt : public Stmt
   
   public:
     ConditionalStmt(Expr *testExpr, Stmt *body);
+    void CheckNode();
 };
 
 class LoopStmt : public ConditionalStmt 
@@ -75,6 +77,7 @@ class ForStmt : public LoopStmt
   
   public:
     ForStmt(Expr *init, Expr *test, Expr *step, Stmt *body);
+    void CheckNode();
 };
 
 class WhileStmt : public LoopStmt 
@@ -90,6 +93,7 @@ class IfStmt : public ConditionalStmt
   
   public:
     IfStmt(Expr *test, Stmt *thenBody, Stmt *elseBody);
+    void CheckNode();
 };
 
 class BreakStmt : public Stmt 
@@ -105,6 +109,7 @@ class ReturnStmt : public Stmt
   
   public:
     ReturnStmt(yyltype loc, Expr *expr);
+    void CheckNode();
 };
 
 class PrintStmt : public Stmt
@@ -114,6 +119,7 @@ class PrintStmt : public Stmt
     
   public:
     PrintStmt(List<Expr*> *arguments);
+    void CheckNode();
     void Emit();
 };
 
@@ -125,6 +131,7 @@ class Case : public Stmt
 
   public:
     Case(IntConstant *i, List<Stmt*> *s) : label(i), stmts(s) {}
+    void CheckNode();
 };
 
 class SwitchStmt : public Stmt
@@ -135,6 +142,7 @@ class SwitchStmt : public Stmt
 
   public:
     SwitchStmt(Expr *val, List<Case*> *list) : value(val), cases(list) {}
+    void CheckNode();
 };
 
 #endif

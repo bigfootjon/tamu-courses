@@ -27,6 +27,7 @@ class CodeGenerator {
   private:
     std::list<Instruction*> code;
     int local_count;
+    int param_count;
     int global_count;
 
   public:
@@ -58,6 +59,7 @@ class CodeGenerator {
          // temp variable. Does not generate any Tac instructions
     Location *GenTempVar();
     Location *GenNamedVar(char *name);
+    Location *GenParamVar(char *name);
     Location *GenGlobalVar(char *name);
 
          // Generates Tac instructions to load a constant value. Creates

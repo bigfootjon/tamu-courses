@@ -15,6 +15,7 @@ Location* CodeGenerator::ThisPtr= new Location(fpRelative, 4, "this");
 CodeGenerator::CodeGenerator()
 {
   local_count = 0;
+  param_count = 0;
   global_count = 0;
 }
 
@@ -37,6 +38,10 @@ Location *CodeGenerator::GenTempVar()
 
 Location *CodeGenerator::GenNamedVar(char *name) {
   return new Location(fpRelative, OffsetToFirstLocal-VarSize*(local_count++), name);
+}
+
+Location *CodeGenerator::GenParamVar(char *name) {
+  return new Location(fpRelative, OffsetToFirstParam+VarSize*(param_count++), name);
 }
 
 Location *CodeGenerator::GenGlobalVar(char *name) {

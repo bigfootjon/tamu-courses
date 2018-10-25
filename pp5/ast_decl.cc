@@ -41,6 +41,8 @@ bool VarDecl::IsEquivalentTo(Decl* o) {
 void VarDecl::Emit() {
     if (dynamic_cast<Program*>(GetParent())) {
         loc = cg->GenGlobalVar(GetName());
+    } else if (dynamic_cast<FnDecl*>(GetParent())) {
+        loc = cg->GenParamVar(GetName());
     } else {
         loc = cg->GenNamedVar(GetName());
     }

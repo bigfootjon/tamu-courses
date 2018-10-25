@@ -1,9 +1,10 @@
 void main() {
     int a;
     a = 10;
-    Print(a);
-    a++;
-    Print(a);
-    a--;
+    Print(a, "\n");
+    Print(a++, "\n");
+    Print(a++, "\n");
+    Print(a--, "\n");
+    Print(a--, "\n");
     Print(a);
 }

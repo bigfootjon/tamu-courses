@@ -207,9 +207,10 @@ void PostfixExpr::Emit() {
         op_string = (char*)"-";
     }
     left->Emit();
-    Location *left_result = left->ResultLocation();
-    SetResult(left_result);
-    left->SetResult(cg->GenBinaryOp(op_string, left_result, cg->GenLoadConstant(1)));
+    Location *result = cg->GenTempVar();
+    cg->GenAssign(result, left->ResultLocation());
+    SetResult(result);
+    cg->GenAssign(left->ResultLocation(), cg->GenBinaryOp(op_string, left->ResultLocation(), cg->GenLoadConstant(1)));
 }
 
 ClassDecl *This::GetClass() {

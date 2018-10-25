@@ -179,7 +179,7 @@ class PostfixExpr : public Expr
     Operator *op;
 
   public:
-    PostfixExpr(LValue *lhs, Operator *o) : Expr(*lhs->GetLocation()), left(lhs), op(o) {}
+    PostfixExpr(LValue *lhs, Operator *o) : Expr(*lhs->GetLocation()), left(lhs), op(o) {left->SetParent(this);}
     void CheckNode();
     Type *GetType();
     void Emit();

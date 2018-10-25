@@ -1,0 +1,9 @@
+void main() {
+    int a;
+    a = test();
+    Print(a);
+}
+
+int test() {
+    return 1;
+}

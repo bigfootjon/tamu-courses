@@ -110,6 +110,7 @@ class ReturnStmt : public Stmt
   public:
     ReturnStmt(yyltype loc, Expr *expr);
     void CheckNode();
+    void Emit();
 };
 
 class PrintStmt : public Stmt

@@ -110,6 +110,11 @@ void ReturnStmt::CheckNode() {
         }
     }
 }
+
+void ReturnStmt::Emit() {
+    expr->Emit();
+    cg->GenReturn(expr->ResultLocation());
+}
   
 PrintStmt::PrintStmt(List<Expr*> *a) {    
     Assert(a != NULL);

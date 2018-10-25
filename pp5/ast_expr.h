@@ -245,6 +245,7 @@ class Call : public Expr
     Call(yyltype loc, Expr *base, Identifier *field, List<Expr*> *args);
     void CheckNode();
     Type *GetType();
+    void Emit();
 };
 
 class NewExpr : public Expr

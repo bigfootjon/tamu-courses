@@ -384,6 +384,18 @@ Type *Call::GetType() {
     return Type::errorType;
 }
 
+void Call::Emit() {
+    for (int i = 0; i < actuals->NumElements(); ++i) {
+        actuals->Nth(i)->Emit();
+    }
+    for (int i = actuals->NumElements() - 1; i >= 0; --i) {
+        cg->GenPushParam(actuals->Nth(i)->ResultLocation());
+    }
+    bool hasReturn = Type::voidType->IsEquivalentTo(calling->GetType());
+    SetResult(cg->GenLCall(calling->GetName(), !hasReturn));
+    cg->GenPopParams(cg->VarSize * actuals->NumElements());
+}
+
 NewExpr::NewExpr(yyltype loc, NamedType *c) : Expr(loc) { 
   Assert(c != NULL);
   (cType=c)->SetParent(this);

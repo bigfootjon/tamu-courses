@@ -182,6 +182,7 @@ class PostfixExpr : public Expr
     PostfixExpr(LValue *lhs, Operator *o) : Expr(*lhs->GetLocation()), left(lhs), op(o) {}
     void CheckNode();
     Type *GetType();
+    void Emit();
 };
 
 class This : public Expr 

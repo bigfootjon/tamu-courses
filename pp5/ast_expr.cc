@@ -201,6 +201,17 @@ Type *PostfixExpr::GetType() {
     return left->GetType();
 }
 
+void PostfixExpr::Emit() {
+    char *op_string = (char*)"+";
+    if (strcmp(op->GetOpString(), "--") == 0) {
+        op_string = (char*)"-";
+    }
+    left->Emit();
+    Location *left_result = left->ResultLocation();
+    SetResult(left_result);
+    left->SetResult(cg->GenBinaryOp(op_string, left_result, cg->GenLoadConstant(1)));
+}
+
 ClassDecl *This::GetClass() {
     Node *super = this;
     while ((super = super->GetParent()) != NULL) {

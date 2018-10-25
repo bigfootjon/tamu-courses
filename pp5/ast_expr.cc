@@ -108,6 +108,24 @@ Type *CompoundExpr::_GetType() {
     return NULL;
 }
 
+void CompoundExpr::Emit() {
+    right->Emit();
+    Location *right_loc = right->ResultLocation();
+    Location *left_loc;
+    char *op_string = op->GetOpString();
+    
+    if (left) {
+        left->Emit();
+        left_loc = left->ResultLocation();
+    } else {
+        left_loc = cg->GenLoadConstant(0);
+        if (strcmp(op_string, "!") == 0) {
+            op_string = (char*)"==";
+        }
+    }
+    SetResult(cg->GenBinaryOp(op_string, left_loc, right_loc));
+}
+
 void ArithmeticExpr::CheckNode() {
     CompoundExpr::CheckNode();
     Type *type = GetType();

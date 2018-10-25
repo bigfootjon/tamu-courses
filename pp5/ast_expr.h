@@ -105,6 +105,7 @@ class Operator : public Node
     Operator(yyltype loc, const char *tok);
     friend std::ostream& operator<<(std::ostream& out, Operator *o) { return out << o->tokenString; }
     Type *GetType();
+    char *GetOpString() { return tokenString; }
  };
  
 class CompoundExpr : public Expr
@@ -119,6 +120,7 @@ class CompoundExpr : public Expr
     CompoundExpr(Operator *op, Expr *rhs);             // for unary
     virtual void CheckNode();
     Type *GetType() { return _GetType(); }
+    void Emit();
 };
 
 class ArithmeticExpr : public CompoundExpr 

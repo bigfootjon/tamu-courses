@@ -39,7 +39,11 @@ bool VarDecl::IsEquivalentTo(Decl* o) {
 }
 
 void VarDecl::Emit() {
-    loc = cg->GenTempVar();
+    if (dynamic_cast<Program*>(GetParent())) {
+        loc = cg->GenGlobalVar(GetName());
+    } else {
+        loc = cg->GenNamedVar(GetName());
+    }
 }
 
 ClassDecl::ClassDecl(Identifier *n, NamedType *ex, List<NamedType*> *imp, List<Decl*> *m) : Decl(n) {
@@ -206,9 +210,11 @@ void FnDecl::SetFunctionBody(Stmt *b) {
 void FnDecl::Emit() {
     cg->GenLabel(GetName());
     BeginFunc *func = cg->GenBeginFunc();
+    for (int i = 0; i < formals->NumElements(); ++i) {
+        formals->Nth(i)->Emit();
+    }
     body->Emit();
-    func->SetFrameSize(24); // TODO FIX CONSTANT
-    cg->GenEndFunc();
+    func->SetFrameSize(cg->GenEndFunc() * cg->VarSize);
 }
 
 void FnDecl::CheckNode() {

@@ -26,6 +26,8 @@ typedef enum { Alloc, ReadLine, ReadInteger, StringEqual,
 class CodeGenerator {
   private:
     std::list<Instruction*> code;
+    int local_count;
+    int global_count;
 
   public:
            // Here are some class constants to remind you of the offsets
@@ -55,6 +57,8 @@ class CodeGenerator {
          // Creates and returns a Location for a new uniquely named
          // temp variable. Does not generate any Tac instructions
     Location *GenTempVar();
+    Location *GenNamedVar(char *name);
+    Location *GenGlobalVar(char *name);
 
          // Generates Tac instructions to load a constant value. Creates
          // a new temp var to hold the result. The constant 
@@ -149,7 +153,7 @@ class CodeGenerator {
          // These methods generate the Tac instructions that mark the start
          // and end of a function/method definition. 
     BeginFunc *GenBeginFunc();
-    void GenEndFunc();
+    int GenEndFunc();
 
     
          // Generates the Tac instructions for defining vtable for a

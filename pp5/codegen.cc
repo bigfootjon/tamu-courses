@@ -14,6 +14,8 @@ Location* CodeGenerator::ThisPtr= new Location(fpRelative, 4, "this");
   
 CodeGenerator::CodeGenerator()
 {
+  local_count = 0;
+  global_count = 0;
 }
 
 char *CodeGenerator::NewLabel()
@@ -30,7 +32,15 @@ Location *CodeGenerator::GenTempVar()
   static int nextTempNum;
   char temp[10];
   sprintf(temp, "_tmp%d", nextTempNum++);
-  return new Location(fpRelative, OffsetToFirstLocal-VarSize*(nextTempNum-1), temp);
+  return GenNamedVar(temp);
+}
+
+Location *CodeGenerator::GenNamedVar(char *name) {
+  return new Location(fpRelative, OffsetToFirstLocal-VarSize*(local_count++), name);
+}
+
+Location *CodeGenerator::GenGlobalVar(char *name) {
+  return new Location(gpRelative, OffsetToFirstGlobal-VarSize*(global_count++), name);
 }
 
  
@@ -107,14 +117,18 @@ void CodeGenerator::GenReturn(Location *val)
 
 BeginFunc *CodeGenerator::GenBeginFunc()
 {
+  local_count = 0;
   BeginFunc *result = new BeginFunc;
   code.push_back(result);
   return result;
 }
 
-void CodeGenerator::GenEndFunc()
+int CodeGenerator::GenEndFunc()
 {
   code.push_back(new EndFunc());
+  int to_return = local_count;
+  local_count = 0;
+  return to_return;
 }
 
 void CodeGenerator::GenPushParam(Location *param)

@@ -16,6 +16,10 @@ Program::Program(List<Decl*> *d) {
 
 void Program::CheckNode() {
     CheckTypes(decls);
+    FnDecl *main = dynamic_cast<FnDecl*>(LookupType((char*)"main"));
+    if (!main || !Type::voidType->IsEquivalentTo(main->GetType()) || main->GetFormals()->NumElements() != 0) {
+        ReportError::NoMainFound();
+    }
 }
 
 void Program::Emit() {

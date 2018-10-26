@@ -74,6 +74,17 @@ void ForStmt::CheckNode() {
     step->Check();
 }
 
+void WhileStmt::Emit() {
+    char *start_label = cg->NewLabel();
+    char *end_label = cg->NewLabel();
+    cg->GenLabel(start_label);
+    test->Emit();
+    cg->GenIfZ(test->ResultLocation(), end_label);
+    body->Emit();
+    cg->GenGoto(start_label);
+    cg->GenLabel(end_label);
+}
+
 IfStmt::IfStmt(Expr *t, Stmt *tb, Stmt *eb): ConditionalStmt(t, tb) { 
     Assert(t != NULL && tb != NULL); // else can be NULL
     elseBody = eb;
@@ -83,6 +94,23 @@ IfStmt::IfStmt(Expr *t, Stmt *tb, Stmt *eb): ConditionalStmt(t, tb) {
 void IfStmt::CheckNode() {
     ConditionalStmt::CheckNode();
     if (elseBody) elseBody->Check();
+}
+
+void IfStmt::Emit() {
+    test->Emit();
+    char *true_label = cg->NewLabel();
+    char *false_label = cg->NewLabel();
+    char *end_label = cg->NewLabel();
+    cg->GenIfZ(test->ResultLocation(), false_label);
+    cg->GenGoto(true_label);
+    cg->GenLabel(true_label);
+    body->Emit();
+    cg->GenGoto(end_label);
+    cg->GenLabel(false_label);
+    if (elseBody) {
+        elseBody->Emit();
+    }
+    cg->GenLabel(end_label);
 }
 
 ReturnStmt::ReturnStmt(yyltype loc, Expr *e) : Stmt(loc) { 

@@ -54,11 +54,9 @@ class StmtBlock : public Stmt
   
 class ConditionalStmt : public Stmt
 {
-  protected:
+  public:
     Expr *test;
     Stmt *body;
-  
-  public:
     ConditionalStmt(Expr *testExpr, Stmt *body);
     void CheckNode();
 };
@@ -84,6 +82,7 @@ class WhileStmt : public LoopStmt
 {
   public:
     WhileStmt(Expr *test, Stmt *body) : LoopStmt(test, body) {}
+    void Emit();
 };
 
 class IfStmt : public ConditionalStmt 
@@ -94,6 +93,7 @@ class IfStmt : public ConditionalStmt
   public:
     IfStmt(Expr *test, Stmt *thenBody, Stmt *elseBody);
     void CheckNode();
+    void Emit();
 };
 
 class BreakStmt : public Stmt 

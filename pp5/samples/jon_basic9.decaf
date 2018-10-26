@@ -1,0 +1,10 @@
+void main() {
+    bool b;
+    b = true;
+    if (b) {
+        Print("It was true!\n");
+    } else {
+        Print("It was false!\n");
+    }
+    Print("End of execution");
+}

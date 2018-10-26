@@ -1,0 +1,10 @@
+void main() {
+    //Test a;
+    //a = New(Test);
+    //Print(a.GetI());
+}
+
+class Test {
+   // int i;
+   int GetI() { return 1; }
+}

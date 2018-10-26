@@ -56,6 +56,7 @@ class ClassDecl : public Decl
 {
   protected:
     List<Decl*> *members;
+    List<const char*> *vtable;
 
   public:
     NamedType *extends;
@@ -67,6 +68,9 @@ class ClassDecl : public Decl
     bool IsEquivalentTo(Decl *o);
     Type *GetType();
     Decl *LookupType(char *name, bool recursive=true);
+    int MemberCount() { return members->NumElements(); }
+    void Emit();
+    void AddMethod(char *name) { vtable->Append(name); }
 };
 
 class InterfaceDecl : public Decl 

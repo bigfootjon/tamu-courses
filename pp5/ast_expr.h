@@ -258,8 +258,10 @@ class NewExpr : public Expr
     
   public:
     NewExpr(yyltype loc, NamedType *clsType);
+    ClassDecl *Get();
     void CheckNode();
     Type *GetType();
+    void Emit();
 };
 
 class NewArrayExpr : public Expr

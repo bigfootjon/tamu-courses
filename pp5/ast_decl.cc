@@ -43,6 +43,8 @@ void VarDecl::Emit() {
         loc = cg->GenGlobalVar(GetName());
     } else if (dynamic_cast<FnDecl*>(GetParent())) {
         loc = cg->GenParamVar(GetName());
+    } else if (dynamic_cast<ClassDecl*>(GetParent())) {
+        // Do nothing, we don't emit for class ivars
     } else {
         loc = cg->GenNamedVar(GetName());
     }
@@ -55,6 +57,7 @@ ClassDecl::ClassDecl(Identifier *n, NamedType *ex, List<NamedType*> *imp, List<D
     if (extends) extends->SetParent(this);
     (implements=imp)->SetParentAll(this);
     (members=m)->SetParentAll(this);
+    vtable = new List<const char*>;
 }
 
 void ClassDecl::CheckNode() {
@@ -167,6 +170,13 @@ Decl *ClassDecl::LookupType(char *name, bool recursive) {
     return NULL;
 }
 
+void ClassDecl::Emit() {
+    for (int i = 0; i < members->NumElements(); ++i) {
+        members->Nth(i)->Emit();
+    }
+    cg->GenVTable(GetName(), vtable);
+}
+
 InterfaceDecl::InterfaceDecl(Identifier *n, List<Decl*> *m) : Decl(n) {
     Assert(n != NULL && m != NULL);
     (members=m)->SetParentAll(this);
@@ -210,7 +220,17 @@ void FnDecl::SetFunctionBody(Stmt *b) {
 }
 
 void FnDecl::Emit() {
-    cg->GenLabel(GetName());
+    char *name = (char*)malloc(sizeof(char)*80);
+    ClassDecl *parent_class = dynamic_cast<ClassDecl*>(GetParent());
+    if (parent_class != NULL) {
+        strcpy(name, parent_class->GetName());
+        strcat(name, ".");
+        strcat(name, GetName());
+        parent_class->AddMethod(name);
+    } else {
+        strcpy(name, GetName());
+    }
+    cg->GenLabel(name);
     BeginFunc *func = cg->GenBeginFunc();
     for (int i = 0; i < formals->NumElements(); ++i) {
         formals->Nth(i)->Emit();

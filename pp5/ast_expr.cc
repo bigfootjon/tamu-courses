@@ -431,14 +431,22 @@ NewExpr::NewExpr(yyltype loc, NamedType *c) : Expr(loc) {
   (cType=c)->SetParent(this);
 }
 
+ClassDecl *NewExpr::Get() {
+    return dynamic_cast<ClassDecl*>(LookupType(cType->GetId()->GetName()));
+}
+
 void NewExpr::CheckNode() {
-    if (dynamic_cast<ClassDecl*>(LookupType(cType->GetId()->GetName())) == NULL) {
+    if (Get() == NULL) {
         ReportError::IdentifierNotDeclared(cType->GetId(), LookingForClass);
     }
 }
 
 Type *NewExpr::GetType() {
     return cType;
+}
+
+void NewExpr::Emit() {
+    SetResult(cg->GenBuiltInCall(Alloc, cg->GenLoadConstant(Get()->MemberCount())));
 }
 
 NewArrayExpr::NewArrayExpr(yyltype loc, Expr *sz, Type *et) : Expr(loc), location(loc) {

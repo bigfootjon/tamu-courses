@@ -76,6 +76,7 @@ class ForStmt : public LoopStmt
   public:
     ForStmt(Expr *init, Expr *test, Expr *step, Stmt *body);
     void CheckNode();
+    void Emit();
 };
 
 class WhileStmt : public LoopStmt 

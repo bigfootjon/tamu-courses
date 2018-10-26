@@ -74,6 +74,19 @@ void ForStmt::CheckNode() {
     step->Check();
 }
 
+void ForStmt::Emit() {
+    init->Emit();
+    char *start_label = cg->NewLabel();
+    char *end_label = cg->NewLabel();
+    cg->GenLabel(start_label);
+    test->Emit();
+    cg->GenIfZ(test->ResultLocation(), end_label);
+    body->Emit();
+    step->Emit();
+    cg->GenGoto(start_label);
+    cg->GenLabel(end_label);
+}
+
 void WhileStmt::Emit() {
     char *start_label = cg->NewLabel();
     char *end_label = cg->NewLabel();

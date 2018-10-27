@@ -69,6 +69,7 @@ class ClassDecl : public Decl
     Type *GetType();
     Decl *LookupType(char *name, bool recursive=true);
     int MemberCount() { return members->NumElements(); }
+    int VarCount();
     void Emit();
     void AddMethod(char *name) { vtable->Append(name); }
 };
@@ -100,6 +101,7 @@ class FnDecl : public Decl
     List<VarDecl*> *GetFormals() { return formals; }
     Type *GetType() { return returnType; }
     void Emit();
+    char *GetFullName();
 };
 
 #endif

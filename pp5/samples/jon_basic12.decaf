@@ -1,10 +1,12 @@
 void main() {
-    //Test a;
-    //a = New(Test);
-    //Print(a.GetI());
+    Test a;
+    a = New(Test);
+    a.Set();
+    Print(a.Get());
 }
 
 class Test {
-   // int i;
-   int GetI() { return 1; }
+   int i;
+   void Set() { this.i = 19; }
+   int Get() { return this.i; }
 }

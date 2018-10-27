@@ -185,7 +185,11 @@ Type *LogicalExpr::GetType() {
 void AssignExpr::Emit() {
     left->Emit();
     right->Emit();
-    cg->GenAssign(left->ResultLocation(), right->ResultLocation());
+    if (left->NeedsStore() != NULL) {
+        cg->GenStore(left->NeedsStore(), right->ResultLocation());
+    } else {
+        cg->GenAssign(left->ResultLocation(), right->ResultLocation());
+    }
 }
 
 Type *LValue::GetType() {
@@ -240,6 +244,10 @@ Decl *This::LookupType(char *name, bool recursive) {
     }
     return GetClass()->LookupType(name, recursive);
 }
+
+void This::Emit() {
+    SetResult(cg->ThisPtr);
+}
   
 ArrayAccess::ArrayAccess(yyltype loc, Expr *b, Expr *s) : LValue(loc) {
     (base=b)->SetParent(this); 
@@ -259,6 +267,16 @@ void ArrayAccess::CheckNode() {
 
 Type *ArrayAccess::GetType() {
     return ((ArrayType*)base->GetType())->GetBaseType();
+}
+
+void ArrayAccess::Emit() {
+    base->Emit();
+    subscript->Emit();
+    Location *padded_subscript = cg->GenBinaryOp("+", subscript->ResultLocation(), cg->GenLoadConstant(1));
+    Location *offset = cg->GenBinaryOp("*", padded_subscript, cg->GenLoadConstant(cg->VarSize));
+    Location *address = cg->GenBinaryOp("+", base->ResultLocation(), offset);
+    Location *location = cg->GenLoad(address, 0);
+    SetResult(location, address);
 }
      
 FieldAccess::FieldAccess(Expr *b, Identifier *f) 
@@ -349,7 +367,14 @@ Type *FieldAccess::GetType() {
 }
 
 void FieldAccess::Emit() {
-    SetResult(dynamic_cast<VarDecl*>(Get())->GetLocation());
+    VarDecl *var_decl = dynamic_cast<VarDecl*>(Get());
+    if (base) {
+        base->Emit();
+        ClassDecl *class_decl = dynamic_cast<ClassDecl*>(var_decl->GetParent());
+        SetResult(cg->GenLoad(base->ResultLocation(), (1 + 0) * cg->VarSize)); // TODO
+    } else {
+        SetResult(var_decl->GetLocation());
+    }
 }
 
 Call::Call(yyltype loc, Expr *b, Identifier *f, List<Expr*> *a) : Expr(loc)  {
@@ -374,7 +399,9 @@ void Call::CheckNode() {
         if (type == NULL) {
             calling = NULL;
         } else {
-            calling = dynamic_cast<FnDecl*>(LookupType(type->GetId()->GetName())->LookupType(field->GetName()));
+            Decl *superclass = LookupType(type->GetId()->GetName());
+            superclass->Check();
+            calling = dynamic_cast<FnDecl*>(superclass->LookupType(field->GetName()));
         }
     } else {
         calling = dynamic_cast<FnDecl*>(LookupType(field->GetName()));
@@ -422,8 +449,18 @@ void Call::Emit() {
         cg->GenPushParam(actuals->Nth(i)->ResultLocation());
     }
     bool hasReturn = Type::voidType->IsEquivalentTo(calling->GetType());
-    SetResult(cg->GenLCall(calling->GetName(), !hasReturn));
-    cg->GenPopParams(cg->VarSize * actuals->NumElements());
+    int thisarg = 0;
+    if (base) {
+        thisarg = 1;
+        base->Emit();
+        cg->GenPushParam(base->ResultLocation());
+        Location *obj = cg->GenLoad(base->ResultLocation());
+        Location *func = cg->GenLoad(obj);
+        SetResult(cg->GenACall(func, !hasReturn));
+    } else {
+        SetResult(cg->GenLCall(calling->GetName(), !hasReturn));
+    }
+    cg->GenPopParams(cg->VarSize * (actuals->NumElements() + thisarg));
 }
 
 NewExpr::NewExpr(yyltype loc, NamedType *c) : Expr(loc) { 
@@ -446,7 +483,9 @@ Type *NewExpr::GetType() {
 }
 
 void NewExpr::Emit() {
-    SetResult(cg->GenBuiltInCall(Alloc, cg->GenLoadConstant(Get()->MemberCount())));
+    Location *alloced = cg->GenBuiltInCall(Alloc, cg->GenLoadConstant((Get()->VarCount() + 1) * cg->VarSize));
+    cg->GenStore(alloced, cg->GenLoadLabel(Get()->GetName()));
+    SetResult(alloced);
 }
 
 NewArrayExpr::NewArrayExpr(yyltype loc, Expr *sz, Type *et) : Expr(loc), location(loc) {
@@ -465,6 +504,17 @@ void NewArrayExpr::CheckNode() {
 
 Type *NewArrayExpr::GetType() {
     return new ArrayType(location, elemType);
+}
+
+void NewArrayExpr::Emit() {
+    size->Emit();
+    Location *const_1 = cg->GenLoadConstant(1);
+    Location *total_count = cg->GenBinaryOp((char*)"+", const_1, size->ResultLocation());
+    Location *var_size = cg->GenLoadConstant(cg->VarSize);
+    Location *total_size = cg->GenBinaryOp((char*)"*", total_count, var_size);
+    Location *alloced = cg->GenBuiltInCall(Alloc, total_size);
+    cg->GenStore(alloced, size->ResultLocation(), 0);
+    SetResult(alloced);
 }
 
 Type *ReadIntegerExpr::GetType() {

@@ -27,12 +27,14 @@ class Expr : public Stmt
 {
   private:
     Location *location;
+    Location *store;
 
   public:
     Expr(yyltype loc) : Stmt(loc), location(0) {}
     Expr() : Stmt(), location(0) {}
     virtual Type *GetType() { return NULL; }
-    void SetResult(Location *loc) { location = loc; }
+    void SetResult(Location *loc, Location *store=NULL) { location = loc; this->store = store; }
+    Location *NeedsStore() { return store; }
     virtual Location *ResultLocation() { return location; }
 };
 
@@ -195,6 +197,7 @@ class This : public Expr
     void CheckNode();
     Type *GetType();
     Decl *LookupType(char *name, bool recursive=true);
+    void Emit();
 };
 
 class ArrayAccess : public LValue 
@@ -206,6 +209,7 @@ class ArrayAccess : public LValue
     ArrayAccess(yyltype loc, Expr *base, Expr *subscript);
     void CheckNode();
     Type *GetType();
+    void Emit();
 };
 
 /* Note that field access is used both for qualified names
@@ -275,6 +279,7 @@ class NewArrayExpr : public Expr
     NewArrayExpr(yyltype loc, Expr *sizeExpr, Type *elemType);
     void CheckNode();
     Type *GetType();
+    void Emit();
 };
 
 class ReadIntegerExpr : public Expr

@@ -170,6 +170,16 @@ Decl *ClassDecl::LookupType(char *name, bool recursive) {
     return NULL;
 }
 
+int ClassDecl::VarCount() {
+    int count = 0;
+    for (int i = 0; i < members->NumElements(); ++i) {
+        if (dynamic_cast<VarDecl*>(members->Nth(i))) {
+            count++;
+        }
+    }
+    return count;
+}
+
 void ClassDecl::Emit() {
     for (int i = 0; i < members->NumElements(); ++i) {
         members->Nth(i)->Emit();
@@ -220,18 +230,14 @@ void FnDecl::SetFunctionBody(Stmt *b) {
 }
 
 void FnDecl::Emit() {
-    char *name = (char*)malloc(sizeof(char)*80);
-    ClassDecl *parent_class = dynamic_cast<ClassDecl*>(GetParent());
-    if (parent_class != NULL) {
-        strcpy(name, parent_class->GetName());
-        strcat(name, ".");
-        strcat(name, GetName());
-        parent_class->AddMethod(name);
-    } else {
-        strcpy(name, GetName());
-    }
+    char *name = GetFullName();
     cg->GenLabel(name);
+    ClassDecl *parent_class = dynamic_cast<ClassDecl*>(GetParent());
     BeginFunc *func = cg->GenBeginFunc();
+    if (parent_class) {
+        parent_class->AddMethod(name);
+        cg->GenParamVar((char*)"this");
+    }
     for (int i = 0; i < formals->NumElements(); ++i) {
         formals->Nth(i)->Emit();
     }
@@ -266,3 +272,15 @@ bool FnDecl::IsEquivalentTo(Decl* o) {
     return true;
 }
 
+char *FnDecl::GetFullName() {
+    ClassDecl *parent_class = dynamic_cast<ClassDecl*>(GetParent());
+    if (parent_class != NULL) {
+        char *name = (char*)malloc(sizeof(char)*80);
+        strcpy(name, parent_class->GetName());
+        strcat(name, ".");
+        strcat(name, GetName());
+        return name;
+    } else {
+        return GetName();
+    }
+}

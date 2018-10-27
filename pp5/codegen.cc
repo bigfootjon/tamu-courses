@@ -133,6 +133,7 @@ int CodeGenerator::GenEndFunc()
   code.push_back(new EndFunc());
   int to_return = local_count;
   local_count = 0;
+  param_count = 0;
   return to_return;
 }
 

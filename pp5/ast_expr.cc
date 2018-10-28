@@ -402,9 +402,20 @@ void FieldAccess::Emit() {
     if (base) {
         base->Emit();
         ClassDecl *class_decl = dynamic_cast<ClassDecl*>(var_decl->GetParent());
-        SetResult(cg->GenLoad(base->ResultLocation(), (1 + 0) * cg->VarSize)); // TODO
+	int offset = class_decl->VarOffset(var_decl->GetName());
+	Location *address = cg->GenBinaryOp("+", base->ResultLocation(), cg->GenLoadConstant(offset+cg->VarSize));
+	Location *location = cg->GenLoad(address, 0);
+        SetResult(location, address);
     } else {
-        SetResult(var_decl->GetLocation());
+        if (var_decl->GetLocation() == NULL) {
+            ClassDecl *class_decl = dynamic_cast<ClassDecl*>(var_decl->GetParent());
+	    int offset = class_decl->VarOffset(var_decl->GetName());
+	    Location *address = cg->GenBinaryOp("+", cg->ThisPtr, cg->GenLoadConstant(offset+cg->VarSize));
+	    Location *location = cg->GenLoad(address, 0);
+            SetResult(location, address);
+	} else {
+            SetResult(var_decl->GetLocation());
+	}
     }
 }
 
@@ -486,7 +497,9 @@ void Call::Emit() {
         base->Emit();
         cg->GenPushParam(base->ResultLocation());
         Location *obj = cg->GenLoad(base->ResultLocation());
-        Location *func = cg->GenLoad(obj);
+	ClassDecl *class_obj = dynamic_cast<ClassDecl*>(calling->GetParent());
+	class_obj->Check();
+        Location *func = cg->GenLoad(obj, class_obj->FuncOffset(field->GetName()));
         SetResult(cg->GenACall(func, !hasReturn));
     } else {
         SetResult(cg->GenLCall(calling->GetName(), !hasReturn));

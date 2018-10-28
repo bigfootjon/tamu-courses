@@ -72,6 +72,8 @@ class ClassDecl : public Decl
     int VarCount();
     void Emit();
     void AddMethod(char *name) { vtable->Append(name); }
+    int FuncOffset(char *name);
+    int VarOffset(char *name);
 };
 
 class InterfaceDecl : public Decl 

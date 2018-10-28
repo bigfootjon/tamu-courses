@@ -187,6 +187,34 @@ void ClassDecl::Emit() {
     cg->GenVTable(GetName(), vtable);
 }
 
+int ClassDecl::FuncOffset(char *name) {
+    int fns = 0;
+    for (int i = 0; i < members->NumElements(); ++i) {
+        Decl *member = members->Nth(i);
+        if (dynamic_cast<FnDecl*>(member)) {
+            ++fns;
+	}
+        if (strcmp(members->Nth(i)->GetName(), name) == 0) {
+            return (fns-1)*cg->VarSize;
+	}
+    }
+    return -1;
+}
+
+int ClassDecl::VarOffset(char *name) {
+    int vars = 0;
+    for (int i = 0; i < members->NumElements(); ++i) {
+        Decl *member = members->Nth(i);
+        if (dynamic_cast<VarDecl*>(member)) {
+            ++vars;
+	}
+        if (strcmp(members->Nth(i)->GetName(), name) == 0) {
+            return (vars-1)*cg->VarSize;
+	}
+    }
+    return -1;
+}
+
 InterfaceDecl::InterfaceDecl(Identifier *n, List<Decl*> *m) : Decl(n) {
     Assert(n != NULL && m != NULL);
     (members=m)->SetParentAll(this);

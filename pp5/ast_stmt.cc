@@ -81,7 +81,7 @@ void ForStmt::CheckNode() {
 void ForStmt::Emit() {
     init->Emit();
     char *start_label = cg->NewLabel();
-    char *end_label = cg->NewLabel();
+    end_label = cg->NewLabel();
     cg->GenLabel(start_label);
     test->Emit();
     cg->GenIfZ(test->ResultLocation(), end_label);
@@ -93,7 +93,7 @@ void ForStmt::Emit() {
 
 void WhileStmt::Emit() {
     char *start_label = cg->NewLabel();
-    char *end_label = cg->NewLabel();
+    end_label = cg->NewLabel();
     cg->GenLabel(start_label);
     test->Emit();
     cg->GenIfZ(test->ResultLocation(), end_label);
@@ -128,6 +128,26 @@ void IfStmt::Emit() {
         elseBody->Emit();
     }
     cg->GenLabel(end_label);
+}
+
+void BreakStmt::Emit() {
+    Node *super = this;
+    char *label = NULL;
+    while ((super = super->GetParent()) && label == NULL) {
+        WhileStmt *as_while = dynamic_cast<WhileStmt*>(super);
+        if (as_while != NULL) {
+            label = as_while->EndLabel();
+	    break;
+        }
+        ForStmt *as_for = dynamic_cast<ForStmt*>(super);
+        if (as_for != NULL) {
+            label = as_for->EndLabel();
+	    break;
+        }
+    }
+    if (label) {
+        cg->GenGoto(label);
+    }
 }
 
 ReturnStmt::ReturnStmt(yyltype loc, Expr *e) : Stmt(loc) { 

@@ -72,18 +72,24 @@ class ForStmt : public LoopStmt
 {
   protected:
     Expr *init, *step;
+    char *end_label;
   
   public:
     ForStmt(Expr *init, Expr *test, Expr *step, Stmt *body);
     void CheckNode();
     void Emit();
+    char *EndLabel() { return end_label; }
 };
 
 class WhileStmt : public LoopStmt 
 {
+  private:
+    char *end_label;
+
   public:
     WhileStmt(Expr *test, Stmt *body) : LoopStmt(test, body) {}
     void Emit();
+    char *EndLabel() { return end_label; }
 };
 
 class IfStmt : public ConditionalStmt 
@@ -101,6 +107,7 @@ class BreakStmt : public Stmt
 {
   public:
     BreakStmt(yyltype loc) : Stmt(loc) {}
+    void Emit();
 };
 
 class ReturnStmt : public Stmt  

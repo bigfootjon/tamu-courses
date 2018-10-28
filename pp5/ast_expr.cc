@@ -123,6 +123,27 @@ void CompoundExpr::Emit() {
             op_string = (char*)"==";
         }
     }
+    if (strcmp(op_string, "<=") == 0) {
+        Location *const_1 = cg->GenLoadConstant(1);
+        right_loc = cg->GenBinaryOp((char*)"+", right_loc, const_1);
+	op_string = (char*)"<";
+    } else if (strcmp(op_string, ">") == 0) {
+        Location *temp = left_loc;
+	left_loc = right_loc;
+	right_loc = temp;
+	op_string = (char*)"<";
+    } else if (strcmp(op_string, ">=") == 0) {
+        Location *temp = left_loc;
+	left_loc = right_loc;
+	right_loc = temp;
+        Location *const_1 = cg->GenLoadConstant(1);
+        right_loc = cg->GenBinaryOp((char*)"+", right_loc, const_1);
+	op_string = (char*)"<";
+    } else if (strcmp(op_string, "!=") == 0) {
+        right_loc = cg->GenBinaryOp((char*)"==", left_loc, right_loc);
+	left_loc = cg->GenLoadConstant(0);
+        op_string = (char*)"==";
+    }
     SetResult(cg->GenBinaryOp(op_string, left_loc, right_loc));
 }
 

@@ -492,17 +492,26 @@ void Call::Emit() {
     }
     bool hasReturn = Type::voidType->IsEquivalentTo(calling->GetType());
     int thisarg = 0;
+    ClassDecl *class_obj = dynamic_cast<ClassDecl*>(calling->GetParent());
     if (base) {
-        thisarg = 1;
         base->Emit();
+        thisarg = 1;
         cg->GenPushParam(base->ResultLocation());
         Location *obj = cg->GenLoad(base->ResultLocation());
-	ClassDecl *class_obj = dynamic_cast<ClassDecl*>(calling->GetParent());
 	class_obj->Check();
         Location *func = cg->GenLoad(obj, class_obj->FuncOffset(field->GetName()));
         SetResult(cg->GenACall(func, !hasReturn));
     } else {
-        SetResult(cg->GenLCall(calling->GetName(), !hasReturn));
+        if (class_obj != NULL) {
+            thisarg = 1;
+            cg->GenPushParam(cg->ThisPtr);
+            Location *obj = cg->GenLoad(cg->ThisPtr);
+	    class_obj->Check();
+            Location *func = cg->GenLoad(obj, class_obj->FuncOffset(field->GetName()));
+            SetResult(cg->GenACall(func, !hasReturn));
+	} else {
+            SetResult(cg->GenLCall(calling->GetName(), !hasReturn));
+	}
     }
     cg->GenPopParams(cg->VarSize * (actuals->NumElements() + thisarg));
 }

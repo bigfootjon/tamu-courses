@@ -109,8 +109,6 @@ Type *CompoundExpr::_GetType() {
 }
 
 void CompoundExpr::Emit() {
-    right->Emit();
-    Location *right_loc = right->ResultLocation();
     Location *left_loc;
     char *op_string = op->GetOpString();
     
@@ -123,6 +121,8 @@ void CompoundExpr::Emit() {
             op_string = (char*)"==";
         }
     }
+    right->Emit();
+    Location *right_loc = right->ResultLocation();
     if (strcmp(op_string, "<=") == 0) {
         Location *const_1 = cg->GenLoadConstant(1);
         right_loc = cg->GenBinaryOp((char*)"+", right_loc, const_1);
@@ -140,11 +140,19 @@ void CompoundExpr::Emit() {
         right_loc = cg->GenBinaryOp((char*)"+", right_loc, const_1);
 	op_string = (char*)"<";
     } else if (strcmp(op_string, "!=") == 0) {
-        right_loc = cg->GenBinaryOp((char*)"==", left_loc, right_loc);
+        if (Type::stringType->IsEquivalentTo(left->GetType()) && Type::stringType->IsEquivalentTo(right->GetType())) {
+	    right_loc = cg->GenBuiltInCall(StringEqual, left_loc, right_loc);
+	} else {
+            right_loc = cg->GenBinaryOp((char*)"==", left_loc, right_loc);
+	}
 	left_loc = cg->GenLoadConstant(0);
         op_string = (char*)"==";
     }
-    SetResult(cg->GenBinaryOp(op_string, left_loc, right_loc));
+    if (strcmp("==", op->GetOpString()) == 0 && Type::stringType->IsEquivalentTo(left->GetType()) && Type::stringType->IsEquivalentTo(right->GetType())) {
+        SetResult(cg->GenBuiltInCall(StringEqual, left_loc, right_loc));
+    } else {
+        SetResult(cg->GenBinaryOp(op_string, left_loc, right_loc));
+    }
 }
 
 void ArithmeticExpr::CheckNode() {
@@ -590,6 +598,6 @@ Type *ReadLineExpr::GetType() {
 }
 
 void ReadLineExpr::Emit() {
-    SetResult(cg->GenBuiltInCall(ReadInteger));
+    SetResult(cg->GenBuiltInCall(ReadLine));
 }
 

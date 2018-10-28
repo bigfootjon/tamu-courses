@@ -270,8 +270,18 @@ Type *ArrayAccess::GetType() {
 }
 
 void ArrayAccess::Emit() {
+    char *good_label = cg->NewLabel();
     base->Emit();
     subscript->Emit();
+    Location *const_0 = cg->GenLoadConstant(0);
+    Location *gt0 = cg->GenBinaryOp((char*)"<", subscript->ResultLocation(), const_0);
+    Location *size = cg->GenLoad(base->ResultLocation(), 0);
+    Location *lts = cg->GenBinaryOp((char*)"<", cg->GenBinaryOp((char*)"-", size, cg->GenLoadConstant(1)), subscript->ResultLocation());
+    Location *either = cg->GenBinaryOp((char*)"||", gt0, lts);
+    cg->GenIfZ(either, good_label);
+    cg->GenBuiltInCall(PrintString, cg->GenLoadConstant("Decaf runtime error: Array subscript out of bounds"));
+    cg->GenBuiltInCall(Halt);
+    cg->GenLabel(good_label);
     Location *padded_subscript = cg->GenBinaryOp("+", subscript->ResultLocation(), cg->GenLoadConstant(1));
     Location *offset = cg->GenBinaryOp("*", padded_subscript, cg->GenLoadConstant(cg->VarSize));
     Location *address = cg->GenBinaryOp("+", base->ResultLocation(), offset);
@@ -507,7 +517,14 @@ Type *NewArrayExpr::GetType() {
 }
 
 void NewArrayExpr::Emit() {
+    char *good_label = cg->NewLabel();
     size->Emit();
+    Location *const_0 = cg->GenLoadConstant(0);
+    Location *gt0 = cg->GenBinaryOp((char*)"<", size->ResultLocation(), const_0);
+    cg->GenIfZ(gt0, good_label);
+    cg->GenBuiltInCall(PrintString, cg->GenLoadConstant("Decaf runtime error: Array size is <= 0"));
+    cg->GenBuiltInCall(Halt);
+    cg->GenLabel(good_label);
     Location *const_1 = cg->GenLoadConstant(1);
     Location *total_count = cg->GenBinaryOp((char*)"+", const_1, size->ResultLocation());
     Location *var_size = cg->GenLoadConstant(cg->VarSize);

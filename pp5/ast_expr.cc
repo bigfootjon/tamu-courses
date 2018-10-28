@@ -492,6 +492,11 @@ Type *Call::GetType() {
 }
 
 void Call::Emit() {
+    if (base && dynamic_cast<ArrayType*>(base->GetType()) != NULL && strcmp(field->GetName(), "length") == 0) {
+        base->Emit();
+        SetResult(cg->GenLoad(base->ResultLocation()));
+	return;
+    }
     for (int i = 0; i < actuals->NumElements(); ++i) {
         actuals->Nth(i)->Emit();
     }

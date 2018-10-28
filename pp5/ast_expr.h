@@ -96,6 +96,7 @@ class NullConstant: public Expr
   public: 
     NullConstant(yyltype loc) : Expr(loc) {}
     Type *GetType();
+    void Emit() { SetResult(cg->GenLoadConstant(0)); }
 };
 
 class Operator : public Node 

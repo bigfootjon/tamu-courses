@@ -70,6 +70,7 @@ class ClassDecl : public Decl
     Decl *LookupType(char *name, bool recursive=true);
     int MemberCount() { return members->NumElements(); }
     int VarCount();
+    int FuncCount();
     void Emit();
     void AddMethod(char *name) { vtable->Append(name); }
     int FuncOffset(char *name);

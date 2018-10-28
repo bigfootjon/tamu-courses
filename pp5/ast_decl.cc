@@ -177,10 +177,36 @@ int ClassDecl::VarCount() {
             count++;
         }
     }
+    if (extends) {
+        ClassDecl *parent = dynamic_cast<ClassDecl*>(LookupType(extends->GetId()->GetName()));
+	count += parent->VarCount();
+    }
+    return count;
+}
+
+int ClassDecl::FuncCount() {
+    int count = 0;
+    for (int i = 0; i < members->NumElements(); ++i) {
+        if (dynamic_cast<FnDecl*>(members->Nth(i))) {
+            count++;
+        }
+    }
+    if (extends) {
+        ClassDecl *parent = dynamic_cast<ClassDecl*>(LookupType(extends->GetId()->GetName()));
+	count += parent->VarCount();
+    }
     return count;
 }
 
 void ClassDecl::Emit() {
+    if (extends) {
+        ClassDecl *parent = dynamic_cast<ClassDecl*>(LookupType(extends->GetId()->GetName()));
+        for (int i = 0; i < parent->members->NumElements(); ++i) {
+            if (dynamic_cast<FnDecl*>(parent->members->Nth(i))) {
+                vtable->Append(((FnDecl*)parent->members->Nth(i))->GetFullName());
+	    }
+	}
+    }
     for (int i = 0; i < members->NumElements(); ++i) {
         members->Nth(i)->Emit();
     }
@@ -189,6 +215,10 @@ void ClassDecl::Emit() {
 
 int ClassDecl::FuncOffset(char *name) {
     int fns = 0;
+    if (extends) {
+        ClassDecl *parent = dynamic_cast<ClassDecl*>(LookupType(extends->GetId()->GetName()));
+	fns = parent->FuncCount();
+    }
     for (int i = 0; i < members->NumElements(); ++i) {
         Decl *member = members->Nth(i);
         if (dynamic_cast<FnDecl*>(member)) {
@@ -198,11 +228,19 @@ int ClassDecl::FuncOffset(char *name) {
             return (fns-1)*cg->VarSize;
 	}
     }
+    if (extends) {
+        ClassDecl *parent = dynamic_cast<ClassDecl*>(LookupType(extends->GetId()->GetName()));
+	return parent->FuncOffset(name);
+    }
     return -1;
 }
 
 int ClassDecl::VarOffset(char *name) {
     int vars = 0;
+    if (extends) {
+        ClassDecl *parent = dynamic_cast<ClassDecl*>(LookupType(extends->GetId()->GetName()));
+	vars = parent->VarCount();
+    }
     for (int i = 0; i < members->NumElements(); ++i) {
         Decl *member = members->Nth(i);
         if (dynamic_cast<VarDecl*>(member)) {
@@ -211,6 +249,10 @@ int ClassDecl::VarOffset(char *name) {
         if (strcmp(members->Nth(i)->GetName(), name) == 0) {
             return (vars-1)*cg->VarSize;
 	}
+    }
+    if (extends) {
+        ClassDecl *parent = dynamic_cast<ClassDecl*>(LookupType(extends->GetId()->GetName()));
+	return parent->VarOffset(name);
     }
     return -1;
 }

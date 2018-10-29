@@ -57,7 +57,6 @@ ClassDecl::ClassDecl(Identifier *n, NamedType *ex, List<NamedType*> *imp, List<D
     if (extends) extends->SetParent(this);
     (implements=imp)->SetParentAll(this);
     (members=m)->SetParentAll(this);
-    vtable = new List<const char*>;
 }
 
 void ClassDecl::CheckNode() {
@@ -193,44 +192,97 @@ int ClassDecl::FuncCount() {
     }
     if (extends) {
         ClassDecl *parent = dynamic_cast<ClassDecl*>(LookupType(extends->GetId()->GetName()));
-	count += parent->VarCount();
+	count += parent->FuncCount();
     }
     return count;
 }
 
 void ClassDecl::Emit() {
+    List<FnDecl*> vtable;
     if (extends) {
         ClassDecl *parent = dynamic_cast<ClassDecl*>(LookupType(extends->GetId()->GetName()));
         for (int i = 0; i < parent->members->NumElements(); ++i) {
-            if (dynamic_cast<FnDecl*>(parent->members->Nth(i))) {
-                vtable->Append(((FnDecl*)parent->members->Nth(i))->GetFullName());
+	    FnDecl *as_fn = dynamic_cast<FnDecl*>(parent->members->Nth(i));
+            if (as_fn) {
+	        bool found = false;
+	        for (int j = 0; j < members->NumElements(); ++j) {
+		    FnDecl *mem_fn = dynamic_cast<FnDecl*>(members->Nth(j));
+                    if (mem_fn && strcmp(mem_fn->GetName(), as_fn->GetName()) == 0) {
+                        vtable.Append(mem_fn);
+			found = true;
+			break;
+		    }
+		}
+		if (!found) {
+                    vtable.Append(as_fn);
+		}
 	    }
 	}
     }
     for (int i = 0; i < members->NumElements(); ++i) {
         members->Nth(i)->Emit();
+	FnDecl *as_fn = dynamic_cast<FnDecl*>(members->Nth(i));
+	if (as_fn) {
+	    bool found = false;
+            for (int j = 0; j < vtable.NumElements(); ++j) {
+                if (strcmp(as_fn->GetName(), vtable.Nth(j)->GetName()) == 0) {
+                    found = true;
+		    break;
+		}
+	    }
+	    if (!found) {
+                vtable.Append(as_fn);
+	    }
+	}
     }
-    cg->GenVTable(GetName(), vtable);
+    List<const char *> *vtable_labels = new List<const char *>;
+    for (int i = 0; i < vtable.NumElements(); ++i) {
+        vtable_labels->Append(vtable.Nth(i)->GetFullName());
+    }
+    cg->GenVTable(GetName(), vtable_labels);
 }
 
 int ClassDecl::FuncOffset(char *name) {
-    int fns = 0;
+    List<FnDecl*> vtable;
     if (extends) {
         ClassDecl *parent = dynamic_cast<ClassDecl*>(LookupType(extends->GetId()->GetName()));
-	fns = parent->FuncCount();
+        for (int i = 0; i < parent->members->NumElements(); ++i) {
+	    FnDecl *as_fn = dynamic_cast<FnDecl*>(parent->members->Nth(i));
+            if (as_fn) {
+	        bool found = false;
+	        for (int j = 0; j < members->NumElements(); ++j) {
+		    FnDecl *mem_fn = dynamic_cast<FnDecl*>(members->Nth(j));
+                    if (mem_fn && strcmp(mem_fn->GetName(), as_fn->GetName()) == 0) {
+                        vtable.Append(mem_fn);
+			found = true;
+			break;
+		    }
+		}
+		if (!found) {
+                    vtable.Append(as_fn);
+		}
+	    }
+	}
     }
     for (int i = 0; i < members->NumElements(); ++i) {
-        Decl *member = members->Nth(i);
-        if (dynamic_cast<FnDecl*>(member)) {
-            ++fns;
-	}
-        if (strcmp(members->Nth(i)->GetName(), name) == 0) {
-            return (fns-1)*cg->VarSize;
+	FnDecl *as_fn = dynamic_cast<FnDecl*>(members->Nth(i));
+	if (as_fn) {
+	    bool found = false;
+            for (int j = 0; j < vtable.NumElements(); ++j) {
+                if (strcmp(as_fn->GetName(), vtable.Nth(j)->GetName()) == 0) {
+                    found = true;
+		    break;
+		}
+	    }
+	    if (!found) {
+                vtable.Append(as_fn);
+	    }
 	}
     }
-    if (extends) {
-        ClassDecl *parent = dynamic_cast<ClassDecl*>(LookupType(extends->GetId()->GetName()));
-	return parent->FuncOffset(name);
+    for (int i = 0; i < vtable.NumElements(); ++i) {
+        if (strcmp(name, vtable.Nth(i)->GetName()) == 0) {
+            return i * cg->VarSize;
+	}
     }
     return -1;
 }
@@ -305,7 +357,6 @@ void FnDecl::Emit() {
     ClassDecl *parent_class = dynamic_cast<ClassDecl*>(GetParent());
     BeginFunc *func = cg->GenBeginFunc();
     if (parent_class) {
-        parent_class->AddMethod(name);
         cg->GenParamVar((char*)"this");
     }
     for (int i = 0; i < formals->NumElements(); ++i) {

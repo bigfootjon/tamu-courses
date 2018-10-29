@@ -20,6 +20,7 @@ class NamedType;
 class Identifier;
 class Stmt;
 class Location;
+class FnDecl;
 
 class Decl : public Node 
 {
@@ -56,7 +57,6 @@ class ClassDecl : public Decl
 {
   protected:
     List<Decl*> *members;
-    List<const char*> *vtable;
 
   public:
     NamedType *extends;
@@ -72,7 +72,6 @@ class ClassDecl : public Decl
     int VarCount();
     int FuncCount();
     void Emit();
-    void AddMethod(char *name) { vtable->Append(name); }
     int FuncOffset(char *name);
     int VarOffset(char *name);
 };

@@ -92,6 +92,7 @@ eloop2:
 	lw $t0, 4($fp)       
 	lw $t1, 8($fp)
 	li $t3, 0     		
+        beq $t3, $t4, eloop3
 bloop3:	
 	lb $t5, ($t0) 
 	lb $t6, ($t1) 

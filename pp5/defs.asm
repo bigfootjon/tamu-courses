@@ -131,12 +131,18 @@ _ReadLine:
 	sw $ra, 4($sp)        # save ra
 	addiu $fp, $sp, 8     # set up new fp
 	subu $sp, $sp, 4      # decrement sp to make space for locals/temps
+
+	li $a0, 41
+	li $v0, 9
+	syscall
+	move $a0, $v0
+	move $s0, $v0
+
 	li $a1, 40
-	la $a0, SPACE
 	li $v0, 8
 	syscall
 
-	la $t1, SPACE
+	move $t1, $s0
 bloop4: 
 	lb $t5, ($t1) 
 	beqz $t5, eloop4	
@@ -145,9 +151,9 @@ bloop4:
 eloop4:
 	addi $t1,-1
 	li $t6,0
-        sb $t6, ($t1)
+	sb $t6, ($t1)
 
-	la $v0, SPACE
+	move $v0, $s0
 	move $sp, $fp         # pop callee frame off stack
 	lw $ra, -4($fp)       # restore saved ra
 	lw $fp, 0($fp)        # restore saved fp
@@ -157,4 +163,3 @@ eloop4:
 	.data
 TRUE:.asciiz "true"
 FALSE:.asciiz "false"
-SPACE:.asciiz "Making Space For Inputed Values Is Fun."

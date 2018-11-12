@@ -37,6 +37,57 @@ static bool LocationsAreSame(Location *var1, Location *var2)
 		&& var1->GetOffset() == var2->GetOffset()));
 }
 
+Mips::Register Mips::GetRegister(Location *var) {
+    for (int i = r_begin; i <= r_end; ++i) {
+        RegContents r = regs[i];
+	if (r.var == var) {
+            r.isDirty = false;
+            return (Register)i;
+	}
+    }
+    for (int i = r_begin; i <= r_end; ++i) {
+        RegContents r = regs[i];
+        if (r.var == NULL) {
+	    r.var = var;
+            r.isDirty = false;
+	    return (Register)i;
+	}
+    }
+    if (!regs[t7].isDirty) {
+        regs[t7].isDirty = true;
+	regs[t7].var = var;
+	return t7;
+    }
+    if (!regs[t8].isDirty) {
+        regs[t8].isDirty = true;
+	regs[t8].var = var;
+	return t8;
+    }
+    if (!regs[t9].isDirty) {
+        regs[t9].isDirty = true;
+	regs[t9].var = var;
+	return t9;
+    }
+    return NumRegs;
+}
+
+void Mips::DirtyRegister(Register r) {
+    if (r == t7 || r == t8 || r ==t9) {
+        SpillRegister(regs[r].var, r);
+	return;
+    }
+    regs[r].isDirty = true;
+}
+
+void Mips::SpillDirtyRegisters() {
+    for (int i = r_begin; i <= r_end; ++i) {
+        RegContents r = regs[i];
+	if (r.isDirty && r.var != NULL && r.var->GetSegment() != gpRelative) {
+            SpillRegister(r.var, (Register)i);
+	}
+    }
+}
+
 
 /* Method: SpillRegister
  * ---------------------
@@ -51,6 +102,8 @@ void Mips::SpillRegister(Location *dst, Register reg)
   Emit("sw %s, %d(%s)\t# spill %s from %s to %s%+d", regs[reg].name,
        dst->GetOffset(), offsetFromWhere, dst->GetName(), regs[reg].name,
        offsetFromWhere,dst->GetOffset());
+       regs[reg].isDirty = false;
+       regs[reg].var = NULL;
 }
 
 /* Method: FillRegister
@@ -99,10 +152,10 @@ void Mips::Emit(const char *fmt, ...)
  */
 void Mips::EmitLoadConstant(Location *dst, int val)
 {
-  Register r = rd; 
+  Register r = GetRegister(dst); 
   Emit("li %s, %d\t\t# load constant value %d into %s", regs[r].name,
 	 val, val, regs[r].name);
-  SpillRegister(dst, rd);
+  DirtyRegister(r);
 }
 
 /* Method: EmitLoadStringConstant
@@ -131,8 +184,9 @@ void Mips::EmitLoadStringConstant(Location *dst, const char *str)
  */
 void Mips::EmitLoadLabel(Location *dst, const char *label)
 {
-  Emit("la %s, %s\t# load label", regs[rd].name, label);
-  SpillRegister(dst, rd);
+  Register r = GetRegister(dst);
+  Emit("la %s, %s\t# load label", regs[r].name, label);
+  DirtyRegister(r);
 }
  
 
@@ -144,8 +198,9 @@ void Mips::EmitLoadLabel(Location *dst, const char *label)
  */
 void Mips::EmitCopy(Location *dst, Location *src)
 {
-  FillRegister(src, rd);
-  SpillRegister(dst, rd);
+  Register r = GetRegister(dst);
+  FillRegister(src, r);
+  DirtyRegister(r);
 }
 
 
@@ -159,10 +214,12 @@ void Mips::EmitCopy(Location *dst, Location *src)
  */
 void Mips::EmitLoad(Location *dst, Location *reference, int offset)
 {
-  FillRegister(reference, rs);
-  Emit("lw %s, %d(%s) \t# load with offset", regs[rd].name,
-	 offset, regs[rs].name);
-  SpillRegister(dst, rd);
+  Register r1 = GetRegister(reference);
+  Register r2 = GetRegister(dst);
+  FillRegister(reference, r1);
+  Emit("lw %s, %d(%s) \t# load with offset", regs[r2].name,
+	 offset, regs[r1].name);
+  DirtyRegister(r2);
 }
 
 
@@ -176,10 +233,12 @@ void Mips::EmitLoad(Location *dst, Location *reference, int offset)
  */
 void Mips::EmitStore(Location *reference, Location *value, int offset)
 {
-  FillRegister(value, rs);
-  FillRegister(reference, rd);
+  Register r1 = GetRegister(value);
+  Register r2 = GetRegister(reference);
+  FillRegister(value, r1);
+  FillRegister(reference, r2);
   Emit("sw %s, %d(%s) \t# store with offset",
-	 regs[rs].name, offset, regs[rd].name);
+	 regs[r1].name, offset, regs[r2].name);
 }
 
 
@@ -194,11 +253,14 @@ void Mips::EmitStore(Location *reference, Location *value, int offset)
 void Mips::EmitBinaryOp(BinaryOp::OpCode code, Location *dst, 
 				 Location *op1, Location *op2)
 {
-  FillRegister(op1, rs);
-  FillRegister(op2, rt);
-  Emit("%s %s, %s, %s\t", NameForTac(code), regs[rd].name,
-	 regs[rs].name, regs[rt].name);
-  SpillRegister(dst, rd);
+  Register r1 = GetRegister(op1);
+  Register r2 = GetRegister(op2);
+  Register r3 = GetRegister(dst);
+  FillRegister(op1, r1);
+  FillRegister(op2, r2);
+  Emit("%s %s, %s, %s\t", NameForTac(code), regs[r3].name,
+	 regs[r1].name, regs[r2].name);
+  DirtyRegister(r3);
 }
 
 
@@ -239,8 +301,9 @@ void Mips::EmitGoto(const char *label)
  */
 void Mips::EmitIfZ(Location *test, const char *label)
 {
-  FillRegister(test, rs);
-  Emit("beqz %s, %s\t# branch if %s is zero ", regs[rs].name, label,
+  Register r = GetRegister(test);
+  FillRegister(test, r);
+  Emit("beqz %s, %s\t# branch if %s is zero ", regs[r].name, label,
 	 test->GetName());
 }
 
@@ -254,9 +317,10 @@ void Mips::EmitIfZ(Location *test, const char *label)
  */
 void Mips::EmitParam(Location *arg)
 { 
+  Register r = GetRegister(arg);
   Emit("subu $sp, $sp, 4\t# decrement sp to make space for param");
-  FillRegister(arg, rs);
-  Emit("sw %s, 4($sp)\t# copy param value to stack", regs[rs].name);
+  FillRegister(arg, r);
+  Emit("sw %s, 4($sp)\t# copy param value to stack", regs[r].name);
 }
 
 
@@ -273,11 +337,12 @@ void Mips::EmitParam(Location *arg)
  */
 void Mips::EmitCallInstr(Location *result, const char *fn, bool isLabel)
 {
+  Register r = GetRegister(result);
   Emit("%s %-15s\t# jump to function", isLabel? "jal": "jalr", fn);
   if (result != NULL) {
     Emit("move %s, %s\t\t# copy function return value from $v0",
-    regs[rd].name, regs[v0].name);
-    SpillRegister(result, rd);
+    regs[r].name, regs[v0].name);
+    DirtyRegister(r);
   }
 }
 
@@ -290,8 +355,9 @@ void Mips::EmitLCall(Location *dst, const char *label)
 
 void Mips::EmitACall(Location *dst, Location *fn)
 {
-  FillRegister(fn, rs);
-  EmitCallInstr(dst, regs[rs].name, false);
+  Register r = GetRegister(fn);
+  FillRegister(fn, r);
+  EmitCallInstr(dst, regs[r].name, false);
 }
 
 /*
@@ -322,11 +388,12 @@ void Mips::EmitPopParams(int bytes)
  */
  void Mips::EmitReturn(Location *returnVal)
 { 
+  Register r = GetRegister(returnVal);
   if (returnVal != NULL) 
     {
-      FillRegister(returnVal, rd);
+      FillRegister(returnVal, r);
       Emit("move $v0, %s\t\t# assign return value into $v0",
-	   regs[rd].name);
+	   regs[r].name);
     }
   Emit("move $sp, $fp\t\t# pop callee frame off stack");
   Emit("lw $ra, -4($fp)\t# restore saved ra");
@@ -464,8 +531,6 @@ Mips::Mips() {
   regs[s5] = (RegContents){false, NULL, "$s5", true};
   regs[s6] = (RegContents){false, NULL, "$s6", true};
   regs[s7] = (RegContents){false, NULL, "$s7", true};
-  rs = t0; rt = t1; rd = t2;
-
 }
 const char *Mips::mipsName[BinaryOp::NumOps];
 

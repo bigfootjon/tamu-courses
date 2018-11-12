@@ -42,7 +42,7 @@ class Mips {
 
     typedef enum { ForRead, ForWrite } Reason;
 
-    Register GetRegister(Location *var);
+    Register GetRegister(Location *var, bool fill=true);
     void DirtyRegister(Register r);
     void SpillDirtyRegisters();
     

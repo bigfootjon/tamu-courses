@@ -42,6 +42,7 @@ Mips::Register Mips::GetRegister(Location *var) {
         RegContents r = regs[i];
 	if (r.var == var) {
             r.isDirty = false;
+	    regs[i] = r;
             return (Register)i;
 	}
     }
@@ -50,6 +51,7 @@ Mips::Register Mips::GetRegister(Location *var) {
         if (r.var == NULL) {
 	    r.var = var;
             r.isDirty = false;
+	    regs[i] = r;
 	    return (Register)i;
 	}
     }
@@ -114,6 +116,7 @@ void Mips::SpillRegister(Location *dst, Register reg)
 void Mips::FillRegister(Location *src, Register reg)
 {
   Assert(src);
+  regs[reg].var = src;
   const char *offsetFromWhere = src->GetSegment() == fpRelative? regs[fp].name : regs[gp].name;
   Assert(src->GetOffset() % 4 == 0); // all variables are 4 bytes in size
   Emit("lw %s, %d(%s)\t# fill %s to %s from %s%+d", regs[reg].name,
@@ -273,7 +276,7 @@ void Mips::EmitBinaryOp(BinaryOp::OpCode code, Location *dst,
  */
 void Mips::EmitLabel(const char *label)
 {
- 
+  SpillDirtyRegisters();
   Emit("%s:", label);
 }
 
@@ -287,7 +290,7 @@ void Mips::EmitLabel(const char *label)
  */
 void Mips::EmitGoto(const char *label)
 {
- 
+  SpillDirtyRegisters();
   Emit("b %s\t\t# unconditional branch", label);
 }
 
@@ -301,6 +304,7 @@ void Mips::EmitGoto(const char *label)
  */
 void Mips::EmitIfZ(Location *test, const char *label)
 {
+  SpillDirtyRegisters();
   Register r = GetRegister(test);
   FillRegister(test, r);
   Emit("beqz %s, %s\t# branch if %s is zero ", regs[r].name, label,
@@ -395,6 +399,7 @@ void Mips::EmitPopParams(int bytes)
       Emit("move $v0, %s\t\t# assign return value into $v0",
 	   regs[r].name);
     }
+  SpillDirtyRegisters();
   Emit("move $sp, $fp\t\t# pop callee frame off stack");
   Emit("lw $ra, -4($fp)\t# restore saved ra");
   Emit("lw $fp, 0($fp)\t# restore saved fp");

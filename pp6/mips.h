@@ -38,12 +38,14 @@ class Mips {
 	bool isGeneralPurpose;
     } regs[NumRegs];
 
-    Register r_begin = t0, r_end = t6;
+    Register r_begin, r_end;
 
     typedef enum { ForRead, ForWrite } Reason;
 
+    Register FindRegister(Location *var);
     Register GetRegister(Location *var, bool fill=true);
     void DirtyRegister(Register r);
+    void FreeRegister(Register r);
     void SpillDirtyRegisters();
     
     void FillRegister(Location *src, Register reg);

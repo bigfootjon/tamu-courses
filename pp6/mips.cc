@@ -50,38 +50,45 @@ Mips::Register Mips::FindRegister(Location *var) {
 Mips::Register Mips::GetRegister(Location *var, bool fill) {
     int found = FindRegister(var);
     if (found != NumRegs) {
+        printf("#REUSE %s\n", regs[found].name);
         fill = false;
     }
     if (found == NumRegs) {
         for (int i = r_begin; i <= r_end; ++i) {
             RegContents r = regs[i];
-            if (r.var == NULL) {
+            if (r.isDirty == false && r.var == NULL) {
+                printf("#NEW %s\n", regs[i].name);
 	        found = i;
 		break;
 	    }
         }
     }
-    if (found == NumRegs && !regs[t7].isDirty) {
+    if (found == NumRegs && !regs[t7].var) {
 	found = t7;
+        printf("#EMERGE %s\n", regs[found].name);
     }
-    if (found == NumRegs && !regs[t8].isDirty) {
+    if (found == NumRegs && !regs[t8].var) {
 	found = t8;
+        printf("#EMERGE %s\n", regs[found].name);
     }
-    if (found == NumRegs && !regs[t9].isDirty) {
+    if (found == NumRegs && !regs[t9].var) {
 	found = t9;
+        printf("#EMERGE %s\n", regs[found].name);
     }
     if (found == NumRegs) {
+        printf("#NONE LEFT\n");
         return (Register)found;
     }
-    regs[found].isDirty = false;
     regs[found].var = var;
-    if (var != NULL && fill) {
+    if (fill) {
         FillRegister(var, (Register)found);
+        regs[found].isDirty = false;
     }
     return (Register)found;
 }
 
 void Mips::DirtyRegister(Register r) {
+    printf("#DIRTY %s\n", regs[r].name);
     if (r == t7 || r == t8 || r ==t9) {
         if (regs[r].var) {
             SpillRegister(regs[r].var, r);
@@ -92,18 +99,26 @@ void Mips::DirtyRegister(Register r) {
 }
 
 void Mips::FreeRegister(Register r) {
-  if (r != t7 && r != t8 && r != t9) {
+  printf("#FREE %s\n", regs[r].name);
+  if (r == t7 || r == t8 || r == t9) {
+    if (regs[r].isDirty && regs[r].var) {
+      SpillRegister(regs[r].var, r);
+    }
     regs[r].var = NULL;
+    regs[r].isDirty = false;
   }
-  regs[r].isDirty = false;
 }
 
 void Mips::SpillDirtyRegisters() {
+    printf("#SPILL ALL DIRTIES\n");
     for (int i = r_begin; i <= r_end; ++i) {
         RegContents r = regs[i];
-	if (r.isDirty && r.var != NULL && r.var->GetSegment() != gpRelative) {
+	if (r.isDirty && r.var != NULL) {
             SpillRegister(r.var, (Register)i);
-	}
+	} else {
+            regs[i].var = NULL;
+            regs[i].isDirty = false;
+        }
     }
 }
 
@@ -114,6 +129,7 @@ void Mips::SpillDirtyRegisters() {
  */
 void Mips::SpillRegister(Location *dst, Register reg)
 {
+  printf("#SPILL %s\n", regs[reg].name);
   Assert(dst);
   const char *offsetFromWhere = dst->GetSegment() == fpRelative? regs[fp].name : regs[gp].name;
   Assert(dst->GetOffset() % 4 == 0); // all variables are 4 bytes in size
@@ -131,6 +147,7 @@ void Mips::SpillRegister(Location *dst, Register reg)
  */
 void Mips::FillRegister(Location *src, Register reg)
 {
+  printf("#FILL %s\n", regs[reg].name);
   Assert(src);
   const char *offsetFromWhere = src->GetSegment() == fpRelative? regs[fp].name : regs[gp].name;
   Assert(src->GetOffset() % 4 == 0); // all variables are 4 bytes in size

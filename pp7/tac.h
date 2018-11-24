@@ -17,7 +17,6 @@
  *
  * You may need to make changes/extensions to these classes
  * if you are working on IR optimization.
-
  */
 
 #ifndef _H_tac

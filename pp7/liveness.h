@@ -1,10 +1,19 @@
+#ifndef _H_LIVENESS
+#define _H_LIVENESS
+
 #include <set>
 #include "mips.h"
 #include "df_base.h"
 
 typedef std::set<const Location*> LiveSet;
 
-class Liveness : public DataFlow<LiveSet, ControlFlowGraph::ReverseFlow> {
+class Liveness : DataFlow<LiveSet, ControlFlowGraph::ReverseFlow> {
+public:
+  Liveness(ControlFlowGraph &cfg) : DataFlow(cfg) {
+    analyze();
+  }
+
+protected:
   // Value for beginning of function (or end in ReverseFlow)
   LiveSet init() {
     return LiveSet();
@@ -17,6 +26,7 @@ class Liveness : public DataFlow<LiveSet, ControlFlowGraph::ReverseFlow> {
 
   // Calculate effect a particular instruction has on value
   LiveSet effect(const Instruction* instr, const LiveSet& in) {
+    printf("#E: ");
     ((Instruction*)instr)->Print();
     return in;
   }
@@ -28,3 +38,5 @@ class Liveness : public DataFlow<LiveSet, ControlFlowGraph::ReverseFlow> {
     return result;
   }
 };
+
+#endif

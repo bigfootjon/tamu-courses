@@ -11,6 +11,7 @@
 #include "mips.h"
 #include "ast_decl.h"
 #include "errors.h"
+#include "liveness.h"
 
 Location* CodeGenerator::ThisPtr= new Location(fpRelative, 4, "this");
   
@@ -258,7 +259,7 @@ void CodeGenerator::DoFinalCodeGen()
           end_func= p;
 
           ControlFlowGraph cfg(begin_func, end_func);
-          // TODO (phase 2): use CFG for liveness analysis
+	  Liveness live(cfg);
 
           // Now go back and print out the instructions
           for (p= begin_func; p != end_func; ++p)

@@ -23,6 +23,7 @@
 #define _H_tac
 
 #include "list.h" // for VTable
+#include <set>
 class Mips;
 
 
@@ -72,6 +73,7 @@ class Instruction {
     public:
 	virtual void Print();
 	virtual void EmitSpecific(Mips *mips) = 0;
+	virtual std::set<const Location*> GetLocations() { return std::set<const Location*>(); }
 	void Emit(Mips *mips);
 };
 
@@ -107,6 +109,7 @@ class LoadConstant: public Instruction {
   public:
     LoadConstant(Location *dst, int val);
     void EmitSpecific(Mips *mips);
+    std::set<const Location*> GetLocations() { return std::set<const Location*>({dst}); }
 };
 
 class LoadStringConstant: public Instruction {
@@ -115,6 +118,7 @@ class LoadStringConstant: public Instruction {
   public:
     LoadStringConstant(Location *dst, const char *s);
     void EmitSpecific(Mips *mips);
+    std::set<const Location*> GetLocations() { return std::set<const Location*>({dst}); }
 };
     
 class LoadLabel: public Instruction {
@@ -123,6 +127,7 @@ class LoadLabel: public Instruction {
   public:
     LoadLabel(Location *dst, const char *label);
     void EmitSpecific(Mips *mips);
+    std::set<const Location*> GetLocations() { return std::set<const Location*>({dst}); }
 };
 
 class Assign: public Instruction {
@@ -130,6 +135,7 @@ class Assign: public Instruction {
   public:
     Assign(Location *dst, Location *src);
     void EmitSpecific(Mips *mips);
+    std::set<const Location*> GetLocations() { return std::set<const Location*>({dst, src}); }
 };
 
 class Load: public Instruction {
@@ -138,6 +144,7 @@ class Load: public Instruction {
   public:
     Load(Location *dst, Location *src, int offset = 0);
     void EmitSpecific(Mips *mips);
+    std::set<const Location*> GetLocations() { return std::set<const Location*>({dst, src}); }
 };
 
 class Store: public Instruction {
@@ -146,6 +153,7 @@ class Store: public Instruction {
   public:
     Store(Location *d, Location *s, int offset = 0);
     void EmitSpecific(Mips *mips);
+    std::set<const Location*> GetLocations() { return std::set<const Location*>({dst, src}); }
 };
 
 class BinaryOp: public Instruction {
@@ -161,6 +169,7 @@ class BinaryOp: public Instruction {
   public:
     BinaryOp(OpCode c, Location *dst, Location *op1, Location *op2);
     void EmitSpecific(Mips *mips);
+    std::set<const Location*> GetLocations() { return std::set<const Location*>({dst, op1, op2}); }
 };
 
 class Label: public Instruction {
@@ -187,6 +196,7 @@ class IfZ: public Instruction {
     IfZ(Location *test, const char *label);
     void EmitSpecific(Mips *mips);
     const char* branch_label() const { return label; }
+    std::set<const Location*> GetLocations() { return std::set<const Location*>({test}); }
 };
 
 class BeginFunc: public Instruction {
@@ -209,6 +219,7 @@ class Return: public Instruction {
   public:
     Return(Location *val);
     void EmitSpecific(Mips *mips);
+    std::set<const Location*> GetLocations() { return std::set<const Location*>({val}); }
 };   
 
 class PushParam: public Instruction {
@@ -216,6 +227,7 @@ class PushParam: public Instruction {
   public:
     PushParam(Location *param);
     void EmitSpecific(Mips *mips);
+    std::set<const Location*> GetLocations() { return std::set<const Location*>({param}); }
 }; 
 
 class PopParams: public Instruction {
@@ -231,6 +243,7 @@ class LCall: public Instruction {
   public:
     LCall(const char *labe, Location *result);
     void EmitSpecific(Mips *mips);
+    std::set<const Location*> GetLocations() { return std::set<const Location*>({dst}); }
 };
 
 class ACall: public Instruction {
@@ -238,6 +251,7 @@ class ACall: public Instruction {
   public:
     ACall(Location *meth, Location *result);
     void EmitSpecific(Mips *mips);
+    std::set<const Location*> GetLocations() { return std::set<const Location*>({dst, methodAddr}); }
 };
 
 class VTable: public Instruction {

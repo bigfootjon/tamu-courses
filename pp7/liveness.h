@@ -26,9 +26,14 @@ protected:
 
   // Calculate effect a particular instruction has on value
   LiveSet effect(const Instruction* instr, const LiveSet& in) {
-    printf("#E: ");
-    ((Instruction*)instr)->Print();
-    return in;
+    LiveSet out(in);
+    LiveSet instr_locs = ((Instruction*)instr)->GetLocations();
+    for (LiveSet::iterator it = instr_locs.begin(); it != instr_locs.end(); ++it) {
+      if (*it != NULL) {
+        out.insert(*it);
+      }
+    }
+    return out;
   }
 
   // Calculate the meet of two values

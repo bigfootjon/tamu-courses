@@ -259,7 +259,7 @@ void CodeGenerator::DoFinalCodeGen()
           end_func= p;
 
           ControlFlowGraph cfg(begin_func, end_func);
-	  Liveness live(cfg);
+	  mips.UpdateLiveness(cfg);
 
           // Now go back and print out the instructions
           for (p= begin_func; p != end_func; ++p)

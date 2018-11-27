@@ -21,6 +21,7 @@
 #include "tac.h"
 #include "list.h"
 #include "cfg.h"
+#include "liveness.h"
 class Location;
 
 
@@ -39,6 +40,7 @@ class Mips {
     } regs[NumRegs];
 
     Register r_begin, r_end;
+    Liveness *live;
 
     typedef enum { ForRead, ForWrite } Reason;
 
@@ -59,6 +61,8 @@ class Mips {
     Instruction* currentInstruction;
  public:
     Mips();
+
+    void UpdateLiveness(ControlFlowGraph cfg) { live = new Liveness(cfg); }
 
     static void Emit(const char *fmt, ...);
     

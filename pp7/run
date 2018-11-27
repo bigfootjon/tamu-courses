@@ -34,7 +34,6 @@ fi
 #append the defs to the end
 cat defs.asm >> tmp.asm
 
-$SPIM -trap_file trap.handler -file tmp.asm
+$SPIM -file tmp.asm
 
-echo " "
 exit 0;

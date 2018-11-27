@@ -40,7 +40,9 @@ class Mips {
     } regs[NumRegs];
 
     Register r_begin, r_end;
+
     Liveness *live;
+    bool FreeDead(Register r);
 
     typedef enum { ForRead, ForWrite } Reason;
 

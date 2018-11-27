@@ -7,7 +7,7 @@
 
 typedef std::set<const Location*> LiveSet;
 
-class Liveness : DataFlow<LiveSet, ControlFlowGraph::ReverseFlow> {
+class Liveness : public DataFlow<LiveSet, ControlFlowGraph::ReverseFlow> {
 public:
   Liveness(ControlFlowGraph &cfg) : DataFlow(cfg) {
     analyze();

@@ -81,7 +81,32 @@ Mips::Register Mips::GetRegister(Location *var, bool fill) {
     return (Register)found;
 }
 
+bool Mips::FreeDead(Register r) {
+    if (live == NULL) {
+        return false;
+    }
+    const char *regname = "NULL";
+    if (regs[r].var != NULL) {
+        regname = regs[r].var->GetName();
+    }
+    printf("#R: %s (aka %s)\n", regs[r].name, regname);
+    printf("#E: "); currentInstruction->Print();
+    LiveSet live_set = live->data_out(currentInstruction);
+    for (LiveSet::iterator it = live_set.begin(); it != live_set.end(); ++it) {
+        printf("# l: %s\n", (*it)->GetName());
+    }
+    if (live_set.find(regs[r].var) != live_set.end()) {
+        return false;
+    }
+    regs[r].var = NULL;
+    regs[r].isDirty = false;
+    return true;
+}
+
 void Mips::DirtyRegister(Register r) {
+    if (FreeDead(r)) {
+        return;
+    }
     if (r == t7 || r == t8 || r ==t9) {
         if (regs[r].var) {
             SpillRegister(regs[r].var, r);
@@ -92,6 +117,9 @@ void Mips::DirtyRegister(Register r) {
 }
 
 void Mips::FreeRegister(Register r) {
+  if (FreeDead(r)) {
+      return;
+  }
   if (r == t7 || r == t8 || r == t9) {
     if (regs[r].isDirty && regs[r].var) {
       SpillRegister(regs[r].var, r);
@@ -103,6 +131,9 @@ void Mips::FreeRegister(Register r) {
 
 void Mips::SpillDirtyRegisters() {
     for (int i = r_begin; i <= r_end; ++i) {
+        if (FreeDead((Register)i)) {
+            continue;
+        }
         RegContents r = regs[i];
 	if (r.isDirty && r.var != NULL) {
             SpillRegister(r.var, (Register)i);
@@ -565,6 +596,7 @@ Mips::Mips() {
   regs[s6] = (RegContents){false, NULL, "$s6", true};
   regs[s7] = (RegContents){false, NULL, "$s7", true};
   r_begin = t0, r_end = t6;
+  live = NULL;
 }
 const char *Mips::mipsName[BinaryOp::NumOps];
 

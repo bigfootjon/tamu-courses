@@ -82,6 +82,7 @@ Mips::Register Mips::GetRegister(Location *var, bool fill) {
 }
 
 bool Mips::FreeDead(Register r) {
+    // return false;
     if (live == NULL) {
         return false;
     }
@@ -131,11 +132,11 @@ void Mips::FreeRegister(Register r) {
 
 void Mips::SpillDirtyRegisters() {
     for (int i = r_begin; i <= r_end; ++i) {
-        if (FreeDead((Register)i)) {
-            continue;
-        }
         RegContents r = regs[i];
 	if (r.isDirty && r.var != NULL) {
+            if (FreeDead((Register)i)) {
+                continue;
+            }
             SpillRegister(r.var, (Register)i);
 	} else {
             regs[i].var = NULL;

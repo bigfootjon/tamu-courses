@@ -35,9 +35,14 @@ void ControlFlowGraph::map_edges()
     iterator next= cur;
     ++next;
 
-    // TODO:  Fix this - it blindly adds an edge between each instruction
-    //        and the one that follows it
-    add_edge(*cur, *next);
+    if (dynamic_cast<Goto*>(*cur)) {
+      add_edge(*cur, instr_for_label[dynamic_cast<Goto*>(*cur)->branch_label()]);
+    } else if (dynamic_cast<IfZ*>(*cur)) {
+      add_edge(*cur, *next);
+      add_edge(*cur, instr_for_label[dynamic_cast<IfZ*>(*cur)->branch_label()]);
+    } else {
+      add_edge(*cur, *next);
+    }
   }
 }
 

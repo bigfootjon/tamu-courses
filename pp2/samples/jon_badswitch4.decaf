@@ -1,6 +1,0 @@
-void main() {
-  switch (howdy) {
-    default: call(); break;
-    case 1: howdy; break;
-  }
-}

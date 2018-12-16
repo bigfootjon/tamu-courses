@@ -1,7 +1,0 @@
-void main() {
-    int[] arr;
-    int size;
-    size = 19;
-    arr = NewArray(size, int);
-    Print(size == arr.length());
-}

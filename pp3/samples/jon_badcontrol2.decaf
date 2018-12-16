@@ -1,5 +1,0 @@
-int main() {
-    for (bool i = true; bool < 10; ++bool) {
-
-    }
-}

@@ -1,6 +1,0 @@
-
-*** Error line 2.
-    j();
-    ^
-*** No declaration found for function 'j'
-

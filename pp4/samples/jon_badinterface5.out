@@ -1,6 +1,0 @@
-
-*** Error line 15.
-  inst = New(c2);
-       ^
-*** Incompatible operands: c = c2
-

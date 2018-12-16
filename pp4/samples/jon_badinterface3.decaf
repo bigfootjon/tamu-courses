@@ -1,7 +1,0 @@
-interface onefunc {
-   void fun();
-}
-
-class a implements onefunc {
-   bool fun() { return true; }
-}

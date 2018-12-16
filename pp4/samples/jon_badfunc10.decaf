@@ -1,5 +1,0 @@
-int main(int a, bool b) {
-    bool a;
-    int b;
-    return a;
-}

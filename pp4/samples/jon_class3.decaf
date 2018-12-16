@@ -1,5 +1,0 @@
-class test {
-    int func() { return func(); }
-}
-
-bool func() { return true; }

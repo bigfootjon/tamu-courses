@@ -1,7 +1,0 @@
-void main() {
-    test(1, true);
-}
-
-int test(int a, bool b) {
-    Print(a, " ", b);
-}

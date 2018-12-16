@@ -1,6 +1,0 @@
-
-*** Error line 6.
-  int i;
-      ^
-*** Declaration of 'i' here conflicts with declaration on line 2
-

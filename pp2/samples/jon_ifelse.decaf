@@ -1,6 +1,0 @@
-void main() {
-  if (this) call(); else dontcall();
-  if (this) call(); if (orthis) call(); else dontcall();
-  if (this) call(); else if (orthis) call(); else dontcall();
-  if (this) call();
-}

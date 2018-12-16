@@ -1,6 +1,0 @@
-
-*** Error line 4.
-    i = k + 2;
-        ^
-*** No declaration found for variable 'k'
-

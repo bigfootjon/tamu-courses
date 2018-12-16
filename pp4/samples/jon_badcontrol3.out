@@ -1,6 +1,0 @@
-
-*** Error line 2.
-    if ("howdy") {
-        ^^^^^^^
-*** Test expression must have boolean type
-

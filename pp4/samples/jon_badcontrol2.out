@@ -1,6 +1,0 @@
-
-*** Error line 2.
-    for (bool i = true; bool < 10; ++bool) {
-         ^^^^
-*** syntax error
-

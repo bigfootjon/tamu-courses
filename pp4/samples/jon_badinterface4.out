@@ -1,6 +1,0 @@
-
-*** Error line 11.
-   a = New(i_am_a_notused);
-     ^
-*** Incompatible operands: notused = i_am_a_notused
-

@@ -1,6 +1,0 @@
-interface printable {
-     void start();
-     bool print(string data);
-     int check_status();
-     Test howdy();
-}

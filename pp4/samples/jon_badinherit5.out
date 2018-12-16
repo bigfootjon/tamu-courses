@@ -1,6 +1,0 @@
-
-*** Error line 6.
-  bool coolfunc() { return false; }
-       ^^^^^^^^
-*** Method 'coolfunc' must match inherited type signature
-

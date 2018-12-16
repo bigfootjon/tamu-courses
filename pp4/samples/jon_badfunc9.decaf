@@ -1,5 +1,0 @@
-int main() {
-    test();
-}
-
-int test;

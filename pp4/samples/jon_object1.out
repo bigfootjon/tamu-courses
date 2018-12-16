@@ -1,6 +1,0 @@
-
-*** Error line 10.
-  c = a.meth();
-      ^
-*** No declaration found for variable 'a'
-

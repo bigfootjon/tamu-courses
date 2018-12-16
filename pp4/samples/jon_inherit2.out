@@ -1,6 +1,0 @@
-
-*** Error line 10.
-  int get_value() { return value }
-                                 ^
-*** syntax error
-

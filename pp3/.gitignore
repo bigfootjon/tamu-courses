@@ -1,5 +1,0 @@
-*.o
-dcc*
-y.output
-lex.yy.c
-y.tab.*

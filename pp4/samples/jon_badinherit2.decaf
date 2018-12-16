@@ -1,7 +1,0 @@
-interface a {
-
-}
-
-class b extends a {
-
-}

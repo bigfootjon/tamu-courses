@@ -1,4 +1,0 @@
-void main() {
-  i++;
-  if (i == arr[j]--) call();
-}

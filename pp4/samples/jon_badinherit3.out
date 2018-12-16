@@ -1,6 +1,0 @@
-
-*** Error line 5.
-class b implements a {
-                   ^
-*** No declaration found for interface 'a'
-

@@ -1,9 +1,0 @@
-class base {
-    int test;
-    void check() {}
-}
-
-class ex extends base {
-    int test() { return 1; }
-    double check;
-}

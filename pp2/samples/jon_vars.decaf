@@ -1,8 +1,0 @@
-int itest;
-double dtest;
-bool btest;
-string stest;
-int[] atest;
-Howdy cl;
-Cow[] array;
-Cow[][] cowtown;

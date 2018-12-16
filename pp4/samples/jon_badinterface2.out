@@ -1,6 +1,0 @@
-
-*** Error line 6.
-class coolclass implements coolfuncs {
-                           ^^^^^^^^^
-*** Class 'coolclass' does not implement entire interface 'coolfuncs'
-

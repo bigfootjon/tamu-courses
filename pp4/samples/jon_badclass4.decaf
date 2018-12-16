@@ -1,4 +1,0 @@
-class c {
-   int a;
-   void a() {}
-}

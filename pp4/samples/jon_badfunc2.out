@@ -1,6 +1,0 @@
-
-*** Error line 5.
-int main(int arg1) {
-    ^^^^
-*** Declaration of 'main' here conflicts with declaration on line 1
-

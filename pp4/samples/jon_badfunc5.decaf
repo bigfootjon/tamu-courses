@@ -1,7 +1,0 @@
-int main() {
-    test(1);
-}
-
-void test() {
-
-}

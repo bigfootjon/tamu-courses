@@ -1,6 +1,0 @@
-void main() {
-  int[] arr;
-  arr = NewArray(10, int);
-  Print(arr[0]);
-  Print(arr[-1]);
-}

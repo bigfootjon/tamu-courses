@@ -2,3 +2,4 @@
 *.pdf
 .idea/
 tags
+*.swp

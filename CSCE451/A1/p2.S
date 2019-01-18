@@ -1,5 +1,6 @@
 .globl _main
-
+.data
+format: .asciz "%d\n"
 .text
 _main:
 	// PROBLEM 1
@@ -35,20 +36,26 @@ _main:
 
 	//PROBLEM 2:
 	mov $0, %rcx
+	mov %rax, %rbx
 l1:
 	add $1, %rcx
-	push %rcx
-	cmp %rcx, %rax
-	jl l1
+	//push %rcx
+	leaq	format(%rip), %rdi
+	mov	%rcx, %rsi
+	movb	$0, %al
+	callq	_printf
+	//
+	cmp $33, %rcx
+	ja l1
 
-	push %rcx
-	mov $0, %rax
-l2:
-	sub $1, %rcx
-	pop %rbx
-	add %rbx, %rax
-	cmp %rcx, %rdx
-	jle l2
+//	push %rcx
+//	mov $0, %rax
+//l2:
+//	sub $1, %rcx
+//	//pop %rbx
+//	add %rbx, %rax
+//	cmp %rcx, %rdx
+//	jle l2
 	
 	//pop %rcx
 	//div %rcx

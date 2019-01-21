@@ -1,6 +1,6 @@
 .globl _main
 .data
-format: .asciz "%d\n"
+format: .asciz "%u\n"
 .text
 _main:
 	// PROBLEM 1
@@ -34,31 +34,22 @@ _main:
 	mov $5, %rcx // Set divisor to 5 (number of values)
 	div %rcx
 
-	//PROBLEM 2:
-	mov $0, %rcx
-	mov %rax, %rbx
+	//PROBLEM 2 PART 1:
+	mov %rax, %rcx
 l1:
-	add $1, %rcx
-	//push %rcx
-	leaq	format(%rip), %rdi
-	mov	%rcx, %rsi
-	movb	$0, %al
-	callq	_printf
-	//
-	cmp $33, %rcx
-	ja l1
+	push %rcx
+	dec %rcx
+	jnz l1
 
-//	push %rcx
-//	mov $0, %rax
-//l2:
-//	sub $1, %rcx
-//	//pop %rbx
-//	add %rbx, %rax
-//	cmp %rcx, %rdx
-//	jle l2
+	mov %rax, %rcx
+	mov $0, %rax
+l2:
+	pop %rbx
+	add %rbx, %rax
+	dec %rcx
+	jnz l2
 	
-	//pop %rcx
-	//div %rcx
+	div %rcx
 	
 	// Restore stack and end program
 	pop %rbp

@@ -1,6 +1,4 @@
 .globl _main
-.data
-format: .asciz "%u\n"
 .text
 _main:
 	// PROBLEM 1

@@ -11,4 +11,4 @@ p1: p1.S
 	gcc -o p1 p1.o
 
 clean:
-	rm -f *.o p1 p2
+	rm -f *.o p1 p2 p3

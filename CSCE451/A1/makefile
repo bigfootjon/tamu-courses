@@ -1,3 +1,7 @@
+p3: p3.S
+	gcc -c p3.S -o p3.o
+	gcc -o p3 p3.o
+
 p2: p2.S
 	gcc -c p2.S -o p2.o
 	gcc -o p2 p2.o

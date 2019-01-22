@@ -10,5 +10,9 @@ p1: p1.S
 	gcc -c p1.S -o p1.o
 	gcc -o p1 p1.o
 
+bonus: bonus.S
+	gcc -c bonus.S -o bonus.o
+	gcc -o bonus bonus.o
+
 clean:
-	rm -f *.o p1 p2 p3
+	rm -f *.o p1 p2 p3 bonus

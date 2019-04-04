@@ -1,6 +1,6 @@
 # gcc 32bit x86 version 4.1.2
 
-assignment4rebuild: kaboom.o yellow_preflight.o blue_preflight.o green_preflight.o main.o postred.o
+assignment4rebuild: kaboom.o yellow_preflight.o yellow.o blue_preflight.o green_preflight.o main.o postred.o
 	clang -o $@ $^
 
 clean:

@@ -12,6 +12,8 @@ bool wire_red = true;
 void gettimeleft(){}
 
 int main() {
+    signal(10, disarm_handler);
+
     bool show_menu = true;
     char input[20];
     for (;;) {

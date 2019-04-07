@@ -7,6 +7,7 @@ extern bool wire_blue;
 extern bool wire_red;
 
 void gettimeleft(void);
+void disarm_handler(int);
 void menu(void);
 void kaboom(void);
 

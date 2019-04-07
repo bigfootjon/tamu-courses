@@ -1,11 +1,13 @@
 #include <stdbool.h>
 
 extern char buffer[32];
-extern bool yellow_wire;
-extern bool green_wire;
-extern bool blue_wire;
-extern bool red_wire;
+extern bool wire_yellow;
+extern bool wire_green;
+extern bool wire_blue;
+extern bool wire_red;
 
+void gettimeleft(void);
+void menu(void);
 void kaboom(void);
 
 void yellow_preflight(void);

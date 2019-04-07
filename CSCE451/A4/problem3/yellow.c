@@ -11,7 +11,7 @@ void yellow() {
                         if (*(buffer+5) == '0') {
                             if (*(buffer+6) == '6') {
                                 if (*(buffer+7) == '5') {
-                                    yellow_wire = true;
+                                    wire_yellow = true;
 				    return;
                                 }
                             }
@@ -21,5 +21,5 @@ void yellow() {
             }
         }
     }
-    yellow_wire = false;
+    wire_yellow = false;
 }

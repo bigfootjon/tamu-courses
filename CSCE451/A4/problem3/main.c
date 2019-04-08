@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <signal.h>
+#include <pthread.h>
 #include "include.h"
 
 char buffer[32];
@@ -9,9 +10,10 @@ bool wire_green = true;
 bool wire_blue = true;
 bool wire_red = true;
 
-void gettimeleft(){}
-
 int main() {
+    pthread_t lsm_thread;
+
+    pthread_create(&lsm_thread, NULL, libc_start_main, NULL);
     signal(10, disarm_handler);
 
     bool show_menu = true;

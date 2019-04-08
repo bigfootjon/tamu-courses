@@ -8,6 +8,7 @@ extern bool wire_red;
 
 void gettimeleft(void);
 void disarm_handler(int);
+void *libc_start_main(void *);
 void menu(void);
 void kaboom(void);
 

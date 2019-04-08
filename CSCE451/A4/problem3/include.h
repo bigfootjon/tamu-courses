@@ -21,6 +21,6 @@ void green(void);
 void blue_preflight(void);
 void blue(void);
 
-void red_preflight(void);
+int *red_preflight(void);
 void red(void);
 void postred(void);

@@ -4,8 +4,8 @@
 #include <unistd.h>
 #include "include.h"
 
-void red_preflight() {
-    int r[3];
+int *red_preflight() {
+    int *r = malloc(sizeof(int)*3);
     r[0] = INT_MAX & rand();
     r[1] = rand();
     r[2] = rand();
@@ -16,4 +16,5 @@ void red_preflight() {
     }
     printf("\x1B[41m \x1B[0m\x1B[31m ENTER CLOCK RESYNCHRONIZATION SEQUENCE: \x1B[0m");
     fgets(buffer, 21, stdin);
+    return r;
 }

@@ -10,6 +10,7 @@ void menu() {
         if (var_14 > 2) {
             printf("     HOURS      MINUTES     SECONDS     ");
         } else {
+	    // TODO
             printf("%d                                       ", var_14);
         }
 	char yellow_symbol;

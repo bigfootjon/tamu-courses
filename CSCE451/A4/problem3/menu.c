@@ -43,8 +43,13 @@ void menu() {
         if (var_14 > 2) {
             printf("     HOURS      MINUTES     SECONDS     ");
         } else {
-	    // TODO
-            printf("%d                                       ", var_14);
+            int i;
+            switch (var_14) {
+                case 0: i =  0; break;
+                case 1: i = 11; break;
+                case 2: i = 27; break;
+            }
+            printf("\x1B[91m   %s%s  %s%s  %s%s   \x1B[0m", display[i], display[i], display[i], display[i], display[i], display[i]);
         }
 	char yellow_symbol;
 	if (wire_yellow) {

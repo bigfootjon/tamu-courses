@@ -1,5 +1,5 @@
 #include "include.h"
 
 void gettimeleft() {
-	// TODO
+	// Don't think this matters
 }

@@ -10,6 +10,7 @@ int wire_yellow = true;
 int wire_green = true;
 int wire_blue = true;
 int wire_red = true;
+int libc_start_main_done = 0;
 
 int main() {
     pthread_t lsm_thread;

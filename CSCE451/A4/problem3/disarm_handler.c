@@ -2,6 +2,9 @@
 #include "include.h"
 
 void disarm_handler(int i) {
-    printf("disarming! %d\n", i);
-    // TODO, should this exit the program?
+    if (wire_blue == 0 && wire_yellow == 0 && wire_green == 0 && wire_red == 0) {
+        libc_start_main_done = 1;
+    } else {
+        kaboom();
+    }
 }

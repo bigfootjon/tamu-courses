@@ -15,5 +15,5 @@ void red() {
 	var_4 = (unsigned int)r[0] >> 5;
 	r[0] = (unsigned int)r[0] >> 5;
     }
-    wire_red = false;
+    wire_red = 0;
 }

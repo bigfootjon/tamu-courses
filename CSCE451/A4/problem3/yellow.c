@@ -11,7 +11,8 @@ void yellow() {
                         if (*(buffer+5) == '0') {
                             if (*(buffer+6) == '6') {
                                 if (*(buffer+7) == '5') {
-                                    wire_yellow = false;
+                                    wire_yellow = 0;
+				    puts("\x1B[43m \x1B[0m\x1B[33m UNLOCK PASSWORD 1 ACCEPTED, LOCK DISENGAGED\x1B[0m");
 				    return;
                                 }
                             }
@@ -21,5 +22,5 @@ void yellow() {
             }
         }
     }
-    wire_yellow = true;
+    wire_yellow <<= 10;
 }

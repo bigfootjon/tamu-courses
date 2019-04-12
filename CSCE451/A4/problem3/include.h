@@ -1,10 +1,8 @@
-#include <stdbool.h>
-
 extern char buffer[32];
-extern bool wire_yellow;
-extern bool wire_green;
-extern bool wire_blue;
-extern bool wire_red;
+extern int wire_yellow;
+extern int wire_green;
+extern int wire_blue;
+extern int wire_red;
 
 void gettimeleft(void);
 void disarm_handler(int);

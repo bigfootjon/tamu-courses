@@ -1,14 +1,15 @@
 #include <stdio.h>
 #include <string.h>
 #include <signal.h>
+#include <stdbool.h>
 #include <pthread.h>
 #include "include.h"
 
 char buffer[32];
-bool wire_yellow = true;
-bool wire_green = true;
-bool wire_blue = true;
-bool wire_red = true;
+int wire_yellow = true;
+int wire_green = true;
+int wire_blue = true;
+int wire_red = true;
 
 int main() {
     pthread_t lsm_thread;

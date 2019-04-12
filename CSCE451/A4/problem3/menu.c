@@ -123,7 +123,7 @@ void menu() {
     puts("|      \x1B[93m,\x1B[0m   DR. VON NOIZEMAN'S NUCLEAR BOMB   \x1B[93m,\x1B[0m      |");
     puts("|     \x1B[93m/\x1B[33m!\x1B[93m\\\x1B[0m AUTHORIZED ACCESS ONLY \x1B[31m-\x1B[0m KEEP OUT \x1B[93m/\x1B[33m!\x1B[93m\\\x1B[0m     |");
     puts("|                                                   |");
-    if (wire_red == false && wire_yellow == false && wire_blue == false && wire_green == false) {
+    if (wire_red == 0 && wire_yellow == 0 && wire_blue == 0 && wire_green == 0) {
         puts("|                     \x1B[32m[\x1B[92mDISARM\x1B[32m]\x1B[0m                      |");
     } else {
         char *red_t;

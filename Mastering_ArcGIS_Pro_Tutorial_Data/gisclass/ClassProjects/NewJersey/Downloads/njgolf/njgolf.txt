@@ -1,0 +1,290 @@
+Identification_Information:
+  Citation:
+    Citation_Information:
+      Originator: NJ Department of Environmental Protection (NJDEP), Division of Science, Research and Technology
+      Publication_Date: 20011109
+      Title: NJDEP Statewide Golf Course Shapefile
+      Edition: 2003 update
+      Geospatial_Data_Presentation_Form: vector digital data
+      Publication_Information:
+        Publication_Place: Trenton, NJ
+        Publisher: NJDEP-DSRT
+      Online_Linkage: http://www.state.nj.us/dep/gis/digidownload/zips/statewide/njgolf.zip
+  Description:
+    Abstract: The shapefile represents the fairway, green and tee areas of all the golf courses in New Jersey.  It was created by selecting all recreation polygons from the 1995/97 NJDEP land use/land cover (LU/LC) file.  All recreation polygons were then compared to the 1995 digital aerial photographs to confirm the presence or absence of a golf course.  Golf course parcels were retained for the golf file.  Following this the Golf Digest Places to Play Travel Planner (DeLorme, 2000) software digest was compared to the golf courses parcels identified and names were added to each course.  Over 5 individual sources were examined to compile a complete listing of courses in New Jersey (public, private, regulation, executive size, etc.) .  The draft file was sent to Curtis Brown (Pesticide Regulation, NJDEP) for comparison against the pesticide permit files.  Several additions or corrections were made based on these NJDEP records, confirmed with telephone calls to the course in question.  Finally, all parcels were dissolved based on the course name.  There are 256 courses identified and 553 polygons (Many courses show as discontinuous polygons because fairways/green/tee zones are separated by tracts of wetland, forest or other land covers.  The purpose of the file is to determine course acreage to assist estimating the amount of pesticide, fertilizer, and herbicide used on an annual basis.  Therefore substantial (1 acre or more) tracts of forest or wetlands are not included in a course's polygons, although these areas may be owned by the Golf Course.
+    Purpose:
+      The data set will provide information for the Source Water Assessment Program (SWAP) to estimate the acreage and location of golf courses throughout the state.  From this information an estimated amount of fertilizer, herbicide, and pesticide application can be calculated.  Because of this tracts of wetlands, forest, or other landcovers larger than the minimum mapping unit (1 acre) are not included in the golf course polygon description, though these areas may be owned by the course in question.  Therefore, most courses contain more than one discontiguous set of polygons.  (256 courses with 553 polygons).
+
+      This data set is intended to serve as a resource for analysis rather than regulatory delineations. The NJDEP may change the line work based on more in depth analysis and field inspection for regulatory purposes.
+    Supplemental_Information: This shapefile is a direct derivative of the NJDEP 1995/97 landuse/landcover files and the NJDEP digital orthophotography.  See the metadata for these files for a detailed discussion of original mapping methodology.  Users of this data are strongly urged to review the metadata for the 1995/97 and 1986 landuse/landcover shapefiles, the digital orthophotography, as well as others documents mentioned before using the data set.
+  Time_Period_of_Content:
+    Time_Period_Information:
+      Range_of_Dates/Times:
+        Beginning_Date: 19950101
+        Beginning_Time: unknown
+        Ending_Date: 20001109
+        Ending_Time: unknown
+    Currentness_Reference: ground condition
+  Status:
+    Progress: Complete
+    Maintenance_and_Update_Frequency: Unknown
+  Spatial_Domain:
+    Bounding_Coordinates:
+      West_Bounding_Coordinate: -75.58731
+      East_Bounding_Coordinate: -73.89036
+      North_Bounding_Coordinate: 41.35595
+      South_Bounding_Coordinate: 38.92482
+  Keywords:
+    Theme:
+      Theme_Keyword_Thesaurus: none
+      Theme_Keyword: golf
+      Theme_Keyword: source water assessment
+      Theme_Keyword: recreation
+      Theme_Keyword: land use/land cover
+      Theme_Keyword: water quality
+      Theme_Keyword: environmental effects
+      Theme_Keyword: fertilizers
+      Theme_Keyword: pesticide
+      Theme_Keyword: herbicide
+      Theme_Keyword: environment
+      Theme_Keyword: location
+    Place:
+      Place_Keyword_Thesaurus: None
+      Place_Keyword: New Jersey
+    Temporal:
+      Temporal_Keyword_Thesaurus: None
+      Temporal_Keyword: 1995
+      Temporal_Keyword: 1997
+      Temporal_Keyword: 1998
+      Temporal_Keyword: 1999
+      Temporal_Keyword: 2000
+  Access_Constraints: none
+  Use_Constraints:
+    New Jersey Department of Environmental Protection (NJDEP)
+
+    Data Distribution Agreement
+
+    I. Description of Data to be Provided.
+
+    The data provided herein are distributed subject to the following conditions and restrictions.
+
+    SUBJECT DATA LAYERS
+
+    For all data contained herein, NJDEP makes no representations of any kind, including, but not limited to, the warranties of merchantability or fitness for a particular use, nor are any such warranties to be implied with respect to the digital data layers furnished hereunder.  NJDEP assumes no responsibility to maintain them in any manner or form.
+
+    II.	Terms of Agreement
+
+    1. Digital data received from the NJDEP are to be used solely for internal purposes in the conduct of daily affairs.
+
+    2. The data are provided, as is, without warranty of any kind and the user is responsible for understanding the accuracy limitations of all digital data layers provided herein, as documented in the accompanying cross-reference files (see SUPPLEMENTAL INFORMATION).  Any reproduction or manipulation of the above data must ensure that the coordinate reference system remains intact.
+
+    3. Digital data received from the NJDEP may not be reproduced or redistributed for use by anyone without first obtaining written permission from the NJDEP.  This clause is not intended to restrict distribution of printed mapped information produced from the digital data.
+
+    4. Any maps, publications, reports, or other documents produced as a result of this project that utilize NJDEP digital data will credit the NJDEP's Geographic Information System (GIS) as the source of the data with the following credit/disclaimer:
+
+    ""This (map/publication/report) was developed using New Jersey Department of Environmental Protection Geographic Information System digital data, but this secondary product has not been verified by NJDEP and is not state-authorized.""
+
+    5.    Users shall require any independent contractor, hired to undertake work that will utilize digital data obtained from the NJDEP, to agree not to use, reproduce, or redistribute NJDEP GIS data for any purpose other than the specified contractual work.  All copies of NJDEP GIS data utilized by an independent contractor will be required to be returned to the original user at the close of such contractual work.
+
+    Users hereby agree to abide by the use and reproduction conditions specified above and agree to hold any independent contractor to the same terms.  By using data provided herein, the user acknowledges that terms and conditions have been read and that the user is bound by these criteria.
+  Browse_Graphic:
+    Browse_Graphic_File_Name: http://www.state.nj.us/dep/gis/digidownload/images/statewide/njgolf.gif
+    Browse_Graphic_File_Description: Graphic representation of NJ Statewide Golf Courses
+    Browse_Graphic_File_Type: GIF
+  Native_Data_Set_Environment: ESRI shapefile;  ArcView 3.2a
+Data_Quality_Information:
+  Attribute_Accuracy:
+    Attribute_Accuracy_Report: Linework has the same accuracy as the landuse/landcover parent files.  The list of known courses was compiled and cross referenced from multiple sources (Golf Digest 2000, NJDEP Pesticide Program Files, LU/LC class codes, multiple web sites, The Department of Community Affairs listings, etc.).  All courses were photoidentified or reached by telephone for recent courses.  The file is as comprehensive as possible.
+  Logical_Consistency_Report: none
+  Completeness_Report: As far as available known reliable sources were used to compile the file and it is complete as of November 2001.  Compared to more sources than described as a number were rejected due to multiple obvious errors (www.play18.com, NJ Golf Association list, etc.).  This file is more accurate than individually referenced sources.  Because the purpose is to estimate fertilizer, herbicide and pesticide use ONLY fairways, greens, and teeboxes were identified.  Tracts of wetlands, forest, or other landcovers larger than 1 acre (minimum mapping unit) are not included in the golf course polygons even though these may be imbedded within the course in question.  As a result, most courses contain more than one discontinuous set of polygons, many with ""donut holes"".  (256 courses with 553 polygons).
+  Positional_Accuracy:
+    Horizontal_Positional_Accuracy:
+      Horizontal_Positional_Accuracy_Report: NMAS at 1:12000
+    Vertical_Positional_Accuracy:
+      Vertical_Positional_Accuracy_Report: NA
+  Lineage:
+    Source_Information:
+      Source_Citation:
+        Citation_Information:
+          Originator: United States Geological Survey; NJDEP
+          Publication_Date: 1991
+          Title: Digital Ortho Quarterquads
+          Geospatial_Data_Presentation_Form: remote-sensing image
+          Other_Citation_Details: Digital images were created from 1:40000 scale NAPP CIR images by USGS, referenced in UTM, NAD83.  These images were then projected to New Jersey State Plane Feet Coordinates (NJSPF), NAD83, and compressed to JPEG images files.  These NJSPF compressed files were used in the development of the this data set. The original images in UTM are available from the USGS website.  The NJSPF versions are available from the NJDEP site.  Both sites have online and CD distribution of these images.
+          Online_Linkage: http://njgeodata.state.nj.us
+      Source_Scale_Denominator: 12000
+      Type_of_Source_Media: online; CDROM
+      Source_Time_Period_of_Content:
+        Time_Period_Information:
+          Single_Date/Time:
+            Calendar_Date: 1995
+            Time_of_Day: unknown
+        Source_Currentness_Reference: ground condition
+      Source_Citation_Abbreviation: USGS; NJDEP
+      Source_Contribution: Land use/land cover for 1995/97 was digitized directly from 1995/97 digital image files.  Photographic transparencies of the CIR images used to create the digital files were also viewed stereoscopically to aid in land use/land cover determinations.
+    Process_Step:
+      Process_Description:
+        All polygons derived directly from the 1995/97 land use/land cover data set.  Initially all recreational polygons were reselected from the 1995/97 landuse/landcover file.  These were all compared to 1995 digital orthophotography to identify the presence or absence of a golf course.  All landuse/landcover polygons over photoidentifiable golf courses were retained,  regardless of their landuse/landcover designation (there was a small percentage of omissions and miscodings in the LU/LC file).  These were then compared to the Golf Digest Places to Play Travel Planner by DeLorma (2000) for completeness.  A significant number of additional courses were added which were not coded as recreational cover in the original LU/LC file. All were cross checked against the photography, or called if web sites indicated they were recent built.  The DeLorma travel planner was the source for the course names.  Courses were cross checked against the web site www.placestoplay site, and phoned to resolve name or location issues. This listing was compared to the NJDEP pesticide program list of golf courses until  discrepancies were resolved.  There are a few sites which clearly show as golf courses on the photos but are not part of any listings and may be very recent.  It should be noted that the purpose of the file is to estimate annual application and loads of fertilizer, herbicide, and pesticide for the source water assessment program.  Thus significant tracts (greater than 1 acre) of forest or wetlands imbedded in the courses were not retained in the file, even though they may be part of the area owned by the golf course.  This is because these areas would not receive applications of fertilizers, etc.  Thus the file mainly depicts the fairway/tee/greens areas.  One implication of this is that most courses are composed of several non-contiguous polygons.
+
+        Once all polygons were identified and selected,  they were dissolved based on course name.  Several other lists (from NJ Department of Community Affairs, from the golf association of NJ, from the Travel and Tourism bureau (NJ Commerce  Economic Growth Commission)), etc. were also examined.  None of these sources were as comprehensive or as up-to-date as the DeLorma and Pesticide Program listing and were discarded.  All landuse/landcover attributes were removed as a number of these were incorrect, due to original miscoding or the recent age of the course.
+      Process_Date: 20011109
+    Process_Step:
+      Process_Description:
+        The following updates have been made to the data:
+
+        1. Corrected Names
+        -Gaffney Green Tree Course
+        -Hamilton Trails
+        -Galloway National
+        -Marriot's Seaview
+
+        2)  Removed golf course polygon
+        -Greentree (wildlife management area) 
+
+        3)  Added golf course polygon
+        - Victoria Par 3
+        - McCoullough's Emerald Green
+
+        4)  Not Added - Not on imagery
+        -Hidden Creek
+        -Balamoir
+        -Archie Struther's
+      Process_Date: 20030703
+  Cloud_Cover: 0
+Spatial_Data_Organization_Information:
+  Direct_Spatial_Reference_Method: Vector
+  Point_and_Vector_Object_Information:
+    SDTS_Terms_Description:
+      SDTS_Point_and_Vector_Object_Type: G-polygon
+      Point_and_Vector_Object_Count: 259
+Spatial_Reference_Information:
+  Horizontal_Coordinate_System_Definition:
+    Planar:
+      Grid_Coordinate_System:
+        Grid_Coordinate_System_Name: State Plane Coordinate System 1983
+        State_Plane_Coordinate_System:
+          SPCS_Zone_Identifier: 2900
+          Transverse_Mercator:
+            Scale_Factor_at_Central_Meridian: 0.999900
+            Longitude_of_Central_Meridian: -74.500000
+            Latitude_of_Projection_Origin: 38.833333
+            False_Easting: 492125.000000
+            False_Northing: 0.000000
+      Planar_Coordinate_Information:
+        Planar_Coordinate_Encoding_Method: coordinate pair
+        Coordinate_Representation:
+          Abscissa_Resolution: 0.002048
+          Ordinate_Resolution: 0.002048
+        Planar_Distance_Units: survey feet
+    Geodetic_Model:
+      Horizontal_Datum_Name: North American Datum of 1983
+      Ellipsoid_Name: GRS 80
+      Semi-major_Axis: 6378137.000000
+      Denominator_of_Flattening_Ratio: 298.257222101
+Entity_and_Attribute_Information:
+  Detailed_Description:
+    Entity_Type:
+      Entity_Type_Label: njgolf
+      Entity_Type_Definition: Fairway, green, and tee polygons for all golf courses in New Jersey.
+      Entity_Type_Definition_Source: New Jersey Department of Environmental Protection, Division of Science and Research
+    Attribute:
+      Attribute_Label: FID
+      Attribute_Definition: Internal feature number.
+      Attribute_Definition_Source: ESRI
+      Attribute_Domain_Values:
+        Unrepresentable_Domain: Sequential unique whole numbers that are automatically generated.
+    Attribute:
+      Attribute_Label: Shape
+      Attribute_Definition: Feature geometry.
+      Attribute_Definition_Source: ESRI
+      Attribute_Domain_Values:
+        Unrepresentable_Domain: Coordinates defining the features.
+    Attribute:
+      Attribute_Label: NAME
+      Attribute_Definition: Name of the golf course.
+      Attribute_Definition_Source: NJDEP
+      Attribute_Domain_Values:
+        Codeset_Domain:
+          Codeset_Name: Golf Course name
+          Codeset_Source: Delorma Places to Play listings, 2000
+    Attribute:
+      Attribute_Label: COUNT
+      Attribute_Definition: A count field added to assist users when creating summary tables to determine the number of polygons associated with each course within the shapefile.
+      Attribute_Definition_Source: NJDEP
+      Attribute_Domain_Values:
+        Enumerated_Domain:
+          Enumerated_Domain_Value: 1
+          Enumerated_Domain_Value_Definition: A count field added to assist users when creating summary tables to determine the number of polygons associated with each course within the shapefile.
+          Enumerated_Domain_Value_Definition_Source: NJDEP
+    Attribute:
+      Attribute_Label: AREA
+      Attribute_Definition: Area value
+      Attribute_Definition_Source: NJDEP
+      Attribute_Domain_Values:
+        Unrepresentable_Domain: unique
+    Attribute:
+      Attribute_Label: PERIMETER
+      Attribute_Definition: Perimeter value
+      Attribute_Definition_Source: NJDEP
+      Attribute_Domain_Values:
+        Unrepresentable_Domain: unique
+Distribution_Information:
+  Distributor:
+    Contact_Information:
+      Contact_Organization_Primary:
+        Contact_Organization: NJDEP/OIRM/BGIS 
+      Contact_Address:
+        Address_Type: mailing and physical address
+        Address: 401 East State Street
+        Address: PO Box 428
+        City: Trenton
+        State_or_Province: NJ
+        Postal_Code: 08625
+        Country: USA
+      Contact_Voice_Telephone: (609) 777-0672
+      Contact_Facsimile_Telephone: (609) 292-7900 
+      Contact_Electronic_Mail_Address: gisnet@dep.state.nj.us
+  Resource_Description: Downloadable Data
+  Distribution_Liability: See Use Constraints
+  Standard_Order_Process:
+    Digital_Form:
+      Digital_Transfer_Information:
+        Format_Name: AVSHP
+        Format_Version_Number: 3.x
+        File_Decompression_Technique: WinZip
+        Transfer_Size: 1.367
+      Digital_Transfer_Option:
+        Offline_Option:
+          Offline_Media: none
+          Recording_Format: none
+      Digital_Transfer_Option:
+        Online_Option:
+          Computer_Contact_Information:
+            Network_Address:
+              Network_Resource_Name: http://www.state.nj.us/dep/gis/stateshp.html
+          Online_Computer_and_Operating_System: none
+    Fees: none
+Metadata_Reference_Information:
+  Metadata_Date: 20011109
+  Metadata_Contact:
+    Contact_Information:
+      Contact_Person_Primary:
+        Contact_Person: Gail P. Carter
+        Contact_Organization: NJDEP, DSRT
+      Contact_Address:
+        Address_Type: mailing and physical address
+        Address: 401 East State Street
+        Address: DSRT
+        City: Trenton
+        State_or_Province: NJ
+        Postal_Code: 08625-0409
+        Country: USA
+      Contact_Voice_Telephone: 609-984-9654
+      Contact_Facsimile_Telephone: 609-292-7340
+      Contact_Electronic_Mail_Address: Gail.Carter@dep.state.nj.us
+  Metadata_Standard_Name: FGDC Content Standards for Digital Geospatial Metadata
+  Metadata_Standard_Version: FGDC-STD-001-1998
+  Metadata_Time_Convention: local time
+  Metadata_Extensions:
+    Online_Linkage: http://www.esri.com/metadata/esriprof80.html
+    Profile_Name: ESRI Metadata Profile

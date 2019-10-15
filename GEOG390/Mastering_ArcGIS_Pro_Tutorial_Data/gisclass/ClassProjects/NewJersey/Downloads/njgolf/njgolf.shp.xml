@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<metadata>
+	<idinfo>
+		<citation>
+			<citeinfo>
+				<origin>NJ Department of Environmental Protection (NJDEP), Division of Science, Research and Technology</origin>
+				<pubdate>20011109</pubdate>
+				<title>NJDEP Statewide Golf Course Shapefile</title>
+				<edition>2003 update</edition>
+				<geoform>vector digital data</geoform>
+				<pubinfo>
+					<pubplace>Trenton, NJ</pubplace>
+					<publish>NJDEP-DSRT</publish>
+				</pubinfo>
+				<onlink>http://www.state.nj.us/dep/gis/digidownload/zips/statewide/njgolf.zip</onlink>
+				<ftname Sync="TRUE">njgolf</ftname></citeinfo>
+		</citation>
+		<descript>
+			<abstract>The shapefile represents the fairway, green and tee areas of all the golf courses in New Jersey.  It was created by selecting all recreation polygons from the 1995/97 NJDEP land use/land cover (LU/LC) file.  All recreation polygons were then compared to the 1995 digital aerial photographs to confirm the presence or absence of a golf course.  Golf course parcels were retained for the golf file.  Following this the Golf Digest Places to Play Travel Planner (DeLorme, 2000) software digest was compared to the golf courses parcels identified and names were added to each course.  Over 5 individual sources were examined to compile a complete listing of courses in New Jersey (public, private, regulation, executive size, etc.) .  The draft file was sent to Curtis Brown (Pesticide Regulation, NJDEP) for comparison against the pesticide permit files.  Several additions or corrections were made based on these NJDEP records, confirmed with telephone calls to the course in question.  Finally, all parcels were dissolved based on the course name.  There are 256 courses identified and 553 polygons (Many courses show as discontinuous polygons because fairways/green/tee zones are separated by tracts of wetland, forest or other land covers.  The purpose of the file is to determine course acreage to assist estimating the amount of pesticide, fertilizer, and herbicide used on an annual basis.  Therefore substantial (1 acre or more) tracts of forest or wetlands are not included in a course's polygons, although these areas may be owned by the Golf Course.</abstract>
+			<purpose>
+The data set will provide information for the Source Water Assessment Program (SWAP) to estimate the acreage and location of golf courses throughout the state.  From this information an estimated amount of fertilizer, herbicide, and pesticide application can be calculated.  Because of this tracts of wetlands, forest, or other landcovers larger than the minimum mapping unit (1 acre) are not included in the golf course polygon description, though these areas may be owned by the course in question.  Therefore, most courses contain more than one discontiguous set of polygons.  (256 courses with 553 polygons).
+
+This data set is intended to serve as a resource for analysis rather than regulatory delineations. The NJDEP may change the line work based on more in depth analysis and field inspection for regulatory purposes.
+</purpose>
+			<supplinf>This shapefile is a direct derivative of the NJDEP 1995/97 landuse/landcover files and the NJDEP digital orthophotography.  See the metadata for these files for a detailed discussion of original mapping methodology.  Users of this data are strongly urged to review the metadata for the 1995/97 and 1986 landuse/landcover shapefiles, the digital orthophotography, as well as others documents mentioned before using the data set.</supplinf>
+			<langdata Sync="TRUE">en</langdata></descript>
+		<timeperd>
+			<timeinfo>
+				<rngdates>
+					<begdate>19950101</begdate>
+					<begtime>unknown</begtime>
+					<enddate>20001109</enddate>
+					<endtime>unknown</endtime>
+				</rngdates>
+			</timeinfo>
+			<current>ground condition</current>
+		</timeperd>
+		<status>
+			<progress>Complete</progress>
+			<update>Unknown</update>
+		</status>
+		<spdom>
+			<bounding>
+				<westbc>-75.58731</westbc>
+				<eastbc>-73.89036</eastbc>
+				<northbc>41.35595</northbc>
+				<southbc>38.92482</southbc>
+			</bounding>
+			<lboundng><leftbc Sync="TRUE">205672.828125</leftbc><rightbc Sync="TRUE">649451.979127</rightbc><bottombc Sync="TRUE">52718.273438</bottombc><topbc Sync="TRUE">916729.875000</topbc></lboundng></spdom>
+		<keywords>
+			<theme>
+				<themekt>none</themekt>
+				<themekey>golf</themekey>
+				<themekey>source water assessment</themekey>
+				<themekey>recreation</themekey>
+				<themekey>land use/land cover</themekey>
+				<themekey>water quality</themekey>
+				<themekey>environmental effects</themekey>
+				<themekey>fertilizers</themekey>
+				<themekey>pesticide</themekey>
+				<themekey>herbicide</themekey>
+				<themekey>environment</themekey><themekey>location</themekey></theme>
+			<place>
+				<placekt>None</placekt>
+				<placekey>New Jersey</placekey>
+			</place>
+			<temporal>
+				<tempkt>None</tempkt>
+				<tempkey>1995</tempkey>
+				<tempkey>1997</tempkey>
+				<tempkey>1998</tempkey>
+				<tempkey>1999</tempkey>
+				<tempkey>2000</tempkey>
+			</temporal>
+		</keywords>
+		<accconst>none</accconst>
+		<useconst>
+New Jersey Department of Environmental Protection (NJDEP)
+
+Data Distribution Agreement
+
+I. Description of Data to be Provided.
+
+The data provided herein are distributed subject to the following conditions and restrictions.
+
+SUBJECT DATA LAYERS
+
+For all data contained herein, NJDEP makes no representations of any kind, including, but not limited to, the warranties of merchantability or fitness for a particular use, nor are any such warranties to be implied with respect to the digital data layers furnished hereunder.  NJDEP assumes no responsibility to maintain them in any manner or form.
+
+II.	Terms of Agreement
+
+1. Digital data received from the NJDEP are to be used solely for internal purposes in the conduct of daily affairs.
+
+2. The data are provided, as is, without warranty of any kind and the user is responsible for understanding the accuracy limitations of all digital data layers provided herein, as documented in the accompanying cross-reference files (see SUPPLEMENTAL INFORMATION).  Any reproduction or manipulation of the above data must ensure that the coordinate reference system remains intact.
+
+3. Digital data received from the NJDEP may not be reproduced or redistributed for use by anyone without first obtaining written permission from the NJDEP.  This clause is not intended to restrict distribution of printed mapped information produced from the digital data.
+
+4. Any maps, publications, reports, or other documents produced as a result of this project that utilize NJDEP digital data will credit the NJDEP's Geographic Information System (GIS) as the source of the data with the following credit/disclaimer:
+
+""This (map/publication/report) was developed using New Jersey Department of Environmental Protection Geographic Information System digital data, but this secondary product has not been verified by NJDEP and is not state-authorized.""
+
+5.    Users shall require any independent contractor, hired to undertake work that will utilize digital data obtained from the NJDEP, to agree not to use, reproduce, or redistribute NJDEP GIS data for any purpose other than the specified contractual work.  All copies of NJDEP GIS data utilized by an independent contractor will be required to be returned to the original user at the close of such contractual work.
+
+Users hereby agree to abide by the use and reproduction conditions specified above and agree to hold any independent contractor to the same terms.  By using data provided herein, the user acknowledges that terms and conditions have been read and that the user is bound by these criteria.
+</useconst>
+		<browse>
+			<browsen>http://www.state.nj.us/dep/gis/digidownload/images/statewide/njgolf.gif</browsen>
+			<browsed>Graphic representation of NJ Statewide Golf Courses</browsed>
+			<browset>GIF</browset>
+		</browse>
+		<native>ESRI shapefile;  ArcView 3.2a</native>
+		<natvform Sync="TRUE">Shapefile</natvform></idinfo>
+	<dataqual>
+		<attracc>
+			<attraccr>Linework has the same accuracy as the landuse/landcover parent files.  The list of known courses was compiled and cross referenced from multiple sources (Golf Digest 2000, NJDEP Pesticide Program Files, LU/LC class codes, multiple web sites, The Department of Community Affairs listings, etc.).  All courses were photoidentified or reached by telephone for recent courses.  The file is as comprehensive as possible.</attraccr>
+		</attracc>
+		<logic>none</logic>
+		<complete>As far as available known reliable sources were used to compile the file and it is complete as of November 2001.  Compared to more sources than described as a number were rejected due to multiple obvious errors (www.play18.com, NJ Golf Association list, etc.).  This file is more accurate than individually referenced sources.  Because the purpose is to estimate fertilizer, herbicide and pesticide use ONLY fairways, greens, and teeboxes were identified.  Tracts of wetlands, forest, or other landcovers larger than 1 acre (minimum mapping unit) are not included in the golf course polygons even though these may be imbedded within the course in question.  As a result, most courses contain more than one discontinuous set of polygons, many with ""donut holes"".  (256 courses with 553 polygons).</complete>
+		<posacc>
+			<horizpa>
+				<horizpar>NMAS at 1:12000</horizpar>
+			</horizpa>
+			<vertacc>
+				<vertaccr>NA</vertaccr>
+			</vertacc>
+		</posacc>
+		<lineage>
+			<srcinfo>
+				<srccite>
+					<citeinfo>
+						<origin>United States Geological Survey; NJDEP</origin>
+						<pubdate>1991</pubdate>
+						<title>Digital Ortho Quarterquads</title>
+						<geoform>remote-sensing image</geoform>
+						<othercit>Digital images were created from 1:40000 scale NAPP CIR images by USGS, referenced in UTM, NAD83.  These images were then projected to New Jersey State Plane Feet Coordinates (NJSPF), NAD83, and compressed to JPEG images files.  These NJSPF compressed files were used in the development of the this data set. The original images in UTM are available from the USGS website.  The NJSPF versions are available from the NJDEP site.  Both sites have online and CD distribution of these images.</othercit>
+						<onlink>http://njgeodata.state.nj.us</onlink>
+					</citeinfo>
+				</srccite>
+				<srcscale>12000</srcscale>
+				<typesrc>online; CDROM</typesrc>
+				<srctime>
+					<timeinfo>
+						<sngdate>
+							<caldate>1995</caldate>
+							<time>unknown</time>
+						</sngdate>
+					</timeinfo>
+					<srccurr>ground condition</srccurr>
+				</srctime>
+				<srccitea>USGS; NJDEP</srccitea>
+				<srccontr>Land use/land cover for 1995/97 was digitized directly from 1995/97 digital image files.  Photographic transparencies of the CIR images used to create the digital files were also viewed stereoscopically to aid in land use/land cover determinations.</srccontr>
+			</srcinfo>
+			<procstep>
+				<procdesc>
+All polygons derived directly from the 1995/97 land use/land cover data set.  Initially all recreational polygons were reselected from the 1995/97 landuse/landcover file.  These were all compared to 1995 digital orthophotography to identify the presence or absence of a golf course.  All landuse/landcover polygons over photoidentifiable golf courses were retained,  regardless of their landuse/landcover designation (there was a small percentage of omissions and miscodings in the LU/LC file).  These were then compared to the Golf Digest Places to Play Travel Planner by DeLorma (2000) for completeness.  A significant number of additional courses were added which were not coded as recreational cover in the original LU/LC file. All were cross checked against the photography, or called if web sites indicated they were recent built.  The DeLorma travel planner was the source for the course names.  Courses were cross checked against the web site www.placestoplay site, and phoned to resolve name or location issues. This listing was compared to the NJDEP pesticide program list of golf courses until  discrepancies were resolved.  There are a few sites which clearly show as golf courses on the photos but are not part of any listings and may be very recent.  It should be noted that the purpose of the file is to estimate annual application and loads of fertilizer, herbicide, and pesticide for the source water assessment program.  Thus significant tracts (greater than 1 acre) of forest or wetlands imbedded in the courses were not retained in the file, even though they may be part of the area owned by the golf course.  This is because these areas would not receive applications of fertilizers, etc.  Thus the file mainly depicts the fairway/tee/greens areas.  One implication of this is that most courses are composed of several non-contiguous polygons.
+
+Once all polygons were identified and selected,  they were dissolved based on course name.  Several other lists (from NJ Department of Community Affairs, from the golf association of NJ, from the Travel and Tourism bureau (NJ Commerce  Economic Growth Commission)), etc. were also examined.  None of these sources were as comprehensive or as up-to-date as the DeLorma and Pesticide Program listing and were discarded.  All landuse/landcover attributes were removed as a number of these were incorrect, due to original miscoding or the recent age of the course.
+</procdesc>
+				<procdate>20011109</procdate>
+			</procstep>
+			<procstep><procdesc>The following updates have been made to the data:
+
+1. Corrected Names
+-Gaffney Green Tree Course
+-Hamilton Trails
+-Galloway National
+-Marriot's Seaview
+
+2)  Removed golf course polygon
+-Greentree (wildlife management area) 
+
+3)  Added golf course polygon
+- Victoria Par 3
+- McCoullough's Emerald Green
+
+4)  Not Added - Not on imagery
+-Hidden Creek
+-Balamoir
+-Archie Struther's
+
+</procdesc><procdate>20030703</procdate></procstep></lineage>
+		<cloud>0</cloud>
+	</dataqual>
+	<spdoinfo>
+		<direct>Vector</direct>
+		<ptvctinf>
+			<sdtsterm Name="njgolf">
+				<sdtstype>G-polygon</sdtstype>
+				<ptvctcnt Sync="TRUE">259</ptvctcnt></sdtsterm>
+			<esriterm Name="njgolf"><efeatyp Sync="TRUE">Simple</efeatyp><efeageom Sync="TRUE">Polygon</efeageom><esritopo Sync="TRUE">FALSE</esritopo><efeacnt Sync="TRUE">259</efeacnt><spindex Sync="TRUE">TRUE</spindex><linrefer Sync="TRUE">FALSE</linrefer></esriterm></ptvctinf>
+	</spdoinfo>
+	<spref>
+		<horizsys>
+			<geodetic>
+				<horizdn>North American Datum of 1983</horizdn>
+				<ellips>GRS 80</ellips>
+				<denflat>298.257222101</denflat>
+				<semiaxis Sync="TRUE">6378137.000000</semiaxis></geodetic>
+			<cordsysn><geogcsn Sync="TRUE">GCS_North_American_1983</geogcsn><projcsn Sync="TRUE">NAD_1983_StatePlane_New_Jersey_FIPS_2900_Feet</projcsn></cordsysn><planar><planci><plance>coordinate pair</plance><plandu Sync="TRUE">survey feet</plandu><coordrep><absres Sync="TRUE">0.002048</absres><ordres Sync="TRUE">0.002048</ordres></coordrep></planci><gridsys><gridsysn Sync="TRUE">State Plane Coordinate System 1983</gridsysn><spcs><spcszone Sync="TRUE">2900</spcszone><transmer><sfctrmer Sync="TRUE">0.999900</sfctrmer><longcm Sync="TRUE">-74.500000</longcm><latprjo Sync="TRUE">38.833333</latprjo><feast Sync="TRUE">492125.000000</feast><fnorth Sync="TRUE">0.000000</fnorth></transmer></spcs></gridsys></planar></horizsys>
+	</spref>
+	<eainfo>
+		<detailed Name="njgolf"><enttyp><enttypl Sync="TRUE">njgolf</enttypl><enttypt Sync="TRUE">Feature Class</enttypt><enttypc Sync="TRUE">259</enttypc><enttypd>Fairway, green, and tee polygons for all golf courses in New Jersey.</enttypd><enttypds>New Jersey Department of Environmental Protection, Division of Science and Research</enttypds></enttyp><attr><attrlabl Sync="TRUE">FID</attrlabl><attalias Sync="TRUE">FID</attalias><attrtype Sync="TRUE">OID</attrtype><attwidth Sync="TRUE">4</attwidth><atprecis Sync="TRUE">0</atprecis><attscale Sync="TRUE">0</attscale><attrdef Sync="TRUE">Internal feature number.</attrdef><attrdefs Sync="TRUE">ESRI</attrdefs><attrdomv><udom Sync="TRUE">Sequential unique whole numbers that are automatically generated.</udom></attrdomv></attr><attr><attrlabl Sync="TRUE">Shape</attrlabl><attalias Sync="TRUE">Shape</attalias><attrtype Sync="TRUE">Geometry</attrtype><attwidth Sync="TRUE">0</attwidth><atprecis Sync="TRUE">0</atprecis><attscale Sync="TRUE">0</attscale><attrdef Sync="TRUE">Feature geometry.</attrdef><attrdefs Sync="TRUE">ESRI</attrdefs><attrdomv><udom Sync="TRUE">Coordinates defining the features.</udom></attrdomv></attr><attr><attrlabl Sync="TRUE">NAME</attrlabl><attalias Sync="TRUE">NAME</attalias><attrtype Sync="TRUE">String</attrtype><attwidth Sync="TRUE">16</attwidth><attrdef>Name of the golf course.</attrdef><attrdefs>NJDEP</attrdefs><attrdomv><codesetd><codesetn>Golf Course name</codesetn><codesets>Delorma Places to Play listings, 2000</codesets></codesetd></attrdomv></attr><attr><attrlabl Sync="TRUE">COUNT</attrlabl><attalias Sync="TRUE">COUNT</attalias><attrtype Sync="TRUE">Number</attrtype><attwidth Sync="TRUE">11</attwidth><attrdef>A count field added to assist users when creating summary tables to determine the number of polygons associated with each course within the shapefile.</attrdef><attrdefs>NJDEP</attrdefs><attrdomv><edom><edomv>1</edomv><edomvd>A count field added to assist users when creating summary tables to determine the number of polygons associated with each course within the shapefile.</edomvd><edomvds>NJDEP</edomvds></edom></attrdomv></attr><attr><attrlabl Sync="TRUE">AREA</attrlabl><attalias Sync="TRUE">AREA</attalias><attrtype Sync="TRUE">Number</attrtype><attwidth Sync="TRUE">16</attwidth><atnumdec Sync="TRUE">4</atnumdec><attrdef>Area value</attrdef><attrdefs>NJDEP</attrdefs><attrdomv><udom>unique</udom></attrdomv></attr><attr><attrlabl Sync="TRUE">PERIMETER</attrlabl><attalias Sync="TRUE">PERIMETER</attalias><attrtype Sync="TRUE">Number</attrtype><attwidth Sync="TRUE">16</attwidth><atnumdec Sync="TRUE">4</atnumdec><attrdef>Perimeter value</attrdef><attrdefs>NJDEP</attrdefs><attrdomv><udom>unique</udom></attrdomv></attr></detailed></eainfo>
+	<distinfo>
+		<distrib>
+			<cntinfo>
+				<cntaddr>
+					<addrtype>mailing and physical address</addrtype>
+					<city>Trenton</city>
+					<state>NJ</state>
+					<postal>08625</postal>
+					<country>USA</country>
+					<address>401 East State Street</address><address>PO Box 428</address></cntaddr>
+				<cntorgp><cntorg>NJDEP/OIRM/BGIS </cntorg></cntorgp><cntvoice>(609) 777-0672</cntvoice><cntfax>(609) 292-7900 </cntfax><cntemail>gisnet@dep.state.nj.us</cntemail></cntinfo>
+		</distrib>
+		<resdesc>Downloadable Data</resdesc>
+		<distliab>See Use Constraints</distliab>
+		<stdorder>
+			<digform>
+				<digtinfo>
+					<formname>AVSHP</formname>
+					<formvern>3.x</formvern>
+					<filedec>WinZip</filedec>
+					<transize Sync="TRUE">1.367</transize><dssize Sync="TRUE">1.367</dssize></digtinfo>
+				<digtopt>
+					<offoptn>
+						<offmedia>none</offmedia>
+						<recfmt>none</recfmt>
+					</offoptn>
+				</digtopt>
+				<digtopt>
+					<onlinopt>
+						<computer>
+							<networka>
+								<networkr>http://www.state.nj.us/dep/gis/stateshp.html</networkr>
+							</networka>
+						</computer>
+						<oncomp>none</oncomp>
+					</onlinopt>
+				</digtopt>
+			</digform>
+			<fees>none</fees>
+		</stdorder>
+	</distinfo>
+	<metainfo>
+		<metd>20011109</metd>
+		<metc>
+			<cntinfo>
+				<cntperp>
+					<cntper>Gail P. Carter</cntper>
+					<cntorg>NJDEP, DSRT</cntorg>
+				</cntperp>
+				<cntaddr>
+					<addrtype>mailing and physical address</addrtype>
+					<city>Trenton</city>
+					<state>NJ</state>
+					<postal>08625-0409</postal>
+					<country>USA</country>
+					<address>401 East State Street</address><address>DSRT</address></cntaddr>
+				<cntvoice>609-984-9654</cntvoice>
+				<cntfax>609-292-7340</cntfax>
+				<cntemail>Gail.Carter@dep.state.nj.us</cntemail>
+			</cntinfo>
+		</metc>
+		<metstdn>FGDC Content Standards for Digital Geospatial Metadata</metstdn>
+		<metstdv>FGDC-STD-001-1998</metstdv>
+		<langmeta Sync="TRUE">en</langmeta><mettc Sync="TRUE">local time</mettc><metextns><onlink Sync="TRUE">http://www.esri.com/metadata/esriprof80.html</onlink><metprof Sync="TRUE">ESRI Metadata Profile</metprof></metextns></metainfo>
+	<Esri><MetaID>{B1F1AB79-7E71-4658-B5CB-0363A590132F}</MetaID><CreaDate>20030725</CreaDate><CreaTime>08235800</CreaTime><SyncOnce>FALSE</SyncOnce><ModDate>20051130</ModDate><ModTime>09075000</ModTime><SyncDate>20051130</SyncDate><SyncTime>09075000</SyncTime></Esri><mdDateSt Sync="TRUE">20030805</mdDateSt><dataIdInfo><envirDesc Sync="TRUE">Microsoft Windows 2000 Version 5.1 (Build 2600) Service Pack 1; ESRI ArcCatalog 8.2.0.700</envirDesc><dataLang><languageCode Sync="TRUE" value="en"></languageCode></dataLang><idCitation><resTitle Sync="TRUE">njgolf</resTitle><presForm><PresFormCd Sync="TRUE" value="005"></PresFormCd></presForm></idCitation><spatRpType><SpatRepTypCd Sync="TRUE" value="001"></SpatRepTypCd></spatRpType><geoBox esriExtentType="native"><westBL Sync="TRUE">205672.828125</westBL><eastBL Sync="TRUE">649451.979127</eastBL><northBL Sync="TRUE">916729.875</northBL><southBL Sync="TRUE">52718.273438</southBL><exTypeCode Sync="TRUE">1</exTypeCode></geoBox><geoBox esriExtentType="decdegrees"><westBL Sync="TRUE">-75.543305</westBL><eastBL Sync="TRUE">-73.926958</eastBL><northBL Sync="TRUE">41.350055</northBL><southBL Sync="TRUE">38.973741</southBL><exTypeCode Sync="TRUE">1</exTypeCode></geoBox></dataIdInfo><mdLang><languageCode Sync="TRUE" value="en"></languageCode></mdLang><mdStanName Sync="TRUE">ISO 19115 Geographic Information - Metadata</mdStanName><mdStanVer Sync="TRUE">DIS_ESRI1.0</mdStanVer><mdChar><CharSetCd Sync="TRUE" value="004"></CharSetCd></mdChar><mdHrLv><ScopeCd Sync="TRUE" value="005"></ScopeCd></mdHrLv><mdHrLvName Sync="TRUE">dataset</mdHrLvName><distInfo><distributor><distorTran><onLineSrc><orDesc Sync="TRUE">002</orDesc><linkage Sync="TRUE">file://\\1XJKZ11\C$\metadata\inwork\njgolf\njgolf.shp</linkage><protocol Sync="TRUE">Local Area Network</protocol></onLineSrc><transSize Sync="TRUE">1.414</transSize></distorTran><distorFormat><formatName Sync="TRUE">Shapefile</formatName></distorFormat></distributor></distInfo><refSysInfo><RefSystem><refSysID><identCode Sync="TRUE">NAD_1983_StatePlane_New_Jersey_FIPS_2900_Feet</identCode></refSysID></RefSystem></refSysInfo><spatRepInfo><VectSpatRep><topLvl><TopoLevCd Sync="TRUE" value="001"></TopoLevCd></topLvl><geometObjs Name="njgolf"><geoObjTyp><GeoObjTypCd Sync="TRUE" value="001"></GeoObjTypCd></geoObjTyp><geoObjCnt Sync="TRUE">259</geoObjCnt></geometObjs></VectSpatRep></spatRepInfo></metadata>

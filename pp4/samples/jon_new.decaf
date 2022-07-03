@@ -1,0 +1,10 @@
+class a {
+    void test() {}
+}
+
+int main() {
+    a b;
+    b = New(a);
+    b.test();
+    New(a).test();
+}

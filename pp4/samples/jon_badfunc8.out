@@ -1,0 +1,6 @@
+
+*** Error line 2.
+   test(true);
+        ^^^^
+*** Incompatible argument 1: bool given, int expected
+

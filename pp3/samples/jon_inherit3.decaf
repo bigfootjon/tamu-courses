@@ -1,0 +1,12 @@
+class a {
+  
+}
+
+class b extends a {
+
+}
+
+void main() {
+   a c;
+   c = New(b);
+}

@@ -1,0 +1,11 @@
+void main() {
+    int a;
+    a = test();
+    Print(a);
+}
+
+int test() {
+    int a;
+    a = 5;
+    return a;
+}

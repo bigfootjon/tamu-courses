@@ -1,0 +1,10 @@
+int lib() {
+  int i;
+  string s;
+  Cow c;
+  Cow[] pen;
+  i = ReadInteger();
+  s = ReadLine();
+  c = New(Cow);
+  pen = NewArray(i * 10, Cow);
+}

@@ -1,0 +1,7 @@
+class a {
+  int i;
+}
+
+class b extends a {
+  int i;
+}

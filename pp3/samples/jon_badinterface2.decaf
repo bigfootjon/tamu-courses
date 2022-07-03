@@ -1,0 +1,8 @@
+interface coolfuncs {
+  int funca();
+  bool funcb(int a);
+}
+
+class coolclass implements coolfuncs {
+  bool funcb(int a) { return false; }
+}

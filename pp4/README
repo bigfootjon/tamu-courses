@@ -1,0 +1,11 @@
+Usage:
+ 1. run `make` to build dcc
+ 3. run `./dcc <$FILE` to process $FILE and output any semantic errors (assuming lexing and parsing succeeded)
+
+Problems:
+ - Under certain cases, my solution outputs interface compatibility checks out of order compared to the solution compiler (samples/bad6.decaf demonstrates this)
+
+Extended Functionality:
+ - I wrote >80 tests beyond those included in the samples directory.
+   - They all match the regex "jon_*.decaf"
+   - Mostly they just use examples from the instructions or fill in details mentioned in the spec

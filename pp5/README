@@ -1,0 +1,13 @@
+Usage:
+ 1. run `make` to build dcc
+ 3. run `./dcc <$IN_FILE >$OUT_FILE` to process $IN_FILE and output MIPS assembly to $OUT_FILE.
+   a. If there are lexical, syntactical, or semantic errors those are reported and no MIPS output is generated
+
+Problems:
+ - There seems to be a problem with the ReadLine standard library call in the provided defs.asm file in that it always returns references to the same memory location, so successive reads to different variables will all contain the same location in memory (containing the same string)
+
+Extended Functionality:
+ - I included support for postfix decrement and increment (see samples/jon_basic7.decaf for an example program)
+ - I wrote several tests beyond those included in the samples directory.
+   - They all match the regex "jon_*.decaf"
+   - Mostly they are simple constructs to test various constructs such as for loops etc.

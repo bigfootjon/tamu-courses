@@ -1,0 +1,9 @@
+class a {
+  int v;
+  int getv() {
+    return v;
+  }
+  int getv2() {
+    return this.v;
+  }
+}

@@ -1,0 +1,8 @@
+#!/bin/bash
+EXEC_OUT="out.exec"
+if ./run $1.decaf &>$EXEC_OUT ; then
+    diff -w $EXEC_OUT $1.out
+else
+    cat $EXEC_OUT
+fi
+rm $EXEC_OUT

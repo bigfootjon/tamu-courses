@@ -1,0 +1,14 @@
+void main() {
+    int a;
+    bool b;
+    a = return_void();
+    b = return_int();
+}
+
+void return_void() {
+
+}
+
+int return_int() {
+  return 4;
+}

@@ -1,0 +1,18 @@
+
+*** Error line 3.
+    test_call(howdy);
+              ^^^^^
+*** No declaration found for variable 'howdy'
+
+
+*** Error line 3.
+    test_call(howdy);
+    ^^^^^^^^^
+*** No declaration found for function 'test_call'
+
+
+*** Error line 4.
+    a = b + 2;
+        ^
+*** No declaration found for variable 'b'
+

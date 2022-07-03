@@ -1,0 +1,5 @@
+int[] test;
+
+void main() {
+    test = NewArray(false, int[]);
+}

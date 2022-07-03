@@ -1,0 +1,6 @@
+
+*** Error line 2.
+   this.test;
+   ^^^^
+*** 'this' is only valid within class scope
+

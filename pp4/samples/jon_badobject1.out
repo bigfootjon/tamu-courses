@@ -1,0 +1,6 @@
+
+*** Error line 2.
+    New(noclass);
+        ^^^^^^^
+*** No declaration found for class 'noclass'
+

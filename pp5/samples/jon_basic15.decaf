@@ -1,0 +1,8 @@
+void main() {
+    string a;
+    string b;
+    a = ReadLine();
+    b = ReadLine();
+    Print("a == b: ", a == b, " (", a, " == ", b, ")\n");
+}
+

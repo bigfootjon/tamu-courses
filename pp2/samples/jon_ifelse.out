@@ -1,0 +1,38 @@
+
+   Program: 
+  1   FnDecl: 
+         (return type) Type: void
+  1      Identifier: main
+         (body) StmtBlock: 
+            IfStmt: 
+  2            (test) This: 
+  2            (then) Call: 
+  2               Identifier: call
+  2            (else) Call: 
+  2               Identifier: dontcall
+            IfStmt: 
+  3            (test) This: 
+  3            (then) Call: 
+  3               Identifier: call
+            IfStmt: 
+  3            (test) FieldAccess: 
+  3               Identifier: orthis
+  3            (then) Call: 
+  3               Identifier: call
+  3            (else) Call: 
+  3               Identifier: dontcall
+            IfStmt: 
+  4            (test) This: 
+  4            (then) Call: 
+  4               Identifier: call
+               (else) IfStmt: 
+  4               (test) FieldAccess: 
+  4                  Identifier: orthis
+  4               (then) Call: 
+  4                  Identifier: call
+  4               (else) Call: 
+  4                  Identifier: dontcall
+            IfStmt: 
+  5            (test) This: 
+  5            (then) Call: 
+  5               Identifier: call

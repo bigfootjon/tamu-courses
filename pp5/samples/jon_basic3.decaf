@@ -1,0 +1,10 @@
+int a;
+
+void main() {
+    a = 14;
+    test();
+}
+
+void test() {
+    Print(a);
+}

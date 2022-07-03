@@ -1,0 +1,7 @@
+void main() {
+   test(true);
+}
+
+int test(int a) {
+
+}

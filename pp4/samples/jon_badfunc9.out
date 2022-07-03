@@ -1,0 +1,6 @@
+
+*** Error line 2.
+    test();
+    ^^^^
+*** No declaration found for function 'test'
+

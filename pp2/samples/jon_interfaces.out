@@ -1,0 +1,20 @@
+
+   Program: 
+  1   InterfaceDecl: 
+  1      Identifier: printable
+  2      FnDecl: 
+            (return type) Type: void
+  2         Identifier: start
+  3      FnDecl: 
+            (return type) Type: bool
+  3         Identifier: print
+  3         (formals) VarDecl: 
+               Type: string
+  3            Identifier: data
+  4      FnDecl: 
+            (return type) Type: int
+  4         Identifier: check_status
+  5      FnDecl: 
+  5         (return type) NamedType: 
+  5            Identifier: Test
+  5         Identifier: howdy

@@ -1,0 +1,20 @@
+
+   Program: 
+  1   FnDecl: 
+         (return type) Type: string
+  1      Identifier: binky
+         (body) StmtBlock: 
+  3         VarDecl: 
+  3            NamedType: 
+  3               Identifier: neverdefined
+  3            Identifier: b
+            IfStmt: 
+  5            (test) ArithmeticExpr: 
+  5               DoubleConstant: 1.5
+  5               Operator: *
+  5               StringConstant: "Stanford"
+  6            (then) ArithmeticExpr: 
+  6               FieldAccess: 
+  6                  Identifier: b
+  6               Operator: /
+  6               IntConstant: 4

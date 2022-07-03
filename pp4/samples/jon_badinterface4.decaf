@@ -1,0 +1,13 @@
+interface notused {
+   void setup();
+}
+
+class i_am_a_notused {
+   void setup() {}
+}
+
+void main() {
+   notused a;
+   a = New(i_am_a_notused);
+   a.setup();
+}

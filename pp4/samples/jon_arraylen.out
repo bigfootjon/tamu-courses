@@ -1,0 +1,12 @@
+
+*** Error line 6.
+  notarr.length();
+         ^^^^^^
+*** bool has no such field 'length'
+
+
+*** Error line 7.
+  notarr[0];
+  ^^^^^^
+*** [] can only be applied to arrays
+

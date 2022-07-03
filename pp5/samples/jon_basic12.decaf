@@ -1,0 +1,23 @@
+void main() {
+    Test a;
+    a = New(Test);
+    a.SetI(18);
+    a.SetJ(1);
+    Print(a.Get());
+}
+
+class Test {
+   int i;
+   int j;
+   void SetI(int a) {
+       i = a;
+       Print(i, "\n");
+   }
+   void SetJ(int a) {
+       this.j = a;
+       Print(this.j, "\n");
+   }
+   int Get() {
+       return this.i + this.j;
+   }
+}

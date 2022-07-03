@@ -1,0 +1,59 @@
+
+   Program: 
+  1   FnDecl: 
+         (return type) Type: void
+  1      Identifier: main
+         (body) StmtBlock: 
+  2         VarDecl: 
+               Type: int
+  2            Identifier: i
+  3         VarDecl: 
+               Type: double
+  3            Identifier: d
+  4         VarDecl: 
+               Type: string
+  4            Identifier: s
+  5         VarDecl: 
+               Type: bool
+  5            Identifier: b
+  6         VarDecl: 
+  6            NamedType: 
+  6               Identifier: other
+  6            Identifier: a
+  7         AssignExpr: 
+  7            FieldAccess: 
+  7               Identifier: i
+  7            Operator: =
+  7            IntConstant: 10
+  8         AssignExpr: 
+  8            FieldAccess: 
+  8               Identifier: i
+  8            Operator: =
+  8            ArithmeticExpr: 
+  8               Operator: -
+  8               IntConstant: 200
+  9         AssignExpr: 
+  9            FieldAccess: 
+  9               Identifier: d
+  9            Operator: =
+  9            DoubleConstant: 451.1
+ 10         AssignExpr: 
+ 10            FieldAccess: 
+ 10               Identifier: d
+ 10            Operator: =
+ 10            DoubleConstant: 451
+ 11         AssignExpr: 
+ 11            FieldAccess: 
+ 11               Identifier: b
+ 11            Operator: =
+ 11            BoolConstant: false
+ 12         AssignExpr: 
+ 12            FieldAccess: 
+ 12               Identifier: b
+ 12            Operator: =
+ 12            BoolConstant: true
+ 13         AssignExpr: 
+ 13            FieldAccess: 
+ 13               Identifier: a
+ 13            Operator: =
+ 13            NullConstant: 

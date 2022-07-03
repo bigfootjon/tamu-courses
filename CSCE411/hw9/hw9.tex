@@ -1,0 +1,154 @@
+\documentclass{article}
+\usepackage{amsmath,amssymb,amsthm,latexsym,paralist}
+
+\theoremstyle{definition}
+\newtheorem{problem}{Problem}
+\newtheorem*{solution}{Solution}
+\newtheorem*{resources}{Resources}
+
+\newcommand{\name}[1]{\noindent\textbf{Name: #1}}
+\newcommand{\honor}{\noindent On my honor, as an Aggie, I have neither
+  given nor received any unauthorized aid on any portion of the
+  academic work included in this assignment. Furthermore, I have
+  disclosed all resources (people, books, web sites, etc.) that have
+  been used to prepare this homework. \\[1ex]
+ \textbf{Signature:} \underline{\hspace*{5cm}} }
+
+ \newcommand{\E}{\textup{E}}
+ 
+\newcommand{\checklist}{\noindent\textbf{Checklist:}
+\begin{compactitem}[$\Box$] 
+\item Did you add your name? 
+\item Did you disclose all resources that you have used? \\
+(This includes all people, books, websites, etc. that you have consulted)
+\item Did you sign that you followed the Aggie honor code? 
+\item Did you solve all problems? 
+\item Did you submit (a) your latex source file and (b) the resulting pdf file
+  of your homework?
+\item Did you submit (c) a hardcopy of the pdf file in class? 
+\end{compactitem}
+}
+
+\newcommand{\problemset}[1]{\begin{center}\textbf{Problem Set
+      #1}\end{center}}
+\newcommand{\duedate}[2]{\begin{quote}\textbf{Due dates:} Electronic
+    submission of this homework is due on \textbf{#1} on ecampus, a
+    signed paper copy of the pdf file is due on \textbf{#2} at the
+    beginning of class. \end{quote} }
+
+\newcommand{\N}{\mathbf{N}}
+\newcommand{\R}{\mathbf{R}}
+\newcommand{\Z}{\mathbf{Z}}
+
+
+\begin{document}
+\problemset{9}
+\duedate{Monday 4/3/2017 before 10:00am}{4/3/2017}
+\name{Jonathan Janzen}
+\begin{resources} Textbook, Perusall readings, lecture notes, talking to classmates
+\end{resources}
+\honor
+
+\begin{problem}[10 points] Solve Exercise 2.7 of the randomized
+  algorithms lecture notes (on perusall.com). 
+\end{problem}
+\begin{solution}
+$X = x$ is shorthand for $\{z \in \Omega | X(z) \in A\}$ where $A = {x}$. Since $A$ is a singleton, this can be rewritten as $\{z \in \Omega | X(z) = x\}$. This set constructor will produce a set of outcomes that are equal to $x$. A set of outcomes is an event, so $X = x$ produces an event in $\mathcal{F}$.
+\end{solution}
+
+\begin{problem}[10 points] Solve Exercise 2.8 of the randomized
+  algorithms lecture notes (on perusall.com). 
+\end{problem}
+\begin{solution}
+Given that the distribution function is defined as $F_X(x) = Pr[X \leq x]$, it follows that $X \leq x$. Since we are trying to prove $x \leq y$ this can be extended to $X \leq x \leq y$. This would then imply that $Pr[X \leq x] \leq Pr[X \leq y]$ or:
+$$ F_X(x) \leq F_X(y) $$
+In other words, the distribution function is defined as the probability that $X$ is less than $x$, and if $y$ is greater than $x$ then there must be more things that are less than $y$ (or at least the same amount).
+\end{solution}
+
+\begin{problem}[20 points] Solve Exercise 2.9 of the randomized
+  algorithms lecture notes (on perusall.com). 
+\end{problem}
+\begin{solution}
+Since $h(X)$ is a real-to-real function it follows that it can be considered a random variable, here denoted $Y$ since random variables must take a $\Omega$ as input and produce real numbers as outputs, which $h(X)$ does:
+$$ Pr[Y \geq t] \leq \frac{\E[Y]}{t} $$
+Furthermore, since $h(x)$ is defined as non-negative (i.e. $h(x) \geq 0$ for all $x \in \R$), it follows that $h(x) = |h(x)|$ which means we have:
+$$ Pr[|Y| \geq t] \leq \frac{\E[|Y|]}{t} $$
+Which is proved by the Markov Inequality. Therefore by substitution ($|Y| = h(x)$ and $Y = h(x)$) we can obtain the original form of the problem, which we now know is an instance of Markov's Inequality:
+$$ Pr[h(x) \geq t] \leq \frac{\E[h(x)]}{t} $$
+\end{solution}
+
+
+\begin{problem}[10 points]
+Suppose that the running time of a randomized algorithm is modeled by
+the random variable $X$. You have determined the expected running time
+$\E[X]$. Use Markov's inequality to bound the probability that an
+execution of the randomized algorithm exceeds
+$(1+\epsilon)\E[X]$. 
+\end{problem}
+\begin{solution}
+Assuming that $X$ is non-negative, we can rewrite $(1 + \epsilon)\E[X]$ to find a value for $t$:
+$$ \frac{\E[X]}{\frac{1}{1+\epsilon}} \therefore t = \frac{1}{1+\epsilon} $$
+Therefore, the bounds given by Markov's Inequality are as follows:
+$$ Pr[X \geq \frac{1}{1+\epsilon}] \leq \frac{\E[X]}{\frac{1}{1+\epsilon}} $$
+\end{solution}
+
+\begin{problem}[10 points]
+Suppose that the running time of a randomized algorithm is modeled by
+the random variable $X$. Suppose that you know the expected running time
+$\E[X]$. You know that your algorithm has a worst case running time
+that exceeds $\E[X]$ by a significant margin. Therefore, you decide
+to stop the execution whenever it exceeds $(1+\epsilon)\E[X]$ steps,
+and restart the algorithm. You will repeat the execution of the
+algorithm at most $t$ times. Denote by $X_k$ the random variable
+modeling running time of the $k$-th try. Determine the probability
+that the randomized algorithm exceeds  $(1+\epsilon)\E[X]$ steps in
+all $t$ repetitions. This probability models the failure probability
+of this algorithm.
+\end{problem}
+\begin{solution}
+This question can be expressed as a probability with:
+$$ Pr[X \geq (1+\epsilon)\E[X]] $$
+Which is the left hand sign of the matching Markov Inequality:
+$$ Pr[X \geq (1+\epsilon)\E[X]] \leq \frac{\E[X]}{(1+\epsilon)\E[X]} $$
+Simplifying:
+$$ Pr[X \geq (1+\epsilon)\E[X]] \leq \frac{1}{(1+\epsilon)} $$
+This is the upper bound on the probability that execution exceeds $(1+\epsilon)\E[X]$ steps.
+\end{solution}
+
+\begin{problem} [20 points] How should we choose the number of repetitions $t$
+  such that the randomized algorithm has with probability $1-1/n$ at
+  least one run such that $X\le (1+\epsilon)\E[X]$ among the $t$ runs.
+\end{problem}
+\begin{solution}
+We are searching for $Pr[X \leq (1+\epsilon)\E[X]]$, we can solve this using the complement as follows:
+$$ Pr[X \leq (1+\epsilon)\E[X]] = 1 - Pr[X \geq (1+\epsilon)\E[X]] $$
+The right hand sign can be represented as a Markov Inequality:
+$$ Pr[X \geq (1+\epsilon)\E[X]] \leq \frac{\E[X]}{(1+\epsilon)\E[X]} $$
+We can use the complement of the original probability to find the probability for the complement:
+$$ 1 - (1 - \frac{1}{n}) = 1 - 1 + \frac{1}{n} = \frac{1}{n} $$
+We can plug this in for the probability that execution exceeds $(1+\epsilon)\E[X]$ steps in the Markov Inequality:
+$$ \frac{1}{n} \leq \frac{1}{(1+\epsilon)} $$
+$$ \epsilon \leq n -1 $$
+We can use this to solve for $t = (1+\epsilon)E[X]$ in the Markov Inequality:
+$$ t = (1+ \epsilon)E[X] $$
+\end{solution}
+
+\begin{problem}[20 points] How many people need to be in a room such that two of
+  those   people share a birthday with
+  probability of $97\%$.  We assume that birthdays are uniformly
+  distributed. You need to derive your result. 
+\end{problem}
+\begin{solution}
+Slide 5 of random algorithms part 5 gives the following:
+$$m \geq \frac{1}{2}(1 + \sqrt{1-8n*\text{ln}(\delta)})$$
+where $p_{uni} \geq 1 - \delta$, $m$ is the number of people, $n$ is the length of a year. Plugging in $p_{uni}=.97$ we get $\delta = .03$ and we can plug that and $n=365$ into the inequality:
+$$ m \geq \frac{1}{2}(1 + \sqrt{1-2920*\text{ln}(.03)}) $$
+$$ m \geq 51.09$$
+So we need at least 52 people to say with a 97\% certainty that 2 or more people share a birthday.
+\end{solution}
+
+
+
+\goodbreak
+\checklist
+\end{document}

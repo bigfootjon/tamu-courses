@@ -1,0 +1,50 @@
+package patentClassifier;
+
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Scanner;
+import java.util.Set;
+
+// This program classifies patents as a database invention, or an invention of something else.
+// In this first version, we consider the words (tokens) in the title.
+
+// Author: Ronnie Ward
+public class ClassifyPatents {
+
+	public static void main(String[] args) throws Exception {
+		if (args.length != 2) {
+			System.out.println("Please supply an username and password as args");
+			return;
+		}
+		
+		//read patent data
+		PatentData pdf = new PatentData(args[0], args[1]);
+		//train classifier
+		Classifier c = new Classifier(pdf);
+		
+		int relatedCount = 0;
+		int unrelatedCount = 0;
+		
+		//read index of desired start patent	
+		for (int i = 0; i < 1000; i++){
+			String title = pdf.getPatentField(i, "title");
+			double pr = c.classify(title);
+			if (pr > 0.5) {
+				relatedCount++;
+			} else {
+
+				unrelatedCount++;
+			}
+		}
+		System.out.println("Related to DB: " + relatedCount);
+		System.out.println("Not related to DB: " + unrelatedCount);
+	}
+}

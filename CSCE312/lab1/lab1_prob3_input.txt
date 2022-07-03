@@ -1,0 +1,9 @@
+-- INPUT --
+DOS  = 1
+DSBF = 0
+ER   = 1
+DC   = 0
+KIC  = 0
+DLC  = 1
+BP   = 1
+CM   = 1

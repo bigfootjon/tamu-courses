@@ -1,0 +1,16 @@
+-- INPUT --
+DOS  = 1
+DSBF = 1
+ER   = 1
+DC   = 1
+KIC  = 1
+DLC  = 1
+BP   = 1
+CM   = 1
+-- OUTPUT --
+BELL = 0
+DLA  = 0
+BA   = 1
+Timer Resolution = 1 nanoseconds 
+ Calibrartion time = 0 seconds and 1688 nanoseconds 
+ The measured code took 0 seconds and  343 nano seconds to run 

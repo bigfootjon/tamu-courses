@@ -1,0 +1,30 @@
+irmovl $0, %eax # j = 0
+irmovl $0, %ecx # k = 0
+# ...
+irmovl $0, %edx # i = 0
+
+Loop:
+# Break loop
+irmovl $5, %ebx
+subl %edx, %ebx
+jle End
+
+
+# j = i * 2
+rrmovl %edx, %ebx
+addl %ebx, %ebx
+rrmovl %ebx, %eax
+
+# k = j + 1
+irmovl $1, %ebx
+addl %eax, %ebx
+rrmovl %ebx, %ecx
+
+# increment i
+irmovl $1, %ebx
+addl %ebx, %edx
+jmp Loop
+
+End:
+halt
+
